@@ -61,6 +61,6 @@ class AdminLoginController
 
         $auditLogger->record($user, 'auth.login', description: 'Signed in through the Admin/Staff portal.', request: $request);
 
-        return redirect()->intended(route('admin.dashboard'));
+        return redirect()->route('admin.dashboard');
     }
 }
