@@ -100,7 +100,10 @@ class StudentController extends Controller
     public function edit(Student $student): View
     {
         $student->load('user');
-        $programs = Program::where('is_active', true)->orderBy('name')->get();
+        $programs = Program::where('is_active', true)
+            ->orWhereKey($student->program_id)
+            ->orderBy('name')
+            ->get();
 
         return view('admin.students.edit', compact('student', 'programs'));
     }
@@ -123,7 +126,13 @@ class StudentController extends Controller
                 'max:50',
                 Rule::unique('students', 'student_number')->ignore($student->id),
             ],
-            'program_id' => ['nullable', 'integer', Rule::exists('programs', 'id')->where('is_active', true)],
+            'program_id' => [
+                'nullable',
+                'integer',
+                Rule::exists('programs', 'id')->where(
+                    fn ($query) => $query->where('is_active', true)->orWhere('id', $student->program_id)
+                ),
+            ],
             'year_level' => ['nullable', 'integer', 'between:1,6'],
             'status' => ['required', Rule::in(['active', 'inactive', 'graduated'])],
             'account_active' => ['required', 'boolean'],
