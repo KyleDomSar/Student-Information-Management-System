@@ -9,7 +9,7 @@ Use one Laravel authentication backend and one users table. Present separate ent
 - `/admin/login` for administrators and authorized staff.
 - `/student/login` for students.
 
-The login handler must verify that the account belongs to the correct role group before creating an authenticated session. A student account must not be able to sign in through the Admin/Staff login page, and an Admin/Staff account must not be sent to the Student Portal.
+The login handler must verify that the account belongs to the correct role group before creating an authenticated session. A student account must not be able to sign in through the Admin/Staff login page, and an Admin/Staff account must not be sent to the Student Portal. Instructor accounts are not enabled for either portal until their dedicated access rules are implemented.
 
 Do not create two independent password stores. Centralized authentication avoids duplicate account records and inconsistent password policies.
 
