@@ -27,12 +27,12 @@ A web-based Student Information Management System for academic use. SIMS has sep
 - Student dashboard and read-only student profile/enrollment views.
 - Admin/Staff student records management: searchable student directory, profile creation, viewing, editing, and safe account deactivation.
 - Academic program management: create, view, update, and safe deactivation.
-- Audit events for student and program record changes.
+- Subject catalog management: search, create, update, and safe deactivation, with program association.
+- Audit events for student, program, and subject record changes.
 - Optional environment-configured local seed accounts.
 
 ### Still to be developed
 - Admin user and role management screens.
-- Subject CRUD.
 - Enrollment processing and approval.
 - Grade encoding and student grade viewing.
 - Class schedule management.
@@ -54,6 +54,7 @@ Enrollment processing, gradebook, audit log browsing, and user management are no
 | Student profile | `/student/profile` |
 | Student records | `/admin/students` |
 | Academic programs | `/admin/programs` |
+| Subject catalog | `/admin/subjects` |
 
 Both portals use the same `users` table and Laravel session guard. The login controller checks the account role, while route middleware enforces access on the server. Students have no routes for editing official academic records. The instructor role is reserved for a future instructor workspace and is not yet allowed to sign in.
 
