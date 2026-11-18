@@ -12,7 +12,7 @@ Both portals use Laravel's single session guard and the same `users` table. The 
 
 - `admin`: full administrative access.
 - `staff`: authorized registrar and staff access.
-- `instructor`: staff portal access, with teaching permissions to be added separately.
+- `instructor`: reserved for a future instructor workspace. Instructor sign-in is not enabled in the current milestone.
 - `student`: Student Portal access only.
 
 Role checks are performed with the `role` route middleware on the server. A student cannot gain staff access by changing a URL or manipulating the frontend.
