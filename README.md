@@ -1,100 +1,147 @@
 # Student Information Management System (SIMS)
 
-A web-based Student Information Management System for academic use. The application will provide separate Admin/Staff and Student interfaces with centralized authentication and role-based access control.
-
-## Project status
-
-**Stage:** Project planning and repository initialization
-
-The repository currently contains the project documentation. The Laravel application will be scaffolded locally and committed after the development environment is checked.
+A web-based Student Information Management System for academic use. SIMS has separate Admin/Staff and Student portals backed by one centralized authentication system and server-side role-based access control.
 
 ## Technology stack
 
 | Layer | Technology |
 |---|---|
 | Backend | PHP 8.3+ and Laravel 13 |
-| Frontend | HTML, CSS, JavaScript, Bootstrap 5 |
-| Templates | Laravel Blade |
+| Frontend | Blade, HTML, CSS, JavaScript, Bootstrap 5 |
 | Database | MySQL |
 | Local development | Laragon |
 | Version control | Git and GitHub |
 
-Laravel 13 requires PHP 8.3 or higher. Make sure the PHP version enabled in Laragon meets this requirement before creating the application.
+## Current implementation
 
-## User portals
+### Implemented foundation
+- Laravel 13 application structure.
+- MySQL configuration for the project's PHP 8.3 runtime.
+- Shared `users` authentication model with `admin`, `staff`, `instructor`, and `student` roles.
+- Separate Admin/Staff and Student login pages.
+- One session-based authentication backend.
+- Server-side role middleware for protected portal routes.
+- Login throttling, session regeneration, secure logout, and login activity audit events.
+- Initial database models and migrations for students, staff profiles, programs, subjects, enrollments, class schedules, and audit logs.
+- Admin/Staff dashboard with basic record counts and recent audit activity.
+- Student dashboard and read-only student profile/enrollment views.
+- Optional environment-configured local seed accounts.
 
-### Admin / Staff Portal
+### Still to be developed
+- Admin user and role management screens.
+- Student records CRUD.
+- Program and subject CRUD.
+- Enrollment processing and approval.
+- Grade encoding and student grade viewing.
+- Class schedule management.
+- Reports and export.
+- Document requests and tuition balance, only if required by the final project scope.
+- Additional authorization policies and comprehensive security testing.
 
-- Admin dashboard
-- Student records management
-- Course and program management
-- Enrollment management
-- Grade encoding and management
-- Class schedule management
-- User and role management
-- Audit log viewing
-- Reports
+The current portal navigation includes placeholders for modules that are not yet implemented. Do not treat those items as completed features.
 
-### Student Portal
+## Portal URLs
 
-- View personal profile
-- View enrollment status and history
-- View grades
-- View class schedule
-- View account balance, when included in the approved project scope
-- Submit document requests, when included in the approved project scope
+| Page | URL |
+|---|---|
+| Portal selection | `/login` |
+| Admin/Staff login | `/admin/login` |
+| Student login | `/student/login` |
+| Admin/Staff dashboard | `/admin/dashboard` |
+| Student dashboard | `/student/dashboard` |
+| Student profile | `/student/profile` |
 
-Students must only be able to view records associated with their own account. They must not be able to edit official student, enrollment, or grade records.
+Both portals use the same `users` table and Laravel session guard. The login controller checks the account role, while route middleware enforces access on the server. Students have no routes for editing official academic records.
 
-## Authentication and authorization
+## Local setup on Windows / Laragon
 
-The system will use **one centralized Laravel authentication system** with separate login pages and dashboards:
+1. Clone the repository into `C:\laragon\www\SIMS`.
+2. Open Laragon Terminal in the project directory.
+3. Install PHP dependencies:
 
-- Admin/Staff: `/admin/login`
-- Student: `/student/login`
+   ```bash
+   composer install
+   ```
 
-Both login pages authenticate against the same users table. Role-based middleware and Laravel authorization policies will enforce access on the server. Hiding a navigation item or button is not considered access control.
+4. Create your local environment file if it does not exist:
 
-Initial roles:
+   ```cmd
+   copy .env.example .env
+   ```
 
-- `admin`
-- `staff`
-- `instructor`
-- `student`
+5. Set your local MySQL values in `.env`. The default example is configured for Laragon's local MySQL and database `sims_db`.
+6. Generate the application key:
 
-Student accounts should be created or activated by authorized staff. Public self-registration is disabled for the initial version.
+   ```bash
+   php artisan key:generate
+   ```
 
-## Initial development phases
+7. Run database migrations:
 
-1. Confirm the local PHP, Composer, Node.js, and MySQL versions.
-2. Scaffold the Laravel application.
-3. Configure the MySQL database and migrations.
-4. Implement authentication and role-based access.
-5. Build separate Admin/Staff and Student layouts.
-6. Implement student, course, enrollment, grade, and schedule modules.
-7. Add audit logging and security tests.
-8. Prepare sample data and project documentation.
+   ```bash
+   php artisan migrate
+   ```
 
-## Local setup
+8. Install frontend dependencies and build assets if needed:
 
-After the Laravel application has been scaffolded and pushed to this repository:
+   ```bash
+   npm install
+   npm run build
+   ```
 
-1. Clone the repository.
-2. Install PHP dependencies with `composer install`.
-3. Copy `.env.example` to `.env`.
-4. Configure the database credentials in `.env`.
-5. Generate the application key with `php artisan key:generate`.
-6. Run migrations with `php artisan migrate`.
-7. Install frontend dependencies with `npm install`.
-8. Start the application using the project's documented development command.
+9. Start Laravel:
 
-Do not commit `.env`, database passwords, API keys, real student information, or other secrets.
+   ```bash
+   php artisan serve
+   ```
+
+10. Open `http://127.0.0.1:8000/login` or use the Laragon virtual host if configured.
+
+## Create local demo accounts
+
+The seeder creates accounts only when the corresponding values are set in your **local, untracked** `.env` file.
+
+For an administrator:
+
+```env
+SIMS_ADMIN_NAME="SIMS Administrator"
+SIMS_ADMIN_EMAIL=admin@example.test
+SIMS_ADMIN_PASSWORD="replace-with-a-strong-local-password"
+```
+
+Optional demo student:
+
+```env
+SIMS_STUDENT_NAME="Demo Student"
+SIMS_STUDENT_EMAIL=student@example.test
+SIMS_STUDENT_PASSWORD="replace-with-a-different-strong-password"
+SIMS_STUDENT_NUMBER=DEMO-0001
+```
+
+Then run:
+
+```bash
+php artisan db:seed
+```
+
+Use fictional records only. These demo values are local configuration examples, not pre-created GitHub credentials.
+
+## Security notes
+
+- Never commit `.env`, passwords, API keys, database credentials, or real student information.
+- Passwords are hashed by Laravel's hashed password cast.
+- Login attempts are rate-limited.
+- Session IDs are regenerated after login and invalidated on logout.
+- CSRF protection is provided by Laravel's web middleware and Blade form tokens.
+- Student records are retrieved through the authenticated user's student relationship.
+- Backend authorization is required; hiding a UI control does not secure a route.
 
 ## Documentation
 
 - [Project scope](docs/PROJECT_SCOPE.md)
 - [Security design](docs/SECURITY_DESIGN.md)
 - [Database overview](docs/DATABASE_OVERVIEW.md)
+- [Authentication setup](docs/AUTHENTICATION_SETUP.md)
 
 ## Disclaimer
 
