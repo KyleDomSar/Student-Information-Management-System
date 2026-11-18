@@ -52,8 +52,10 @@ Enrollment processing, gradebook, audit log browsing, and user management are no
 | Admin/Staff dashboard | `/admin/dashboard` |
 | Student dashboard | `/student/dashboard` |
 | Student profile | `/student/profile` |
+| Student records | `/admin/students` |
+| Academic programs | `/admin/programs` |
 
-Both portals use the same `users` table and Laravel session guard. The login controller checks the account role, while route middleware enforces access on the server. Students have no routes for editing official academic records.
+Both portals use the same `users` table and Laravel session guard. The login controller checks the account role, while route middleware enforces access on the server. Students have no routes for editing official academic records. The instructor role is reserved for a future instructor workspace and is not yet allowed to sign in.
 
 ## Local setup on Windows / Laragon
 
