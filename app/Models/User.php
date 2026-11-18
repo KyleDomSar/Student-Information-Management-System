@@ -65,7 +65,6 @@ class User extends Authenticatable
         return in_array($this->role, [
             self::ROLE_ADMIN,
             self::ROLE_STAFF,
-            self::ROLE_INSTRUCTOR,
         ], true);
     }
 
