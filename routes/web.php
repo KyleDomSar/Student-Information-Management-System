@@ -39,7 +39,7 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
 
 Route::prefix('admin')
     ->name('admin.')
-    ->middleware(['auth', 'role:admin,staff,instructor'])
+    ->middleware(['auth', 'role:admin,staff'])
     ->group(function () {
         Route::get('/dashboard', AdminDashboardController::class)->name('dashboard');
 
