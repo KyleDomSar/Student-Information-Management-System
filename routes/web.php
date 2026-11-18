@@ -48,6 +48,8 @@ Route::prefix('admin')
             Route::resource('students', StudentController::class);
             Route::resource('programs', ProgramController::class)
                 ->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
+            Route::resource('subjects', SubjectController::class)
+                ->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
         });
     });
 
