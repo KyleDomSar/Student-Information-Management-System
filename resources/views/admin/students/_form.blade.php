@@ -72,8 +72,8 @@
         <div class="col-md-6">
             <label for="account_active" class="form-label small fw-semibold">Portal account *</label>
             <select id="account_active" name="account_active" class="form-select" required>
-                <option value="1" @selected((string) old('account_active', $student?->user?->is_active ?? true) === '1')>Active, can sign in</option>
-                <option value="0" @selected((string) old('account_active', $student?->user?->is_active ?? true) === '0')>Inactive, sign-in blocked</option>
+                <option value="1" @selected((string) old('account_active', $student ? ($student->user->is_active ? '1' : '0') : '1') === '1')>Active, can sign in</option>
+                <option value="0" @selected((string) old('account_active', $student ? ($student->user->is_active ? '1' : '0') : '1') === '0')>Inactive, sign-in blocked</option>
             </select>
             <div class="form-text">This controls portal access separately from academic status.</div>
         </div>
