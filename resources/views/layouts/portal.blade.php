@@ -67,6 +67,7 @@
                 @if(in_array(auth()->user()->role, ['admin', 'staff'], true))
                     <a class="nav-link {{ request()->routeIs('admin.students.*') ? 'active' : '' }}" href="{{ route('admin.students.index') }}"><i class="bi bi-people"></i><span>Students</span></a>
                     <a class="nav-link {{ request()->routeIs('admin.programs.*') ? 'active' : '' }}" href="{{ route('admin.programs.index') }}"><i class="bi bi-book"></i><span>Programs</span></a>
+                    <a class="nav-link {{ request()->routeIs('admin.subjects.*') ? 'active' : '' }}" href="{{ route('admin.subjects.index') }}"><i class="bi bi-journal-bookmark"></i><span>Subjects</span></a>
                     <span class="nav-link disabled opacity-50"><i class="bi bi-journal-check"></i><span>Enrollments · Soon</span></span>
                     <span class="nav-link disabled opacity-50"><i class="bi bi-card-checklist"></i><span>Gradebook · Soon</span></span>
                     <span class="nav-link disabled opacity-50"><i class="bi bi-clock-history"></i><span>Audit Logs · Soon</span></span>
