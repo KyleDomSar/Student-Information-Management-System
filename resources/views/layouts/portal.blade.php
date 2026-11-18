@@ -64,13 +64,13 @@
             <div class="sidebar-label">Management</div>
             <nav class="nav flex-column">
                 <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}"><i class="bi bi-grid"></i><span>Dashboard</span></a>
-                <a class="nav-link" href="#"><i class="bi bi-people"></i><span>Students</span></a>
-                <a class="nav-link" href="#"><i class="bi bi-book"></i><span>Programs & Subjects</span></a>
-                <a class="nav-link" href="#"><i class="bi bi-journal-check"></i><span>Enrollments</span></a>
-                <a class="nav-link" href="#"><i class="bi bi-card-checklist"></i><span>Gradebook</span></a>
-                <a class="nav-link" href="#"><i class="bi bi-clock-history"></i><span>Audit Logs</span></a>
+                <a class="nav-link {{ request()->routeIs('admin.students.*') ? 'active' : '' }}" href="{{ route('admin.students.index') }}"><i class="bi bi-people"></i><span>Students</span></a>
+                <a class="nav-link {{ request()->routeIs('admin.programs.*') ? 'active' : '' }}" href="{{ route('admin.programs.index') }}"><i class="bi bi-book"></i><span>Programs</span></a>
+                <span class="nav-link disabled opacity-50"><i class="bi bi-journal-check"></i><span>Enrollments · Soon</span></span>
+                <span class="nav-link disabled opacity-50"><i class="bi bi-card-checklist"></i><span>Gradebook · Soon</span></span>
+                <span class="nav-link disabled opacity-50"><i class="bi bi-clock-history"></i><span>Audit Logs · Soon</span></span>
                 @if(auth()->user()->isAdministrator())
-                    <a class="nav-link" href="#"><i class="bi bi-shield-lock"></i><span>User Management</span></a>
+                    <span class="nav-link disabled opacity-50"><i class="bi bi-shield-lock"></i><span>User Management · Soon</span></span>
                 @endif
             </nav>
         @endif
