@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\ProgramController;
+use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\PortalLoginController;
@@ -40,6 +42,13 @@ Route::prefix('admin')
     ->middleware(['auth', 'role:admin,staff,instructor'])
     ->group(function () {
         Route::get('/dashboard', AdminDashboardController::class)->name('dashboard');
+
+        // Student and program records are restricted to Admin and Registrar/Staff.
+        Route::middleware('role:admin,staff')->group(function () {
+            Route::resource('students', StudentController::class);
+            Route::resource('programs', ProgramController::class)
+                ->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
+        });
     });
 
 Route::prefix('student')
