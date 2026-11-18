@@ -61,6 +61,6 @@ class StudentLoginController
 
         $auditLogger->record($user, 'auth.login', description: 'Signed in through the Student Portal.', request: $request);
 
-        return redirect()->intended(route('student.dashboard'));
+        return redirect()->route('student.dashboard');
     }
 }
