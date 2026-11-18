@@ -31,8 +31,9 @@ Build a straightforward web-based Student Information Management System (SIMS) t
 
 ### Admin / Staff portal
 - Dashboard with simple summary cards.
-- Student records CRUD.
-- Program and subject management.
+- Student records management (search, create, view, update, and safe account deactivation).
+- Academic program management (create, list, update, and safe deactivation).
+- Subject management (planned).
 - Enrollment management.
 - Grade management with role restrictions.
 - Class schedule management.
@@ -61,7 +62,13 @@ Build a straightforward web-based Student Information Management System (SIMS) t
 
 See [Database Overview](DATABASE_OVERVIEW.md) for the initial relationships.
 
-## 5. Explicitly out of scope for the first milestone
+## 5. Implementation status
+
+Implemented in the repository: centralized portal authentication, role middleware, student profile management, academic program management, audit event recording for the implemented actions, and automated feature tests.
+
+Planned next: subject management, enrollment processing, gradebook, class scheduling, and user management.
+
+## 6. Explicitly out of scope for the first milestone
 
 To keep the project achievable, the first milestone will not include:
 - Online payment processing or storage of card details.
@@ -72,7 +79,7 @@ To keep the project achievable, the first milestone will not include:
 
 These can be considered later if they are required.
 
-## 6. Acceptance criteria for the first milestone
+## 7. Acceptance criteria for the first milestone
 
 - Admin/Staff and Student have separate login pages and dashboards.
 - A student cannot access administrative routes.
