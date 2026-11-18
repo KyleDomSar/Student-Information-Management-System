@@ -27,7 +27,7 @@
             <div class="stat-icon mb-3" style="background:#e8f7f2;color:#138b78"><i class="bi bi-person-badge"></i></div>
             <div class="muted small fw-semibold">Staff accounts</div>
             <div class="stat-value">{{ number_format($stats['staff']) }}</div>
-            <div class="small muted">Admin, staff, instructor</div>
+            <div class="small muted">Admin and staff</div>
         </div>
     </div>
     <div class="col-6 col-xl-3">
