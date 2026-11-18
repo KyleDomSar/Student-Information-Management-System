@@ -13,18 +13,21 @@ class DashboardController extends Controller
 {
     public function __invoke(): View
     {
+        $user = auth()->user();
+
         $stats = [
             'students' => Student::count(),
-            'staff' => User::whereIn('role', ['admin', 'staff', 'instructor'])->count(),
+            'staff' => User::whereIn('role', ['admin', 'staff'])->count(),
             'enrollments' => Enrollment::count(),
             'pending_enrollments' => Enrollment::where('status', 'pending')->count(),
         ];
 
-        $recentLogs = AuditLog::with('user')
-            ->latest('created_at')
-            ->limit(8)
-            ->get();
+        // Audit activity is restricted to administrators.
+        $canViewAuditLogs = $user->isAdministrator();
+        $recentLogs = $canViewAuditLogs
+            ? AuditLog::with('user')->latest('created_at')->limit(8)->get()
+            : collect();
 
-        return view('admin.dashboard', compact('stats', 'recentLogs'));
+        return view('admin.dashboard', compact('stats', 'recentLogs', 'canViewAuditLogs'));
     }
 }
