@@ -33,7 +33,7 @@ Build a straightforward web-based Student Information Management System (SIMS) t
 - Dashboard with simple summary cards.
 - Student records management (search, create, view, update, and safe account deactivation).
 - Academic program management (create, list, update, and safe deactivation).
-- Subject management (planned).
+- Subject catalog management (search, create, update, and safe deactivation).
 - Enrollment management.
 - Grade management with role restrictions.
 - Class schedule management.
@@ -64,7 +64,7 @@ See [Database Overview](DATABASE_OVERVIEW.md) for the initial relationships.
 
 ## 5. Implementation status
 
-Implemented in the repository: centralized portal authentication, role middleware, student profile management, academic program management, audit event recording for the implemented actions, and automated feature tests.
+Implemented in the repository: centralized portal authentication, role middleware, student profile management, academic program management, subject catalog management, audit event recording for the implemented actions, and automated feature tests.
 
 Planned next: subject management, enrollment processing, gradebook, class scheduling, and user management.
 
