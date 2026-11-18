@@ -1,4 +1,1 @@
-import axios from 'axios';
-
-window.axios = axios;
-window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+// Shared browser setup can be added here when the project needs it.
