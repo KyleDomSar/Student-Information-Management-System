@@ -56,21 +56,25 @@
             <nav class="nav flex-column">
                 <a class="nav-link {{ request()->routeIs('student.dashboard') ? 'active' : '' }}" href="{{ route('student.dashboard') }}"><i class="bi bi-grid"></i><span>Overview</span></a>
                 <a class="nav-link {{ request()->routeIs('student.profile') ? 'active' : '' }}" href="{{ route('student.profile') }}"><i class="bi bi-person"></i><span>My Profile</span></a>
-                <a class="nav-link" href="#"><i class="bi bi-journal-check"></i><span>Enrollment</span></a>
-                <a class="nav-link" href="#"><i class="bi bi-card-list"></i><span>Grades</span></a>
-                <a class="nav-link" href="#"><i class="bi bi-calendar3"></i><span>Class Schedule</span></a>
+                <span class="nav-link disabled opacity-50"><i class="bi bi-journal-check"></i><span>Enrollment · Soon</span></span>
+                <span class="nav-link disabled opacity-50"><i class="bi bi-card-list"></i><span>Grades · Soon</span></span>
+                <span class="nav-link disabled opacity-50"><i class="bi bi-calendar3"></i><span>Class Schedule · Soon</span></span>
             </nav>
         @else
-            <div class="sidebar-label">Management</div>
+            <div class="sidebar-label">{{ auth()->user()->role === 'instructor' ? 'Instructor Space' : 'Management' }}</div>
             <nav class="nav flex-column">
                 <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}"><i class="bi bi-grid"></i><span>Dashboard</span></a>
-                <a class="nav-link {{ request()->routeIs('admin.students.*') ? 'active' : '' }}" href="{{ route('admin.students.index') }}"><i class="bi bi-people"></i><span>Students</span></a>
-                <a class="nav-link {{ request()->routeIs('admin.programs.*') ? 'active' : '' }}" href="{{ route('admin.programs.index') }}"><i class="bi bi-book"></i><span>Programs</span></a>
-                <span class="nav-link disabled opacity-50"><i class="bi bi-journal-check"></i><span>Enrollments · Soon</span></span>
-                <span class="nav-link disabled opacity-50"><i class="bi bi-card-checklist"></i><span>Gradebook · Soon</span></span>
-                <span class="nav-link disabled opacity-50"><i class="bi bi-clock-history"></i><span>Audit Logs · Soon</span></span>
-                @if(auth()->user()->isAdministrator())
-                    <span class="nav-link disabled opacity-50"><i class="bi bi-shield-lock"></i><span>User Management · Soon</span></span>
+                @if(in_array(auth()->user()->role, ['admin', 'staff'], true))
+                    <a class="nav-link {{ request()->routeIs('admin.students.*') ? 'active' : '' }}" href="{{ route('admin.students.index') }}"><i class="bi bi-people"></i><span>Students</span></a>
+                    <a class="nav-link {{ request()->routeIs('admin.programs.*') ? 'active' : '' }}" href="{{ route('admin.programs.index') }}"><i class="bi bi-book"></i><span>Programs</span></a>
+                    <span class="nav-link disabled opacity-50"><i class="bi bi-journal-check"></i><span>Enrollments · Soon</span></span>
+                    <span class="nav-link disabled opacity-50"><i class="bi bi-card-checklist"></i><span>Gradebook · Soon</span></span>
+                    <span class="nav-link disabled opacity-50"><i class="bi bi-clock-history"></i><span>Audit Logs · Soon</span></span>
+                    @if(auth()->user()->isAdministrator())
+                        <span class="nav-link disabled opacity-50"><i class="bi bi-shield-lock"></i><span>User Management · Soon</span></span>
+                    @endif
+                @else
+                    <span class="nav-link disabled opacity-50"><i class="bi bi-easel"></i><span>My Classes · Soon</span></span>
                 @endif
             </nav>
         @endif
