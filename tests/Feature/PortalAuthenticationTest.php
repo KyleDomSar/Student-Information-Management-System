@@ -48,6 +48,21 @@ class PortalAuthenticationTest extends TestCase
         $this->assertGuest();
     }
 
+    public function test_instructor_cannot_sign_in_to_the_admin_staff_portal_yet(): void
+    {
+        $instructor = User::factory()->create([
+            'role' => User::ROLE_INSTRUCTOR,
+            'password' => 'password',
+        ]);
+
+        $this->post(route('admin.login.store'), [
+            'email' => $instructor->email,
+            'password' => 'password',
+        ])->assertSessionHasErrors('email');
+
+        $this->assertGuest();
+    }
+
     public function test_student_can_sign_in_to_student_portal(): void
     {
         $student = User::factory()->create([
