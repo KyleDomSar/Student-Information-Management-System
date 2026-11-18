@@ -18,6 +18,15 @@
             <input id="name" name="name" value="{{ old('name', $program?->name ?? '') }}" class="form-control" maxlength="255" required>
             @error('name')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
         </div>
+        @if($program)
+            <div class="col-md-4">
+                <label for="is_active" class="form-label small fw-semibold">Program status *</label>
+                <select id="is_active" name="is_active" class="form-select" required>
+                    <option value="1" @selected((string) old('is_active', $program->is_active ? '1' : '0') === '1')>Active</option>
+                    <option value="0" @selected((string) old('is_active', $program->is_active ? '1' : '0') === '0')>Inactive</option>
+                </select>
+            </div>
+        @endif
         <div class="col-12">
             <label for="description" class="form-label small fw-semibold">Description</label>
             <textarea id="description" name="description" rows="4" maxlength="2000" class="form-control">{{ old('description', $program?->description ?? '') }}</textarea>
