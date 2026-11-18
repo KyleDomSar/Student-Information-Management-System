@@ -15,15 +15,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $adminEmail = env('SIMS_ADMIN_EMAIL');
-        $adminPassword = env('SIMS_ADMIN_PASSWORD');
+        $admin = config('sims.seed_admin');
 
-        if ($adminEmail && $adminPassword) {
+        if ($admin['email'] && $admin['password']) {
             User::updateOrCreate(
-                ['email' => $adminEmail],
+                ['email' => $admin['email']],
                 [
-                    'name' => env('SIMS_ADMIN_NAME', 'SIMS Administrator'),
-                    'password' => $adminPassword,
+                    'name' => $admin['name'],
+                    'password' => $admin['password'],
                     'role' => User::ROLE_ADMIN,
                     'is_active' => true,
                 ],
@@ -34,16 +33,14 @@ class DatabaseSeeder extends Seeder
             $this->command?->warn('Admin account skipped. Set SIMS_ADMIN_EMAIL and SIMS_ADMIN_PASSWORD in your local .env.');
         }
 
-        $studentEmail = env('SIMS_STUDENT_EMAIL');
-        $studentPassword = env('SIMS_STUDENT_PASSWORD');
-        $studentNumber = env('SIMS_STUDENT_NUMBER');
+        $student = config('sims.seed_student');
 
-        if ($studentEmail && $studentPassword && $studentNumber) {
+        if ($student['email'] && $student['password'] && $student['student_number']) {
             $studentUser = User::updateOrCreate(
-                ['email' => $studentEmail],
+                ['email' => $student['email']],
                 [
-                    'name' => env('SIMS_STUDENT_NAME', 'Demo Student'),
-                    'password' => $studentPassword,
+                    'name' => $student['name'],
+                    'password' => $student['password'],
                     'role' => User::ROLE_STUDENT,
                     'is_active' => true,
                 ],
@@ -52,7 +49,7 @@ class DatabaseSeeder extends Seeder
             Student::updateOrCreate(
                 ['user_id' => $studentUser->id],
                 [
-                    'student_number' => $studentNumber,
+                    'student_number' => $student['student_number'],
                     'status' => 'active',
                 ],
             );
