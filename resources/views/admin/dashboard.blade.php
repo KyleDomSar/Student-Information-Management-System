@@ -48,6 +48,7 @@
     </div>
 </div>
 
+@if($canViewAuditLogs)
 <div class="surface overflow-hidden">
     <div class="p-3 p-md-4 border-bottom d-flex justify-content-between align-items-center">
         <div>
@@ -83,4 +84,10 @@
         </div>
     @endif
 </div>
+@else
+<div class="surface p-4">
+    <h2 class="h6 fw-bold mb-1">Administrative activity</h2>
+    <p class="muted small mb-0">Audit log access is restricted to administrators.</p>
+</div>
+@endif
 @endsection
