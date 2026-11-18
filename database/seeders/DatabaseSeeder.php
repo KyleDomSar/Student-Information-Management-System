@@ -2,39 +2,62 @@
 
 namespace Database\Seeders;
 
+use App\Models\Student;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
     /**
-     * Create the first administrator only when credentials are configured locally.
+     * Create initial accounts only when local .env values are supplied.
      *
      * Never commit real credentials or use this seeder with real student data.
      */
     public function run(): void
     {
-        $email = env('SIMS_ADMIN_EMAIL');
-        $password = env('SIMS_ADMIN_PASSWORD');
+        $adminEmail = env('SIMS_ADMIN_EMAIL');
+        $adminPassword = env('SIMS_ADMIN_PASSWORD');
 
-        if (! $email || ! $password) {
-            $this->command?->warn(
-                'No initial administrator was created. Set SIMS_ADMIN_EMAIL and SIMS_ADMIN_PASSWORD in your local .env, then run php artisan db:seed.'
+        if ($adminEmail && $adminPassword) {
+            User::updateOrCreate(
+                ['email' => $adminEmail],
+                [
+                    'name' => env('SIMS_ADMIN_NAME', 'SIMS Administrator'),
+                    'password' => $adminPassword,
+                    'role' => User::ROLE_ADMIN,
+                    'is_active' => true,
+                ],
             );
 
-            return;
+            $this->command?->info('Initial SIMS administrator account is ready.');
+        } else {
+            $this->command?->warn('Admin account skipped. Set SIMS_ADMIN_EMAIL and SIMS_ADMIN_PASSWORD in your local .env.');
         }
 
-        User::updateOrCreate(
-            ['email' => $email],
-            [
-                'name' => env('SIMS_ADMIN_NAME', 'SIMS Administrator'),
-                'password' => $password,
-                'role' => User::ROLE_ADMIN,
-                'is_active' => true,
-            ],
-        );
+        $studentEmail = env('SIMS_STUDENT_EMAIL');
+        $studentPassword = env('SIMS_STUDENT_PASSWORD');
+        $studentNumber = env('SIMS_STUDENT_NUMBER');
 
-        $this->command?->info('Initial SIMS administrator account is ready.');
+        if ($studentEmail && $studentPassword && $studentNumber) {
+            $studentUser = User::updateOrCreate(
+                ['email' => $studentEmail],
+                [
+                    'name' => env('SIMS_STUDENT_NAME', 'Demo Student'),
+                    'password' => $studentPassword,
+                    'role' => User::ROLE_STUDENT,
+                    'is_active' => true,
+                ],
+            );
+
+            Student::updateOrCreate(
+                ['user_id' => $studentUser->id],
+                [
+                    'student_number' => $studentNumber,
+                    'status' => 'active',
+                ],
+            );
+
+            $this->command?->info('Optional demo student account and profile are ready.');
+        }
     }
 }
