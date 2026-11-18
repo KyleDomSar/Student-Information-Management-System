@@ -25,12 +25,14 @@ A web-based Student Information Management System for academic use. SIMS has sep
 - Initial database models and migrations for students, staff profiles, programs, subjects, enrollments, class schedules, and audit logs.
 - Admin/Staff dashboard with basic record counts and recent audit activity.
 - Student dashboard and read-only student profile/enrollment views.
+- Admin/Staff student records management: searchable student directory, profile creation, viewing, editing, and safe account deactivation.
+- Academic program management: create, view, update, and safe deactivation.
+- Audit events for student and program record changes.
 - Optional environment-configured local seed accounts.
 
 ### Still to be developed
 - Admin user and role management screens.
-- Student records CRUD.
-- Program and subject CRUD.
+- Subject CRUD.
 - Enrollment processing and approval.
 - Grade encoding and student grade viewing.
 - Class schedule management.
@@ -38,7 +40,7 @@ A web-based Student Information Management System for academic use. SIMS has sep
 - Document requests and tuition balance, only if required by the final project scope.
 - Additional authorization policies and comprehensive security testing.
 
-The current portal navigation includes placeholders for modules that are not yet implemented. Do not treat those items as completed features.
+Enrollment processing, gradebook, audit log browsing, and user management are not implemented yet. Their navigation entries are shown as disabled placeholders.
 
 ## Portal URLs
 
