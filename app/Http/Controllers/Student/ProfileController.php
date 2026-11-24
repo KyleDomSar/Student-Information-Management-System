@@ -15,7 +15,7 @@ class ProfileController extends Controller
     {
         $student = $request->user()
             ->student()
-            ->with('program')
+            ->with(['program', 'section.program', 'yearLevelRecord'])
             ->first();
 
         return view('student.profile', compact('student'));
