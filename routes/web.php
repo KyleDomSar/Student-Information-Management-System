@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\AuditLogController;
 use App\Http\Controllers\Admin\ProgramController;
 use App\Http\Controllers\Admin\StudentController;
+use App\Http\Controllers\Admin\StudentReportController;
 use App\Http\Controllers\Admin\YearLevelController;
 use App\Http\Controllers\Admin\SectionController;
 use App\Http\Controllers\Admin\SubjectController;
@@ -61,6 +62,8 @@ Route::prefix('admin')
             Route::get('/subjects', [SubjectController::class, 'index'])->name('subjects.index');
             Route::get('/year-levels', [YearLevelController::class, 'index'])->name('year-levels.index');
             Route::get('/sections', [SectionController::class, 'index'])->name('sections.index');
+            Route::get('/reports/students', [StudentReportController::class, 'index'])->name('reports.students');
+            Route::get('/reports/students/export', [StudentReportController::class, 'export'])->name('reports.students.export');
             Route::get('/enrollments', [AdminEnrollmentController::class, 'index'])->name('enrollments.index');
             Route::get('/enrollments/create', [AdminEnrollmentController::class, 'create'])->name('enrollments.create');
             Route::post('/enrollments', [AdminEnrollmentController::class, 'store'])->name('enrollments.store');
