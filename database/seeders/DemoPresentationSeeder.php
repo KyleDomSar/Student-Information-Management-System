@@ -7,7 +7,6 @@ use App\Models\Enrollment;
 use App\Models\Program;
 use App\Models\Section;
 use App\Models\Student;
-use App\Models\StudentVisitorTimeout;
 use App\Models\User;
 use App\Models\YearLevel;
 use Illuminate\Database\Seeder;
