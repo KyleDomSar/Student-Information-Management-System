@@ -36,7 +36,11 @@
                     </div>
                     <div class="col-sm-6">
                         <div class="small muted">Year level</div>
-                        <div class="fw-semibold">{{ $student->year_level ? $student->year_level . (['st','nd','rd','th'][$student->year_level - 1] ?? 'th') . ' Year' : 'Not assigned' }}</div>
+                        <div class="fw-semibold">{{ $student->yearLevelRecord?->name ?? 'Not assigned' }}</div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="small muted">Assigned section</div>
+                        <div class="fw-semibold">{{ $student->section?->code ?? 'Not assigned' }}</div>
                     </div>
                     <div class="col-sm-6">
                         <div class="small muted">Email</div>
