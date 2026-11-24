@@ -10,7 +10,9 @@
         <h1 class="page-title mb-1">Subjects</h1>
         <p class="muted mb-0">Maintain the subject catalog used for student enrollment.</p>
     </div>
-    <a href="{{ route('admin.subjects.create') }}" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i> Add subject</a>
+    @if(auth()->user()->isAdministrator())
+        <a href="{{ route('admin.subjects.create') }}" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i> Add subject</a>
+    @endif
 </div>
 
 <div class="surface p-3 mb-3">
@@ -26,14 +28,14 @@
 <div class="surface overflow-hidden">
     <div class="p-3 p-md-4 border-bottom d-flex justify-content-between align-items-center">
         <div><h2 class="h5 fw-bold mb-1">Subject directory</h2><p class="muted small mb-0">{{ $subjects->total() }} subject(s) found</p></div>
-        <span class="badge badge-soft rounded-pill">Admin / Staff</span>
+        <span class="badge badge-soft rounded-pill">{{ auth()->user()->isAdministrator() ? 'Administrator' : 'Staff · View only' }}</span>
     </div>
     @if($subjects->isEmpty())
         <div class="text-center p-5">
             <div class="stat-icon mx-auto mb-3"><i class="bi bi-book"></i></div>
             <h2 class="h6 fw-bold">No subjects found</h2>
             <p class="muted small mb-3">{{ $search !== '' ? 'Try another search term.' : 'Add subjects to build your academic catalog.' }}</p>
-            @if($search === '')<a href="{{ route('admin.subjects.create') }}" class="btn btn-primary btn-sm">Add subject</a>@endif
+            @if($search === '' && auth()->user()->isAdministrator())<a href="{{ route('admin.subjects.create') }}" class="btn btn-primary btn-sm">Add subject</a>@endif
         </div>
     @else
         <div class="table-responsive">
@@ -49,13 +51,17 @@
                         <td>{{ number_format($subject->enrollment_subjects_count) }}</td>
                         <td><span class="badge {{ $subject->is_active ? 'text-bg-success' : 'text-bg-secondary' }}">{{ $subject->is_active ? 'Active' : 'Inactive' }}</span></td>
                         <td class="text-end text-nowrap">
-                            <a href="{{ route('admin.subjects.edit', $subject) }}" class="btn btn-sm btn-outline-primary">Edit</a>
-                            @if($subject->is_active)
-                                <form method="POST" action="{{ route('admin.subjects.destroy', $subject) }}" class="d-inline" onsubmit="return confirm('Deactivate this subject? Existing enrollment history will be preserved.');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-outline-danger">Deactivate</button>
-                                </form>
+                            @if(auth()->user()->isAdministrator())
+                                <a href="{{ route('admin.subjects.edit', $subject) }}" class="btn btn-sm btn-outline-primary">Edit</a>
+                                @if($subject->is_active)
+                                    <form method="POST" action="{{ route('admin.subjects.destroy', $subject) }}" class="d-inline" onsubmit="return confirm('Deactivate this subject? Existing enrollment history will be preserved.');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Deactivate</button>
+                                    </form>
+                                @endif
+                            @else
+                                <span class="small muted">View only</span>
                             @endif
                         </td>
                     </tr>
