@@ -36,7 +36,7 @@
         <div class="col-lg-5">
             <div class="surface p-4 h-100">
                 <div class="eyebrow mb-2">ENROLLMENT SUMMARY</div>
-                <div class="stat-value">{{ $student->enrollments->count() }}</div>
+                <div class="stat-value">{{ number_format($student->enrollments_count) }}</div>
                 <div class="muted small mb-4">Recorded enrollment terms</div>
                 <div class="d-flex justify-content-between border-top pt-3"><span class="muted small">Student status</span><span class="fw-semibold text-capitalize">{{ $student->status }}</span></div>
                 <div class="d-flex justify-content-between border-top pt-3 mt-3"><span class="muted small">Portal account</span><span class="fw-semibold">{{ $student->user->is_active ? 'Active' : 'Inactive' }}</span></div>

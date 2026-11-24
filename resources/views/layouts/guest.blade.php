@@ -8,31 +8,99 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <style>
-        :root { --sims-ink:#17243b; --sims-muted:#718096; --sims-blue:#3157d5; --sims-bg:#f4f6fb; }
-        body { min-height:100vh; background:radial-gradient(circle at top left,#e7edff 0,transparent 35%),var(--sims-bg); color:var(--sims-ink); }
-        .brand-mark { display:inline-grid; place-items:center; width:42px; height:42px; border-radius:13px; background:var(--sims-blue); color:#fff; font-weight:800; letter-spacing:-1px; }
-        .auth-card { border:1px solid #e7ebf3; border-radius:22px; box-shadow:0 24px 70px rgba(34,49,87,.09); }
-        .form-control { min-height:48px; border-color:#dfe5ef; border-radius:11px; }
-        .form-control:focus { border-color:#8299f0; box-shadow:0 0 0 .2rem rgba(49,87,213,.12); }
-        .btn-sims { min-height:48px; border-radius:11px; background:var(--sims-blue); border-color:var(--sims-blue); color:#fff; font-weight:600; }
-        .btn-sims:hover { background:#2547b8; border-color:#2547b8; color:#fff; }
-        .muted { color:var(--sims-muted); }
+        :root {
+            --sims-ink: #15243b;
+            --sims-muted: #718096;
+            --sims-blue: #3157d5;
+            --sims-blue-dark: #2446b6;
+            --sims-bg: #f4f7fc;
+            --sims-line: #e5eaf2;
+        }
+        * { box-sizing: border-box; }
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background:
+                radial-gradient(circle at 12% 8%, rgba(91,125,245,.15), transparent 29rem),
+                radial-gradient(circle at 92% 88%, rgba(19,139,120,.09), transparent 26rem),
+                var(--sims-bg);
+            color: var(--sims-ink);
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .guest-nav { padding-top: 25px; padding-bottom: 25px; }
+        .guest-brand { color: var(--sims-ink); text-decoration: none; display: inline-flex; align-items: center; gap: 11px; }
+        .brand-mark {
+            display: inline-grid;
+            place-items: center;
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            background: linear-gradient(145deg, #5276f3, var(--sims-blue));
+            color: #fff;
+            font-size: 1.05rem;
+            font-weight: 800;
+            box-shadow: 0 7px 18px rgba(49,87,213,.22);
+        }
+        .guest-brand-name { font-size: 1.12rem; font-weight: 780; letter-spacing: -.035em; }
+        .guest-brand-subtitle { display: block; color: var(--sims-muted); font-size: .73rem; font-weight: 500; letter-spacing: 0; }
+        .auth-card {
+            overflow: hidden;
+            border: 1px solid rgba(224,231,242,.95);
+            border-radius: 22px;
+            background: rgba(255,255,255,.96);
+            box-shadow: 0 22px 65px rgba(34,49,87,.09);
+            transition: transform .18s ease, box-shadow .18s ease;
+        }
+        a.auth-card:hover { transform: translateY(-3px); box-shadow: 0 28px 72px rgba(34,49,87,.13); }
+        .form-control {
+            min-height: 48px;
+            border-color: #dfe5ef;
+            border-radius: 11px;
+            color: var(--sims-ink);
+        }
+        .form-control:focus {
+            border-color: #8299f0;
+            box-shadow: 0 0 0 .2rem rgba(49,87,213,.12);
+        }
+        .btn-sims {
+            min-height: 48px;
+            border-radius: 11px;
+            background: var(--sims-blue);
+            border-color: var(--sims-blue);
+            color: #fff;
+            font-weight: 700;
+            box-shadow: 0 5px 13px rgba(49,87,213,.16);
+            transition: transform .16s ease, background .16s ease;
+        }
+        .btn-sims:hover { transform: translateY(-1px); background: var(--sims-blue-dark); border-color: var(--sims-blue-dark); color: #fff; }
+        .muted { color: var(--sims-muted) !important; }
+        .guest-footer { margin-top: auto; }
+        :focus-visible { outline: 3px solid rgba(49,87,213,.3); outline-offset: 2px; }
+        @media (max-width: 575px) {
+            .guest-nav { padding-top: 18px; padding-bottom: 18px; }
+            .auth-card { border-radius: 17px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { transition-duration: .01ms !important; }
+        }
     </style>
 </head>
 <body>
-    <nav class="container py-4">
-        <a href="{{ route('login', [], false) }}" class="text-decoration-none text-dark d-inline-flex align-items-center gap-2">
+    <nav class="container guest-nav">
+        <a href="{{ route('login', [], false) }}" class="guest-brand">
             <span class="brand-mark">S</span>
-            <span class="fw-bold fs-5">SIMS <span class="muted fw-normal">Portal</span></span>
+            <span class="guest-brand-name">SIMS<span class="guest-brand-subtitle">Student Information Management System</span></span>
         </a>
     </nav>
 
-    <main class="container pb-5">
+    <main class="container pb-5 flex-grow-1">
         @yield('content')
     </main>
 
-    <footer class="container text-center small muted pb-4">
-        Student Information Management System · Academic project
+    <footer class="container guest-footer text-center small muted pb-4">
+        Cavite State University · College of Engineering and Information Technology
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>

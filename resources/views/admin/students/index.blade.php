@@ -31,7 +31,7 @@
                     <td><div class="fw-semibold">{{ $student->user->name }}</div><div class="small muted">{{ $student->user->email }}</div></td>
                     <td class="fw-semibold">{{ $student->student_number }}</td>
                     <td>{{ $student->program?->code ?? 'Not assigned' }}</td>
-                    <td>{{ $student->year_level ?? '—' }}</td>
+                    <td>{{ $student->yearLevelRecord?->name ?? 'Not assigned' }}</td>
                     <td>{{ $student->section?->code ?? 'Not assigned' }}</td>
                     <td><span class="badge {{ $student->status === 'active' && $student->user->is_active ? 'text-bg-success' : 'text-bg-secondary' }}">{{ $student->user->is_active ? ucfirst($student->status) : 'Account inactive' }}</span></td>
                     <td class="text-end"><a href="{{ route('admin.students.show', $student) }}" class="btn btn-sm btn-outline-primary">View record</a></td>
