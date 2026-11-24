@@ -69,8 +69,8 @@ class StudentVisitorTimeoutTest extends TestCase
         $this->actingAs($firstUser)
             ->get(route('student.visitor-timeouts.index'))
             ->assertOk()
-            ->assertSee('#'.$ownRecord->id)
-            ->assertDontSee('#'.$otherRecord->id);
+            ->assertSee('<td class="fw-semibold">#'.$ownRecord->id.'</td>', false)
+            ->assertDontSee('<td class="fw-semibold">#'.$otherRecord->id.'</td>', false);
     }
 
     public function test_staff_cannot_access_student_visitor_time_out_routes(): void
