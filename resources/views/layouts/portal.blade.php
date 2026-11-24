@@ -12,7 +12,7 @@
         * { box-sizing:border-box; }
         body { min-height:100vh; background:var(--canvas); color:var(--ink); }
         .portal-shell { min-height:100vh; display:flex; }
-        .sidebar { width:250px; flex-shrink:0; background:var(--sidebar); color:#d7deec; padding:24px 16px; display:flex; flex-direction:column; }
+        .sidebar { position:sticky; top:0; align-self:flex-start; height:100vh; overflow-y:auto; width:250px; flex-shrink:0; background:var(--sidebar); color:#d7deec; padding:24px 16px; display:flex; flex-direction:column; }
         .sidebar-brand { color:#fff; font-size:1.18rem; font-weight:750; text-decoration:none; display:flex; align-items:center; gap:11px; padding:0 10px 30px; }
         .brand-mark { display:inline-grid; place-items:center; width:38px; height:38px; border-radius:12px; background:#4266e8; color:white; font-weight:800; }
         .sidebar-label { color:#8593ad; text-transform:uppercase; letter-spacing:.11em; font-size:.68rem; font-weight:700; padding:8px 12px; }
