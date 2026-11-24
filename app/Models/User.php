@@ -15,7 +15,6 @@ class User extends Authenticatable
 
     public const ROLE_ADMIN = 'admin';
     public const ROLE_STAFF = 'staff';
-    public const ROLE_INSTRUCTOR = 'instructor';
     public const ROLE_STUDENT = 'student';
 
     protected $fillable = [
