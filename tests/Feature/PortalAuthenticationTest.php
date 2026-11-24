@@ -51,7 +51,7 @@ class PortalAuthenticationTest extends TestCase
     public function test_instructor_cannot_sign_in_to_the_admin_staff_portal_yet(): void
     {
         $instructor = User::factory()->create([
-            'role' => User::ROLE_INSTRUCTOR,
+            'role' => 'instructor',
             'password' => 'password',
         ]);
 
