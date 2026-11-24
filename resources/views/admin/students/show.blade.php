@@ -11,14 +11,24 @@
         <h1 class="page-title mb-1">{{ $student->user->name }}</h1>
         <p class="muted mb-0">{{ $student->student_number }}</p>
     </div>
-    <div class="d-flex gap-2">
+    <div class="d-flex flex-wrap gap-2">
         <a href="{{ route('admin.students.edit', $student) }}" class="btn btn-primary"><i class="bi bi-pencil me-1"></i> Edit record</a>
-        @if($student->user->is_active)
-            <form method="POST" action="{{ route('admin.students.destroy', $student) }}" onsubmit="return confirm('Deactivate this portal account? The academic record will be preserved.');">
+        @if(auth()->user()->isAdministrator())
+            <form method="POST" action="{{ route('admin.students.account-status', $student) }}">
                 @csrf
-                @method('DELETE')
-                <button class="btn btn-outline-danger" type="submit">Deactivate account</button>
+                @method('PATCH')
+                <input type="hidden" name="is_active" value="{{ $student->user->is_active ? '0' : '1' }}">
+                <button class="btn btn-outline-warning" type="submit">
+                    {{ $student->user->is_active ? 'Deactivate portal account' : 'Activate portal account' }}
+                </button>
             </form>
+            @if($student->enrollments->isEmpty())
+                <form method="POST" action="{{ route('admin.students.destroy', $student) }}" onsubmit="return confirm('Permanently delete this student record and its login account? This cannot be undone.');">
+                    @csrf
+                    @method('DELETE')
+                    <button class="btn btn-outline-danger" type="submit">Delete record</button>
+                </form>
+            @endif
         @endif
     </div>
 </div>
@@ -45,7 +55,7 @@
 </div>
 
 <div class="surface overflow-hidden">
-    <div class="p-3 p-md-4 border-bottom"><h2 class="h5 fw-bold mb-1">Enrollment history</h2><p class="small muted mb-0">Academic history is preserved when a portal account is deactivated.</p></div>
+    <div class="p-3 p-md-4 border-bottom"><h2 class="h5 fw-bold mb-1">Enrollment history</h2><p class="small muted mb-0">Academic history is preserved when a portal account is deactivated. Records with enrollment history cannot be permanently deleted.</p></div>
     @if($student->enrollments->isEmpty())
         <div class="p-4 text-center muted">No enrollment records have been added.</div>
     @else
