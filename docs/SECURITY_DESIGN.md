@@ -85,6 +85,7 @@ Do not place passwords, session tokens, full payment data, or unnecessary person
 - [ ] A student cannot access another student's profile, grades, enrollment, or schedule by changing an ID.
 - [ ] A student cannot modify official records through a crafted POST, PUT, PATCH, or DELETE request.
 - [ ] Staff cannot access administrator-only user and role management or the audit log viewer.
+- [ ] Student and staff accounts cannot access Admin-only user management or audit routes.
 - [ ] An administrator cannot deactivate their own account or remove the last active administrator.
 - [ ] Unauthenticated users are redirected to the correct login page.
 - [ ] Login attempts are rate limited.
