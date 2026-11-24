@@ -57,8 +57,6 @@ All permissions are enforced on the server. Hiding a button in the interface is 
 
 ### Required work still in progress
 The following items are explicitly listed in the approved project brief and are not yet implemented:
-- Year-level management.
-- Section management and assigning students to sections.
 - Student visitor time-out recording. The exact data-entry workflow should be confirmed with the instructor before finalizing its fields.
 - Student information reports and student lists for Administrators and Staff.
 - Additional security testing against the approved permission matrix.
