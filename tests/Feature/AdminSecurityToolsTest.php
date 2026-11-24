@@ -40,7 +40,7 @@ class AdminSecurityToolsTest extends TestCase
     public function test_instructor_accounts_are_not_managed_through_admin_user_management(): void
     {
         $admin = User::factory()->create(['role' => User::ROLE_ADMIN]);
-        $instructor = User::factory()->create(['role' => User::ROLE_INSTRUCTOR]);
+        $instructor = User::factory()->create(['role' => 'instructor']);
 
         $this->actingAs($admin)
             ->get(route('admin.users.edit', $instructor))
@@ -61,7 +61,7 @@ class AdminSecurityToolsTest extends TestCase
 
         $this->assertDatabaseHas('users', [
             'id' => $instructor->id,
-            'role' => User::ROLE_INSTRUCTOR,
+            'role' => 'instructor',
             'is_active' => true,
         ]);
     }
