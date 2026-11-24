@@ -7,7 +7,6 @@ use App\\Models\\Enrollment;
 use App\\Models\\Program;
 use App\\Models\\Section;
 use App\\Models\\Student;
-use App\\Models\\StudentVisitorTimeout;
 use App\\Models\\User;
 use App\\Models\\YearLevel;
 use Illuminate\\Database\\Eloquent\\Model;
@@ -403,11 +402,8 @@ class PresentationDatabaseSeeder extends Seeder
                 ];
 
             foreach ($dates as $timeOutAt) {
-                $timeout = StudentVisitorTimeout::firstOrCreate(
-                    [
-                        'student_id' => $student->id,
-                        'time_out_at' => $timeOutAt,
-                    ],
+                $timeout = $student->visitorTimeouts()->firstOrCreate(
+                    ['time_out_at' => $timeOutAt],
                     [
                         'created_at' => Carbon::parse($timeOutAt),
                         'updated_at' => Carbon::parse($timeOutAt),
