@@ -1,18 +1,18 @@
 <?php
 
-namespace Database\\Seeders;
+namespace Database\Seeders;
 
-use App\\Models\\AuditLog;
-use App\\Models\\Enrollment;
-use App\\Models\\Program;
-use App\\Models\\Section;
-use App\\Models\\Student;
-use App\\Models\\User;
-use App\\Models\\YearLevel;
-use Illuminate\\Database\\Eloquent\\Model;
-use Illuminate\\Database\\Seeder;
-use Illuminate\\Support\\Carbon;
-use Illuminate\\Support\\Facades\\DB;
+use App\Models\AuditLog;
+use App\Models\Enrollment;
+use App\Models\Program;
+use App\Models\Section;
+use App\Models\Student;
+use App\Models\User;
+use App\Models\YearLevel;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use RuntimeException;
 
 class PresentationDatabaseSeeder extends Seeder
