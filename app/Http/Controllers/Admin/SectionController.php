@@ -23,7 +23,11 @@ class SectionController extends Controller
         $status = in_array($requestedStatus, ['active', 'inactive'], true) ? $requestedStatus : '';
 
         $programs = Program::query()->orderBy('name')->get(['id', 'code', 'name']);
-        $yearLevels = YearLevel::query()->orderBy('level_number')->get(['level_number', 'name']);
+        $yearLevels = YearLevel::query()
+            ->where('is_active', true)
+            ->when($yearLevelNumber !== false, fn ($query) => $query->orWhere('level_number', $yearLevelNumber))
+            ->orderBy('level_number')
+            ->get(['level_number', 'name']);
 
         $sections = Section::with(['program', 'yearLevel'])
             ->withCount('students')
