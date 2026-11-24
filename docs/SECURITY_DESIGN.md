@@ -22,7 +22,7 @@ Suggested route groups:
 - `/admin/*`: authenticated admin or staff, with per-action permission checks.
 - `/student/*`: authenticated student only.
 
-For student-owned data, scope queries to the authenticated student's profile. Never trust a student ID supplied by a URL, hidden input, or request body without checking ownership. Student enrollment details are fetched through the authenticated student's `enrollments()` relationship, so changing the enrollment ID cannot expose another student's record. Student enrollment details are fetched through the authenticated student's `enrollments()` relationship, so changing the enrollment ID cannot expose another student's record.
+For student-owned data, scope queries to the authenticated student's profile. Never trust a student ID supplied by a URL, hidden input, or request body without checking ownership. Student enrollment details are fetched through the authenticated student's `enrollments()` relationship, so changing the enrollment ID cannot expose another student's record. Student grade queries are similarly restricted to approved enrollments belonging to the authenticated student. Student enrollment details are fetched through the authenticated student's `enrollments()` relationship, so changing the enrollment ID cannot expose another student's record.
 
 Example principle:
 
@@ -54,7 +54,8 @@ This is a conceptual example. The actual relationship names will follow the impl
 Record security-relevant actions such as:
 - Successful and failed login attempts (avoid storing passwords or full credentials).
 - Student record creation and updates.
-- Enrollment status changes.
+- Enrollment creation and status changes.
+- Grade creation and updates.
 - Grade creation and updates.
 - User role changes.
 
