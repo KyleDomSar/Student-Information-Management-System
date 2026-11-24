@@ -198,10 +198,12 @@ The presentation seeder runs only in local/testing environments and creates exac
 
 To return to your original local database later, change `DB_DATABASE` back to `sims_db` in `.env`, then run `php artisan config:clear`.
 
-## Optional presentation demo data
+## Optional bulk demo data for an existing database
 
 
-The project includes an **opt-in** seeder with fictional records for classroom demonstrations. It creates or updates a dedicated demo Registrar account, 11 demo Student accounts, demo Sections under currently active CEIT Programs and Year Levels, sample enrollment history, Visitor Time-Out entries, and clearly labeled `[DEMO]` audit-log descriptions.
+This older opt-in seeder is for adding a larger sample dataset to an existing local database. Do not run it in the clean presentation database above when you want exactly three accounts.
+
+It creates or updates a dedicated demo Registrar account, 11 demo Student accounts, demo Sections under currently active CEIT Programs and Year Levels, sample enrollment history, Visitor Time-Out entries, and clearly labeled `[DEMO]` audit-log descriptions.
 
 Run it only when you want sample data in your local database:
 
