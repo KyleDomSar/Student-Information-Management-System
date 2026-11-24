@@ -130,7 +130,11 @@ Stores important administrative and academic record actions.
 | description | Sanitized summary |
 | created_at | Event timestamp |
 
-## 2. Planned requirement-driven tables\n\nYear-level and section management are now represented by the year_levels and sections tables, with students.section_id linking student records to their assigned section. Year levels are configured by the Administrator rather than assuming a fixed institution-wide list. Student visitor time-out recording remains pending until the exact workflow and required data fields are confirmed.\n\n## 3. Relationships
+## 2. Remaining planned data requirement
+
+Year-level and section management are represented by the `year_levels` and `sections` tables, with `students.section_id` linking student records to their assigned section. Year levels are configured by the Administrator rather than assuming a fixed institution-wide list.
+
+Student visitor time-out recording remains pending until the exact workflow and required data fields are confirmed. No visitor table has been added yet, to avoid assuming fields or processes that are not specified in the approved brief.\n\n## 3. Relationships
 
 - One user account may have one student profile.
 - One program has many students, subjects, and sections.
