@@ -47,26 +47,26 @@
 <body>
 <div class="portal-shell">
     <aside class="sidebar">
-        <a href="{{ auth()->user()->isStudent() ? route('student.dashboard') : route('admin.dashboard') }}" class="sidebar-brand">
+        <a href="{{ auth()->user()->isStudent() ? route('student.dashboard', [], false) : route('admin.dashboard', [], false) }}" class="sidebar-brand">
             <span class="brand-mark">S</span><span class="brand-text">SIMS</span>
         </a>
 
         @if(auth()->user()->isStudent())
             <div class="sidebar-label">Student Portal</div>
             <nav class="nav flex-column">
-                <a class="nav-link {{ request()->routeIs('student.dashboard') ? 'active' : '' }}" href="{{ route('student.dashboard') }}"><i class="bi bi-grid"></i><span>Overview</span></a>
-                <a class="nav-link {{ request()->routeIs('student.profile') ? 'active' : '' }}" href="{{ route('student.profile') }}"><i class="bi bi-person"></i><span>My Profile</span></a>
-                <a class="nav-link {{ request()->routeIs('student.visitor-timeouts.*') ? 'active' : '' }}" href="{{ route('student.visitor-timeouts.index') }}"><i class="bi bi-clock-history"></i><span>Visitor Time-Out</span></a>\n            </nav>
+                <a class="nav-link {{ request()->routeIs('student.dashboard') ? 'active' : '' }}" href="{{ route('student.dashboard', [], false) }}"><i class="bi bi-grid"></i><span>Overview</span></a>
+                <a class="nav-link {{ request()->routeIs('student.profile') ? 'active' : '' }}" href="{{ route('student.profile', [], false) }}"><i class="bi bi-person"></i><span>My Profile</span></a>
+                <a class="nav-link {{ request()->routeIs('student.visitor-timeouts.*') ? 'active' : '' }}" href="{{ route('student.visitor-timeouts.index', [], false) }}"><i class="bi bi-clock-history"></i><span>Visitor Time-Out</span></a>            </nav>
         @else
             <div class="sidebar-label">Administration</div>
             <nav class="nav flex-column">
-                <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}"><i class="bi bi-grid"></i><span>Dashboard</span></a>
+                <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard', [], false) }}"><i class="bi bi-grid"></i><span>Dashboard</span></a>
                 @if(in_array(auth()->user()->role, ['admin', 'staff'], true))
-                    <a class="nav-link {{ request()->routeIs('admin.students.*') ? 'active' : '' }}" href="{{ route('admin.students.index') }}"><i class="bi bi-people"></i><span>Students</span></a>\n                    <a class="nav-link {{ request()->routeIs('admin.programs.*') ? 'active' : '' }}" href="{{ route('admin.programs.index') }}"><i class="bi bi-book"></i><span>Programs / Courses</span></a>\n                    <a class="nav-link {{ request()->routeIs('admin.year-levels.*') ? 'active' : '' }}" href="{{ route('admin.year-levels.index') }}"><i class="bi bi-layers"></i><span>Year Levels</span></a>
-                    <a class="nav-link {{ request()->routeIs('admin.sections.*') ? 'active' : '' }}" href="{{ route('admin.sections.index') }}"><i class="bi bi-diagram-3"></i><span>Sections</span></a>
-                    <a class="nav-link {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}" href="{{ route('admin.reports.students') }}"><i class="bi bi-file-earmark-bar-graph"></i><span>Student Reports</span></a>\n                    @if(auth()->user()->isAdministrator())
-                        <a class="nav-link {{ request()->routeIs('admin.audit-logs.*') ? 'active' : '' }}" href="{{ route('admin.audit-logs.index') }}"><i class="bi bi-clock-history"></i><span>Audit Logs</span></a>
-                        <a class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}"><i class="bi bi-shield-lock"></i><span>User Management</span></a>
+                    <a class="nav-link {{ request()->routeIs('admin.students.*') ? 'active' : '' }}" href="{{ route('admin.students.index', [], false) }}"><i class="bi bi-people"></i><span>Students</span></a>                    <a class="nav-link {{ request()->routeIs('admin.programs.*') ? 'active' : '' }}" href="{{ route('admin.programs.index', [], false) }}"><i class="bi bi-book"></i><span>Programs / Courses</span></a>                    <a class="nav-link {{ request()->routeIs('admin.year-levels.*') ? 'active' : '' }}" href="{{ route('admin.year-levels.index', [], false) }}"><i class="bi bi-layers"></i><span>Year Levels</span></a>
+                    <a class="nav-link {{ request()->routeIs('admin.sections.*') ? 'active' : '' }}" href="{{ route('admin.sections.index', [], false) }}"><i class="bi bi-diagram-3"></i><span>Sections</span></a>
+                    <a class="nav-link {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}" href="{{ route('admin.reports.students', [], false) }}"><i class="bi bi-file-earmark-bar-graph"></i><span>Student Reports</span></a>                    @if(auth()->user()->isAdministrator())
+                        <a class="nav-link {{ request()->routeIs('admin.audit-logs.*') ? 'active' : '' }}" href="{{ route('admin.audit-logs.index', [], false) }}"><i class="bi bi-clock-history"></i><span>Audit Logs</span></a>
+                        <a class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" href="{{ route('admin.users.index', [], false) }}"><i class="bi bi-shield-lock"></i><span>User Management</span></a>
                     @endif
                 @endif
             </nav>
@@ -80,7 +80,7 @@
                     <div class="small text-capitalize" style="color:#9aa8c2">{{ auth()->user()->role }}</div>
                 </div>
             </div>
-            <form method="POST" action="{{ route('logout') }}" class="mt-3">
+            <form method="POST" action="{{ route('logout', [], false) }}" class="mt-3">
                 @csrf
                 <button class="btn btn-sm btn-outline-light w-100" type="submit"><i class="bi bi-box-arrow-right"></i> <span class="logout-label">Sign out</span></button>
             </form>
