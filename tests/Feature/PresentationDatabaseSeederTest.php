@@ -2,7 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Models\AuditLog;
 use App\Models\Enrollment;
+use App\Models\Section;
 use App\Models\Student;
 use App\Models\StudentVisitorTimeout;
 use App\Models\User;
@@ -102,10 +104,10 @@ class PresentationDatabaseSeederTest extends TestCase
         return [
             'users' => User::count(),
             'students' => Student::count(),
-            'sections' => \App\Models\Section::count(),
+            'sections' => Section::count(),
             'enrollments' => Enrollment::count(),
             'visitor_timeouts' => StudentVisitorTimeout::count(),
-            'audit_logs' => \App\Models\AuditLog::count(),
+            'audit_logs' => AuditLog::count(),
         ];
     }
 }
