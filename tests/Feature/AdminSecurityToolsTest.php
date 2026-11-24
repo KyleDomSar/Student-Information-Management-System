@@ -37,6 +37,35 @@ class AdminSecurityToolsTest extends TestCase
             ->assertOk();
     }
 
+    public function test_instructor_accounts_are_not_managed_through_admin_user_management(): void
+    {
+        $admin = User::factory()->create(['role' => User::ROLE_ADMIN]);
+        $instructor = User::factory()->create(['role' => User::ROLE_INSTRUCTOR]);
+
+        $this->actingAs($admin)
+            ->get(route('admin.users.edit', $instructor))
+            ->assertNotFound();
+
+        $this->actingAs($admin)
+            ->put(route('admin.users.update', $instructor), [
+                'name' => $instructor->name,
+                'email' => $instructor->email,
+                'role' => User::ROLE_STAFF,
+                'is_active' => '1',
+            ])
+            ->assertNotFound();
+
+        $this->actingAs($admin)
+            ->delete(route('admin.users.destroy', $instructor))
+            ->assertNotFound();
+
+        $this->assertDatabaseHas('users', [
+            'id' => $instructor->id,
+            'role' => User::ROLE_INSTRUCTOR,
+            'is_active' => true,
+        ]);
+    }
+
     public function test_admin_can_create_a_staff_account(): void
     {
         $admin = User::factory()->create(['role' => User::ROLE_ADMIN]);
