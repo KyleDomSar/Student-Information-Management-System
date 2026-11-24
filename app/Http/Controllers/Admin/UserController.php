@@ -137,7 +137,7 @@ class UserController extends Controller
     {
         abort_if($user->isStudent(), 404);
 
-        if ($user->is($request->user())) {
+        if ($user->id === $request->user()->id) {
             return back()->withErrors(['account' => 'You cannot deactivate your own account.']);
         }
 
