@@ -141,9 +141,9 @@ All permissions are enforced on the server. Hiding a button in the interface is 
    php artisan test
    ```
 
-## Clean presentation database (recommended)
+## Full presentation database (recommended)
 
-For a fresh presentation setup with exactly three login accounts, use a separate database. This keeps your existing `sims_db` and its records untouched.
+For a complete classroom demonstration, use a separate database. This keeps your existing `sims_db` and its records untouched.
 
 1. In Laragon/phpMyAdmin, open the SQL tab and create the new database:
 
@@ -175,9 +175,24 @@ For a fresh presentation setup with exactly three login accounts, use a separate
 
 4. Open `http://127.0.0.1:8000/login`.
 
-The presentation seeder runs only in local/testing environments and creates exactly three accounts, one Admin, one Staff/Registrar, and one Student. It also creates the CEIT program list, six year levels, a BSIT Third Year Section 3A, the Student profile, two enrollment records, one Visitor Time-Out record, and sample activity logs. The seeded records are fictional.
+The seeder runs only in local/testing environments. It fills the modules currently included in SIMS with fictional records:
 
-**Presentation accounts**
+| Module | Presentation data |
+|---|---:|
+| User Management | 1 Admin and 10 Staff / Registrar accounts |
+| Student Accounts | 30 accounts, including active, inactive, and graduated profiles |
+| Programs / Courses | 10 CEIT programs |
+| Year Levels | 6 levels, including one archived inactive level |
+| Sections | 102 sections, including inactive examples |
+| Student Records | 30 complete profiles across the CEIT programs |
+| Enrollment Records | 86 records across multiple academic years and semesters |
+| Visitor Time-Out | 33 sample records |
+| Audit Logs | 278 sample activity events |
+| Reports | Uses all 30 student records and supports all status filters |
+
+The dataset is repeatable. Running the seeder again updates or reuses the same presentation records instead of adding duplicates. It does not run through the normal `DatabaseSeeder`.
+
+**Primary presentation accounts**
 
 | Role | Email | Password |
 |---|---|---|
@@ -185,16 +200,20 @@ The presentation seeder runs only in local/testing environments and creates exac
 | Staff / Registrar | `registrar.presentation@sims.test` | `Staff@SIMS2026!` |
 | Student | `alyssa.santos.presentation@sims.test` | `Student@SIMS2026!` |
 
-**Sample Student profile**
+There are 9 additional Staff accounts and 29 additional Student accounts for populated lists and record demonstrations. All Staff accounts use `Staff@SIMS2026!`; all Student accounts use `Student@SIMS2026!`. One Staff account and two Student accounts are intentionally inactive and cannot sign in. See [the presentation dataset roster](docs/PRESENTATION_DATASET.md) for all sample names, account emails, academic assignments, and statuses.
+
+**Primary Student profile**
 
 | Field | Value |
 |---|---|
 | Name | Alyssa Mae Santos |
-| Student number | `2026-CEIT-IT-0001` |
+| Student number | `2026-CEIT-0001` |
 | Program | BSIT |
 | Year level | Third Year |
 | Section | 3A |
 | Student status | Active |
+| Enrollments | 3 records |
+| Visitor Time-Out | 3 records |
 
 To return to your original local database later, change `DB_DATABASE` back to `sims_db` in `.env`, then run `php artisan config:clear`.
 
