@@ -58,7 +58,7 @@ All permissions are enforced on the server. Hiding a button in the interface is 
 ### Required work still in progress
 The following items are explicitly listed in the approved project brief and are not yet implemented:
 - Student visitor time-out recording. The exact data-entry workflow should be confirmed with the instructor before finalizing its fields.
-- Student information reports and student lists for Administrators and Staff.
+- Student visitor time-out recording. The exact data-entry workflow should be confirmed with the instructor before finalizing its fields.
 - Additional security testing against the approved permission matrix.
 
 The gradebook and class timetable are supplementary academic-information features in the current prototype. They do not replace the remaining required year-level, section, visitor time-out, or reporting modules.
