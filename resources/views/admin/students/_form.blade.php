@@ -57,11 +57,25 @@
             <label for="year_level" class="form-label small fw-semibold">Year level</label>
             <select id="year_level" name="year_level" class="form-select">
                 <option value="">Not assigned</option>
-                @foreach(range(1, 6) as $year)
-                    <option value="{{ $year }}" @selected((string) old('year_level', $student?->year_level ?? '') === (string) $year)>{{ $year }}{{ $year === 1 ? 'st' : ($year === 2 ? 'nd' : ($year === 3 ? 'rd' : 'th')) }} Year</option>
+                @foreach($yearLevels as $yearLevel)
+                    <option value="{{ $yearLevel->level_number }}" @selected((string) old('year_level', $student?->year_level ?? '') === (string) $yearLevel->level_number)>{{ $yearLevel->name }}</option>
                 @endforeach
             </select>
             @error('year_level')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+        </div>
+        <div class="col-md-6">
+            <label for="section_id" class="form-label small fw-semibold">Assigned section</label>
+            <select id="section_id" name="section_id" class="form-select">
+                <option value="">Not assigned</option>
+                @foreach($sections as $section)
+                    <option value="{{ $section->id }}" @selected((string) old('section_id', $student?->section_id ?? '') === (string) $section->id)>
+                        {{ $section->program->code }} · {{ $section->yearLevel->name }} · {{ $section->code }}
+                        {{ !$section->is_active ? '(Inactive, existing assignment)' : '' }}
+                    </option>
+                @endforeach
+            </select>
+            <div class="form-text">Choose a section that matches the selected program and year level.</div>
+            @error('section_id')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
         </div>
         <div class="col-md-6">
             <label for="status" class="form-label small fw-semibold">Student status *</label>
