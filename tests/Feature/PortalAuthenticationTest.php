@@ -93,4 +93,24 @@ class PortalAuthenticationTest extends TestCase
 
         $this->assertGuest();
     }
+
+    public function test_guest_portal_uses_local_built_assets_without_a_runtime_cdn_dependency(): void
+    {
+        $this->get(route('login'))
+            ->assertOk()
+            ->assertSee('build/assets')
+            ->assertDontSee('cdn.jsdelivr.net');
+    }
+
+    public function test_authenticated_portal_uses_local_built_assets_without_a_runtime_cdn_dependency(): void
+    {
+        $admin = User::factory()->create(['role' => User::ROLE_ADMIN]);
+
+        $this->actingAs($admin)
+            ->get(route('admin.dashboard'))
+            ->assertOk()
+            ->assertSee('build/assets')
+            ->assertDontSee('cdn.jsdelivr.net');
+    }
+
 }
