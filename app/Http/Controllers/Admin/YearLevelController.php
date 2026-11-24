@@ -12,13 +12,28 @@ use Illuminate\View\View;
 
 class YearLevelController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
-        $yearLevels = YearLevel::withCount(['students', 'sections'])
-            ->orderBy('level_number')
-            ->paginate(10);
+        $search = trim((string) $request->query('search', ''));
+        $requestedStatus = $request->query('status');
+        $status = in_array($requestedStatus, ['active', 'inactive'], true) ? $requestedStatus : '';
 
-        return view('admin.year-levels.index', compact('yearLevels'));
+        $yearLevels = YearLevel::withCount(['students', 'sections'])
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where(function ($searchQuery) use ($search) {
+                    $searchQuery->where('name', 'like', '%'.$search.'%');
+
+                    if (ctype_digit($search)) {
+                        $searchQuery->orWhere('level_number', (int) $search);
+                    }
+                });
+            })
+            ->when($status !== '', fn ($query) => $query->where('is_active', $status === 'active'))
+            ->orderBy('level_number')
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('admin.year-levels.index', compact('yearLevels', 'search', 'status'));
     }
 
     public function create(): View
