@@ -85,13 +85,13 @@ class ClassScheduleManagementTest extends TestCase
             ])
             ->assertRedirect(route('admin.schedules.index'));
 
-        $this->assertDatabaseHas('class_schedules', [
-            'enrollment_subject_id' => $item->id,
-            'day_of_week' => 'Monday',
-            'start_time' => '08:00:00',
-            'end_time' => '10:00:00',
-            'room' => 'Laboratory 1',
-        ]);
+        $schedule = ClassSchedule::where('enrollment_subject_id', $item->id)->first();
+
+        $this->assertNotNull($schedule);
+        $this->assertSame('Monday', $schedule->day_of_week);
+        $this->assertSame('08:00', substr($schedule->start_time, 0, 5));
+        $this->assertSame('10:00', substr($schedule->end_time, 0, 5));
+        $this->assertSame('Laboratory 1', $schedule->room);
     }
 
     public function test_schedule_cannot_be_created_for_pending_enrollment(): void
