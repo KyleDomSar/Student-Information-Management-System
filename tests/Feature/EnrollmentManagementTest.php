@@ -112,7 +112,10 @@ class EnrollmentManagementTest extends TestCase
 
         $this->actingAs($firstStudent->user)
             ->get(route('student.enrollments.show', $ownEnrollment->id))
-            ->assertOk();
+            ->assertOk()
+            ->assertSee('SIMS-ENR-003')
+            ->assertSee('2026-2027')
+            ->assertSee('First Semester');
 
         $this->actingAs($firstStudent->user)
             ->get(route('student.enrollments.show', $otherEnrollment->id))
@@ -158,6 +161,15 @@ class EnrollmentManagementTest extends TestCase
             'user_id' => $admin->id,
             'action' => 'enrollment.created',
         ]);
+
+        $enrollment = Enrollment::where('student_id', $student->id)->firstOrFail();
+
+        $this->actingAs($admin)
+            ->get(route('admin.enrollments.show', $enrollment))
+            ->assertOk()
+            ->assertSee('SIMS-ENR-ADMIN-001')
+            ->assertSee('2026-2027')
+            ->assertSee('Second Semester');
     }
 
     public function test_inactive_students_and_inactive_portal_accounts_cannot_be_enrolled(): void
@@ -202,7 +214,7 @@ class EnrollmentManagementTest extends TestCase
         $staff = User::factory()->create(['role' => User::ROLE_STAFF]);
         $student = $this->createStudent('SIMS-ENR-YEAR-001');
 
-        foreach (['2026', '2026-2026', '2027-2026', '2026-2028', 'abcd-efgh'] as $academicYear) {
+        foreach (['2026', '2026-2026', '2027-2026', '2026-2028', 'abcd-efgh', ['2026-2027']] as $academicYear) {
             $this->actingAs($staff)
                 ->from(route('admin.enrollments.create'))
                 ->post(route('admin.enrollments.store'), [
