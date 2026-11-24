@@ -141,7 +141,65 @@ All permissions are enforced on the server. Hiding a button in the interface is 
    php artisan test
    ```
 
+## Clean presentation database (recommended)
+
+For a fresh presentation setup with exactly three login accounts, use a separate database. This keeps your existing `sims_db` and its records untouched.
+
+1. In Laragon/phpMyAdmin, open the SQL tab and create the new database:
+
+   ```sql
+   CREATE DATABASE sims_presentation_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+   ```
+
+2. In your local, untracked `.env`, change only the database name. Keep your existing local host, port, username, and password:
+
+   ```env
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=sims_presentation_db
+   DB_USERNAME=root
+   DB_PASSWORD=
+   ```
+
+3. In Laragon Terminal, from `C:\\laragon\\www\\SIMS`, run:
+
+   ```bash
+   php artisan config:clear
+   php artisan migrate:fresh --seed --seeder=PresentationDatabaseSeeder
+   php artisan optimize:clear
+   php artisan serve
+   ```
+
+   **Important:** `migrate:fresh` drops every table in the database configured by `.env`. Confirm that `DB_DATABASE=sims_presentation_db` before running it. Never run this command while `.env` points to your original `sims_db`.
+
+4. Open `http://127.0.0.1:8000/login`.
+
+The presentation seeder runs only in local/testing environments and creates exactly three accounts, one Admin, one Staff/Registrar, and one Student. It also creates the CEIT program list, six year levels, a BSIT Third Year Section 3A, the Student profile, two enrollment records, one Visitor Time-Out record, and sample activity logs. The seeded records are fictional.
+
+**Presentation accounts**
+
+| Role | Email | Password |
+|---|---|---|
+| Admin | `admin.presentation@sims.test` | `Admin@SIMS2026!` |
+| Staff / Registrar | `registrar.presentation@sims.test` | `Staff@SIMS2026!` |
+| Student | `alyssa.santos.presentation@sims.test` | `Student@SIMS2026!` |
+
+**Sample Student profile**
+
+| Field | Value |
+|---|---|
+| Name | Alyssa Mae Santos |
+| Student number | `2026-CEIT-IT-0001` |
+| Program | BSIT |
+| Year level | Third Year |
+| Section | 3A |
+| Student status | Active |
+
+To return to your original local database later, change `DB_DATABASE` back to `sims_db` in `.env`, then run `php artisan config:clear`.
+
 ## Optional presentation demo data
+
 
 The project includes an **opt-in** seeder with fictional records for classroom demonstrations. It creates or updates a dedicated demo Registrar account, 11 demo Student accounts, demo Sections under currently active CEIT Programs and Year Levels, sample enrollment history, Visitor Time-Out entries, and clearly labeled `[DEMO]` audit-log descriptions.
 
