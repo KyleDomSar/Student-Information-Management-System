@@ -70,6 +70,7 @@
                     <a class="nav-link {{ request()->routeIs('admin.subjects.*') ? 'active' : '' }}" href="{{ route('admin.subjects.index') }}"><i class="bi bi-journal-bookmark"></i><span>Subjects</span></a>
                     <a class="nav-link {{ request()->routeIs('admin.year-levels.*') ? 'active' : '' }}" href="{{ route('admin.year-levels.index') }}"><i class="bi bi-layers"></i><span>Year Levels</span></a>
                     <a class="nav-link {{ request()->routeIs('admin.sections.*') ? 'active' : '' }}" href="{{ route('admin.sections.index') }}"><i class="bi bi-diagram-3"></i><span>Sections</span></a>
+                    <a class="nav-link {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}" href="{{ route('admin.reports.students') }}"><i class="bi bi-file-earmark-bar-graph"></i><span>Student Reports</span></a>
                     <a class="nav-link {{ request()->routeIs('admin.enrollments.*') ? 'active' : '' }}" href="{{ route('admin.enrollments.index') }}"><i class="bi bi-journal-check"></i><span>Enrollments</span></a>
                     <a class="nav-link {{ request()->routeIs('admin.grades.*') ? 'active' : '' }}" href="{{ route('admin.grades.index') }}"><i class="bi bi-card-checklist"></i><span>Gradebook</span></a>
                     <a class="nav-link {{ request()->routeIs('admin.schedules.*') ? 'active' : '' }}" href="{{ route('admin.schedules.index') }}"><i class="bi bi-calendar3"></i><span>Class Schedules</span></a>
