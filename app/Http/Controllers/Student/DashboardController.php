@@ -19,7 +19,6 @@ class DashboardController extends Controller
                 'visitorTimeouts' => fn ($query) => $query->latest('time_out_at')->limit(5),
                 'enrollments' => fn ($query) => $query->latest()->limit(5),
             ])
-            ->withCount('enrollments')
             ->first();
 
         return view('student.dashboard', compact('student'));

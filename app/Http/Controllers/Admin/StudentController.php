@@ -22,7 +22,7 @@ class StudentController extends Controller
         $search = trim((string) $request->query('search', ''));
 
         $students = Student::query()
-            ->with(['user', 'program', 'section', 'yearLevelRecord'])
+            ->with(['user', 'program', 'section'])
             ->when($search !== '', function ($query) use ($search) {
                 $query->where(function ($studentQuery) use ($search) {
                     $studentQuery

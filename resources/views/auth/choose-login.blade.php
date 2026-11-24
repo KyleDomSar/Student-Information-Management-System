@@ -8,7 +8,7 @@
         <div class="text-center mb-5">
             <div class="text-primary fw-bold small text-uppercase mb-2">Student Information Management System</div>
             <h1 class="display-6 fw-bold mb-2">Welcome to SIMS</h1>
-            <p class="muted mb-0">Select the sign-in portal assigned to your account.</p>
+            <p class="muted mb-0">Choose the portal that matches your account.</p>
         </div>
 
         <div class="row g-4">
@@ -17,7 +17,7 @@
                     <div class="brand-mark mb-4"><i class="bi bi-shield-lock"></i></div>
                     <div class="small text-primary fw-bold text-uppercase mb-2">For authorized personnel</div>
                     <h2 class="h4 fw-bold">Admin & Staff</h2>
-                    <p class="muted mb-4">Register students, maintain student records, and manage academic information.</p>
+                    <p class="muted mb-4">Manage student records, academic programs, enrollments, and administrative tasks.</p>
                     <span class="fw-semibold text-primary">Continue to staff login <i class="bi bi-arrow-right"></i></span>
                 </a>
             </div>
@@ -26,7 +26,7 @@
                     <div class="brand-mark mb-4" style="background:#138b78"><i class="bi bi-mortarboard"></i></div>
                     <div class="small fw-bold text-uppercase mb-2" style="color:#138b78">For enrolled students</div>
                     <h2 class="h4 fw-bold">Student Portal</h2>
-                    <p class="muted mb-4">View your profile, student number, program, year level, section, and enrollment information.</p>
+                    <p class="muted mb-4">View your personal information, enrollment status, grades, and class schedule.</p>
                     <span class="fw-semibold" style="color:#138b78">Continue to student login <i class="bi bi-arrow-right"></i></span>
                 </a>
             </div>
