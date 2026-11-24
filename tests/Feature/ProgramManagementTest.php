@@ -203,4 +203,58 @@ class ProgramManagementTest extends TestCase
             ->assertSee('ACTIVE-1A')
             ->assertDontSee('INACTIVE-1A');
     }
+
+    public function test_student_cannot_be_reassigned_to_another_section_under_an_inactive_program(): void
+    {
+        $staff = User::factory()->create(['role' => User::ROLE_STAFF]);
+        $studentUser = User::factory()->create(['role' => User::ROLE_STUDENT]);
+        $program = Program::create([
+            'code' => 'BSINACTIVE',
+            'name' => 'Inactive Test Program',
+            'is_active' => false,
+        ]);
+        YearLevel::create([
+            'level_number' => 1,
+            'name' => 'First Year',
+            'is_active' => true,
+        ]);
+
+        $currentSection = Section::create([
+            'program_id' => $program->id,
+            'year_level' => 1,
+            'code' => 'CURRENT-1A',
+            'is_active' => true,
+        ]);
+        $otherSection = Section::create([
+            'program_id' => $program->id,
+            'year_level' => 1,
+            'code' => 'OTHER-1A',
+            'is_active' => true,
+        ]);
+        $student = Student::create([
+            'user_id' => $studentUser->id,
+            'student_number' => 'SIMS-INACTIVE-PROGRAM-001',
+            'program_id' => $program->id,
+            'year_level' => 1,
+            'section_id' => $currentSection->id,
+            'status' => 'active',
+        ]);
+
+        $this->actingAs($staff)
+            ->put(route('admin.students.update', $student), [
+                'name' => $studentUser->name,
+                'email' => $studentUser->email,
+                'student_number' => $student->student_number,
+                'program_id' => $program->id,
+                'year_level' => 1,
+                'section_id' => $otherSection->id,
+                'status' => 'active',
+            ])
+            ->assertSessionHasErrors('section_id');
+
+        $this->assertDatabaseHas('students', [
+            'id' => $student->id,
+            'section_id' => $currentSection->id,
+        ]);
+    }
 }
