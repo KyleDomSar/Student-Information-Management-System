@@ -48,7 +48,7 @@ class StudentController extends Controller
 
     public function store(Request $request, AuditLogger $auditLogger): RedirectResponse
     {
-        $data = $request->validate([
+        $rules = [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users', 'email')],
             'password' => ['required', 'string', 'min:10', 'confirmed'],
@@ -56,16 +56,24 @@ class StudentController extends Controller
             'program_id' => ['nullable', 'integer', Rule::exists('programs', 'id')->where('is_active', true)],
             'year_level' => ['nullable', 'integer', 'between:1,6'],
             'status' => ['required', Rule::in(['active', 'inactive', 'graduated'])],
-            'account_active' => ['required', 'boolean'],
-        ]);
+        ];
 
-        $student = DB::transaction(function () use ($data) {
+        if ($request->user()->isAdministrator()) {
+            $rules['account_active'] = ['required', 'boolean'];
+        }
+
+        $data = $request->validate($rules);
+        $accountIsActive = $request->user()->isAdministrator()
+            ? (bool) $data['account_active']
+            : true;
+
+        $student = DB::transaction(function () use ($data, $accountIsActive) {
             $user = User::create([
                 'name' => $data['name'],
                 'email' => $data['email'],
                 'password' => $data['password'],
                 'role' => User::ROLE_STUDENT,
-                'is_active' => $data['account_active'],
+                'is_active' => $accountIsActive,
             ]);
 
             return Student::create([
@@ -110,7 +118,7 @@ class StudentController extends Controller
 
     public function update(Request $request, Student $student, AuditLogger $auditLogger): RedirectResponse
     {
-        $data = $request->validate([
+        $rules = [
             'name' => ['required', 'string', 'max:255'],
             'email' => [
                 'required',
@@ -119,7 +127,6 @@ class StudentController extends Controller
                 'max:255',
                 Rule::unique('users', 'email')->ignore($student->user_id),
             ],
-            'password' => ['nullable', 'string', 'min:10', 'confirmed'],
             'student_number' => [
                 'required',
                 'string',
@@ -135,14 +142,18 @@ class StudentController extends Controller
             ],
             'year_level' => ['nullable', 'integer', 'between:1,6'],
             'status' => ['required', Rule::in(['active', 'inactive', 'graduated'])],
-            'account_active' => ['required', 'boolean'],
-        ]);
+        ];
+
+        if ($request->user()->isAdministrator()) {
+            $rules['password'] = ['nullable', 'string', 'min:10', 'confirmed'];
+        }
+
+        $data = $request->validate($rules);
 
         DB::transaction(function () use ($data, $student) {
             $userData = [
                 'name' => $data['name'],
                 'email' => $data['email'],
-                'is_active' => $data['account_active'],
             ];
 
             if (! empty($data['password'])) {
@@ -172,29 +183,60 @@ class StudentController extends Controller
             ->with('success', 'Student record updated successfully.');
     }
 
+    public function updateAccountStatus(Request $request, Student $student, AuditLogger $auditLogger): RedirectResponse
+    {
+        abort_unless($request->user()->isAdministrator(), 403);
+
+        $data = $request->validate([
+            'is_active' => ['required', 'boolean'],
+        ]);
+
+        $student->user->update(['is_active' => (bool) $data['is_active']]);
+
+        $auditLogger->record(
+            $request->user(),
+            'student.account_status_updated',
+            $student,
+            ($data['is_active'] ? 'Activated' : 'Deactivated').' student portal account '.$student->student_number.'.',
+            $request,
+        );
+
+        return redirect()
+            ->route('admin.students.show', $student)
+            ->with('success', 'Student portal account status updated. The academic record was preserved.');
+    }
+
     /**
-     * Deactivate instead of deleting official student history.
+     * Permanent deletion is reserved for administrators and blocked when academic history exists.
      */
     public function destroy(Request $request, Student $student, AuditLogger $auditLogger): RedirectResponse
     {
-        DB::transaction(function () use ($student) {
-            $student->user->update(['is_active' => false]);
+        abort_unless($request->user()->isAdministrator(), 403);
 
-            if ($student->status === 'active') {
-                $student->update(['status' => 'inactive']);
-            }
+        if ($student->enrollments()->exists()) {
+            return back()->withErrors([
+                'student' => 'This student has enrollment history and cannot be permanently deleted. Deactivate the portal account to preserve academic records.',
+            ]);
+        }
+
+        $studentNumber = $student->student_number;
+        $user = $student->user;
+
+        DB::transaction(function () use ($student, $user) {
+            $student->delete();
+            $user->delete();
         });
 
         $auditLogger->record(
             $request->user(),
-            'student.deactivated',
+            'student.deleted',
             $student,
-            'Deactivated student account '.$student->student_number.'.',
+            'Permanently deleted student record '.$studentNumber.'.',
             $request,
         );
 
         return redirect()
             ->route('admin.students.index')
-            ->with('success', 'Student account deactivated. The academic record was preserved.');
+            ->with('success', 'Student record and its login account were deleted.');
     }
 }
