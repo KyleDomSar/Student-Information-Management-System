@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Section;
 use App\Models\YearLevel;
 use App\Support\AuditLogger;
 use Illuminate\Http\RedirectResponse;
@@ -32,7 +31,7 @@ class YearLevelController extends Controller
         abort_unless($request->user()->isAdministrator(), 403);
 
         $data = $request->validate([
-            'level_number' => ['required', 'integer', 'between:1,6', Rule::unique('year_levels', 'level_number')],
+            'level_number' => ['required', 'integer', 'between:1,255', Rule::unique('year_levels', 'level_number')],
             'name' => ['required', 'string', 'max:50'],
         ]);
 
@@ -69,9 +68,12 @@ class YearLevelController extends Controller
             'is_active' => ['required', 'boolean'],
         ]);
 
-        if ((int) $data['level_number'] !== $yearLevel->level_number && $yearLevel->sections()->exists()) {
+        if (
+            (int) $data['level_number'] !== $yearLevel->level_number
+            && ($yearLevel->sections()->exists() || $yearLevel->students()->exists())
+        ) {
             return back()->withErrors([
-                'level_number' => 'The year level number cannot change while sections are assigned to it.',
+                'level_number' => 'The year level number cannot change while student records or sections are assigned to it.',
             ])->withInput();
         }
 
