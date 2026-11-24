@@ -63,7 +63,12 @@ class GradeController extends Controller
         );
 
         $data = $request->validate([
-            'final_grade' => ['required', 'numeric', 'between:0,100'],
+            'final_grade' => [
+                'required',
+                'numeric',
+                'min:'.config('sims.grade_scale.minimum'),
+                'max:'.config('sims.grade_scale.maximum'),
+            ],
             'remarks' => ['nullable', 'string', 'max:255'],
         ]);
 
