@@ -229,7 +229,7 @@ class YearLevelSectionManagementTest extends TestCase
             ->assertDontSee('2 Year');
 
         $this->actingAs($admin)
-            ->get(route('admin.year-levels.index', ['search' => 'Second Year']))
+            ->get(route('admin.year-levels.index', ['search' => '2 Year']))
             ->assertOk()
             ->assertSee('2 Year')
             ->assertDontSee('3 Year');
