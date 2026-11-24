@@ -156,6 +156,12 @@ class ProgramManagementTest extends TestCase
             ->assertSee('Inactive');
 
         $this->actingAs($admin)
+            ->get(route('admin.sections.edit', $section))
+            ->assertOk()
+            ->assertSee('Section record status')
+            ->assertSee('This section is currently unavailable because its program is inactive.');
+
+        $this->actingAs($admin)
             ->get(route('admin.sections.index', ['status' => 'active']))
             ->assertOk()
             ->assertDontSee('1A');
