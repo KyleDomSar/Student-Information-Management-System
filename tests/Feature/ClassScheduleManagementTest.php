@@ -29,7 +29,7 @@ class ClassScheduleManagementTest extends TestCase
         ]);
     }
 
-    private function createEnrollmentSubject(Student $student, string $code, string $status = 'enrolled'): EnrollmentSubject
+    private function createEnrollmentSubject(Student $student, string $code, string $status = 'enrolled', string $semester = 'First'): EnrollmentSubject
     {
         $subject = Subject::create([
             'code' => $code,
@@ -41,7 +41,7 @@ class ClassScheduleManagementTest extends TestCase
         $enrollment = Enrollment::create([
             'student_id' => $student->id,
             'academic_year' => '2026-2027',
-            'semester' => 'First',
+            'semester' => $semester,
             'status' => $status,
         ]);
 
@@ -141,7 +141,7 @@ class ClassScheduleManagementTest extends TestCase
 
         $ownItem = $this->createEnrollmentSubject($firstStudent, 'IT204');
         $otherItem = $this->createEnrollmentSubject($secondStudent, 'IT205');
-        $pendingItem = $this->createEnrollmentSubject($firstStudent, 'IT206', 'pending');
+        $pendingItem = $this->createEnrollmentSubject($firstStudent, 'IT206', 'pending', 'Second');
 
         ClassSchedule::create([
             'enrollment_subject_id' => $ownItem->id,
