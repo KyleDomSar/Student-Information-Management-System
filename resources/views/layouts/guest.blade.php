@@ -21,7 +21,7 @@
 </head>
 <body>
     <nav class="container py-4">
-        <a href="{{ route('login') }}" class="text-decoration-none text-dark d-inline-flex align-items-center gap-2">
+        <a href="{{ route('login', [], false) }}" class="text-decoration-none text-dark d-inline-flex align-items-center gap-2">
             <span class="brand-mark">S</span>
             <span class="fw-bold fs-5">SIMS <span class="muted fw-normal">Portal</span></span>
         </a>
