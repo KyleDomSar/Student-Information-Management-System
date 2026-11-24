@@ -45,7 +45,9 @@ The seeder does not create an administrator if either credential is missing. Do 
 - Session ID regeneration after login.
 - Session invalidation and CSRF token regeneration on logout.
 - Login/logout and failed-login audit events.
-- Students have dashboard and own-profile read-only routes.
+- Students have dashboard, own-profile, enrollment, grade, and class schedule read-only routes.
+- Admin-only user management and audit log viewing are protected by server-side role middleware.
+- Student accounts are created and maintained through the Admin/Staff Student Records module.
 
 ## Not implemented yet
 
