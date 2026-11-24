@@ -79,4 +79,39 @@ class ProgramManagementTest extends TestCase
             ->get(route('admin.programs.index'))
             ->assertForbidden();
     }
+
+    public function test_admin_can_search_programs_and_filter_by_status(): void
+    {
+        $admin = User::factory()->create(['role' => User::ROLE_ADMIN]);
+
+        Program::create([
+            'code' => 'BSIT',
+            'name' => 'Bachelor of Science in Information Technology',
+            'is_active' => true,
+        ]);
+
+        Program::create([
+            'code' => 'BSCS',
+            'name' => 'Bachelor of Science in Computer Science',
+            'is_active' => false,
+        ]);
+
+        $this->actingAs($admin)
+            ->get(route('admin.programs.index', ['search' => 'BSIT']))
+            ->assertOk()
+            ->assertSee('BSIT')
+            ->assertDontSee('BSCS');
+
+        $this->actingAs($admin)
+            ->get(route('admin.programs.index', ['search' => 'Computer Science']))
+            ->assertOk()
+            ->assertSee('BSCS')
+            ->assertDontSee('BSIT');
+
+        $this->actingAs($admin)
+            ->get(route('admin.programs.index', ['status' => 'inactive']))
+            ->assertOk()
+            ->assertSee('BSCS')
+            ->assertDontSee('BSIT');
+    }
 }

@@ -294,9 +294,30 @@
         .badge { font-weight: 650; letter-spacing: .01em; }
         .badge-soft { color: #3157d5; background: #edf1ff; }
         .alert { border-radius: 12px; }
-        .pagination { gap: 4px; }
-        .pagination .page-link { border-radius: 8px !important; border-color: var(--line); color: var(--brand); }
-        .pagination .active .page-link { background: var(--brand); border-color: var(--brand); }
+        .pagination { gap: 4px; align-items: center; }
+        .pagination .page-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 40px;
+            min-height: 38px;
+            padding: .375rem .75rem;
+            border-radius: 8px !important;
+            border-color: var(--line);
+            color: var(--brand);
+            line-height: 1.25;
+            text-align: center;
+        }
+        .pagination .page-item.active > .page-link {
+            color: #fff !important;
+            background: var(--brand);
+            border-color: var(--brand);
+            font-weight: 700;
+        }
+        .pagination .page-item.disabled > .page-link {
+            color: #9aa7b9;
+            background: #f4f6fa;
+        }
         :focus-visible { outline: 3px solid rgba(49,87,213,.3); outline-offset: 2px; }
 
         @media (max-width: 800px) {
