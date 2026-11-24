@@ -66,14 +66,14 @@ class UserController extends Controller
 
     public function edit(User $user): View
     {
-        abort_if($user->isStudent(), 404);
+        abort_unless(in_array($user->role, [User::ROLE_ADMIN, User::ROLE_STAFF], true), 404);
 
         return view('admin.users.edit', compact('user'));
     }
 
     public function update(Request $request, User $user, AuditLogger $auditLogger): RedirectResponse
     {
-        abort_if($user->isStudent(), 404);
+        abort_unless(in_array($user->role, [User::ROLE_ADMIN, User::ROLE_STAFF], true), 404);
 
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -135,7 +135,7 @@ class UserController extends Controller
 
     public function destroy(Request $request, User $user, AuditLogger $auditLogger): RedirectResponse
     {
-        abort_if($user->isStudent(), 404);
+        abort_unless(in_array($user->role, [User::ROLE_ADMIN, User::ROLE_STAFF], true), 404);
 
         if ($user->id === $request->user()->id) {
             return back()->withErrors(['account' => 'You cannot deactivate your own account.']);
