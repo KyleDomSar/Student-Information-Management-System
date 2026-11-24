@@ -17,21 +17,43 @@ class SectionController extends Controller
     public function index(Request $request): View
     {
         $search = trim((string) $request->query('search', ''));
+        $programId = filter_var($request->query('program_id'), FILTER_VALIDATE_INT);
+        $yearLevelNumber = filter_var($request->query('year_level'), FILTER_VALIDATE_INT);
+        $requestedStatus = $request->query('status');
+        $status = in_array($requestedStatus, ['active', 'inactive'], true) ? $requestedStatus : '';
+
+        $programs = Program::query()->orderBy('name')->get(['id', 'code', 'name']);
+        $yearLevels = YearLevel::query()->orderBy('level_number')->get(['level_number', 'name']);
 
         $sections = Section::with(['program', 'yearLevel'])
             ->withCount('students')
             ->when($search !== '', function ($query) use ($search) {
-                $query->where('code', 'like', '%'.$search.'%')
-                    ->orWhereHas('program', fn ($programQuery) => $programQuery
-                        ->where('code', 'like', '%'.$search.'%')
-                        ->orWhere('name', 'like', '%'.$search.'%'));
+                $query->where(function ($searchQuery) use ($search) {
+                    $searchQuery->where('code', 'like', '%'.$search.'%')
+                        ->orWhereHas('program', fn ($programQuery) => $programQuery
+                            ->where('code', 'like', '%'.$search.'%')
+                            ->orWhere('name', 'like', '%'.$search.'%'))
+                        ->orWhereHas('yearLevel', fn ($yearLevelQuery) => $yearLevelQuery
+                            ->where('name', 'like', '%'.$search.'%'));
+                });
             })
+            ->when($programId !== false, fn ($query) => $query->where('program_id', $programId))
+            ->when($yearLevelNumber !== false, fn ($query) => $query->where('year_level', $yearLevelNumber))
+            ->when($status !== '', fn ($query) => $query->where('is_active', $status === 'active'))
             ->orderBy('year_level')
             ->orderBy('code')
             ->paginate(10)
             ->withQueryString();
 
-        return view('admin.sections.index', compact('sections', 'search'));
+        return view('admin.sections.index', compact(
+            'sections',
+            'search',
+            'programs',
+            'yearLevels',
+            'programId',
+            'yearLevelNumber',
+            'status',
+        ));
     }
 
     public function create(): View
