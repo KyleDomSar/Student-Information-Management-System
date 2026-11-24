@@ -68,7 +68,17 @@
                     <tr>
                         <td><div class="fw-semibold">{{ $section->program->code }}</div><div class="small muted">{{ $section->program->name }}</div></td>
                         <td>{{ $section->yearLevel->name }}</td><td class="fw-semibold">{{ $section->code }}</td><td>{{ number_format($section->students_count) }}</td>
-                        <td><span class="badge {{ $section->is_active ? 'text-bg-success' : 'text-bg-secondary' }}">{{ $section->is_active ? 'Active' : 'Inactive' }}</span></td>
+                        @php($sectionIsAvailable = $section->is_active && $section->program->is_active && $section->yearLevel->is_active)
+                        <td>
+                            <span class="badge {{ $sectionIsAvailable ? 'text-bg-success' : 'text-bg-secondary' }}">{{ $sectionIsAvailable ? 'Active' : 'Inactive' }}</span>
+                            @if(!$section->is_active)
+                                <div class="small muted mt-1">Section deactivated</div>
+                            @elseif(!$section->program->is_active)
+                                <div class="small muted mt-1">Program inactive</div>
+                            @elseif(!$section->yearLevel->is_active)
+                                <div class="small muted mt-1">Year level inactive</div>
+                            @endif
+                        </td>
                         <td class="text-end text-nowrap">
                             @if(auth()->user()->isAdministrator())
                                 <a href="{{ route('admin.sections.edit', $section) }}" class="btn btn-sm btn-outline-primary">Edit</a>
