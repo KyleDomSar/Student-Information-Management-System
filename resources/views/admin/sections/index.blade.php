@@ -5,11 +5,7 @@
 
 @section('content')
 <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
-    <div>
-        <div class="eyebrow mb-1">ACADEMIC SETUP</div>
-        <h1 class="page-title mb-1">Sections</h1>
-        <p class="muted mb-0">Manage sections by academic program and year level.</p>
-    </div>
+    <div><div class="eyebrow mb-1">ACADEMIC SETUP</div><h1 class="page-title mb-1">Sections</h1><p class="muted mb-0">Manage sections by program and year level.</p></div>
     @if(auth()->user()->isAdministrator())
         <a href="{{ route('admin.sections.create') }}" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i> Add section</a>
     @endif
@@ -31,23 +27,19 @@
     @else
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0">
-                <thead class="table-light"><tr><th>Academic program</th><th>College / Department</th><th>Year level</th><th>Section</th><th>Students assigned</th><th>Status</th><th class="text-end">Actions</th></tr></thead>
+                <thead class="table-light"><tr><th>Program / Course</th><th>Year level</th><th>Section</th><th>Students assigned</th><th>Status</th><th class="text-end">Actions</th></tr></thead>
                 <tbody>
                 @foreach($sections as $section)
                     <tr>
                         <td><div class="fw-semibold">{{ $section->program->code }}</div><div class="small muted">{{ $section->program->name }}</div></td>
-                        <td><div>{{ $section->program->college?->name ?? 'Not assigned' }}</div><div class="small muted">{{ $section->program->department?->code ?? 'No department' }}</div></td>
-                        <td>{{ $section->yearLevel->name }}</td>
-                        <td class="fw-semibold">{{ $section->code }}</td>
-                        <td>{{ number_format($section->students_count) }}</td>
+                        <td>{{ $section->yearLevel->name }}</td><td class="fw-semibold">{{ $section->code }}</td><td>{{ number_format($section->students_count) }}</td>
                         <td><span class="badge {{ $section->is_active ? 'text-bg-success' : 'text-bg-secondary' }}">{{ $section->is_active ? 'Active' : 'Inactive' }}</span></td>
                         <td class="text-end text-nowrap">
                             @if(auth()->user()->isAdministrator())
                                 <a href="{{ route('admin.sections.edit', $section) }}" class="btn btn-sm btn-outline-primary">Edit</a>
                                 @if($section->is_active)
                                     <form method="POST" action="{{ route('admin.sections.destroy', $section) }}" class="d-inline" onsubmit="return confirm('Deactivate this section? Existing student assignments will be preserved.');">
-                                        @csrf
-                                        @method('DELETE')
+                                        @csrf @method('DELETE')
                                         <button type="submit" class="btn btn-sm btn-outline-danger">Deactivate</button>
                                     </form>
                                 @endif

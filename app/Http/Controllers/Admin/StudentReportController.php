@@ -1,18 +1,18 @@
 <?php
 
-namespace App\\Http\\Controllers\\Admin;
+namespace App\Http\Controllers\Admin;
 
-use App\\Http\\Controllers\\Controller;
-use App\\Models\\Program;
-use App\\Models\\Section;
-use App\\Models\\Student;
-use App\\Models\\YearLevel;
-use App\\Support\\AuditLogger;
-use Illuminate\\Database\\Eloquent\\Builder;
-use Illuminate\\Http\\Request;
-use Illuminate\\Validation\\Rule;
-use Illuminate\\View\\View;
-use Symfony\\Component\\HttpFoundation\\StreamedResponse;
+use App\Http\Controllers\Controller;
+use App\Models\Program;
+use App\Models\Section;
+use App\Models\Student;
+use App\Models\YearLevel;
+use App\Support\AuditLogger;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class StudentReportController extends Controller
 {
@@ -48,7 +48,7 @@ class StudentReportController extends Controller
                 return;
             }
 
-            fwrite($output, "\\xEF\\xBB\\xBF");
+            fwrite($output, "\xEF\xBB\xBF");
             fputcsv($output, [
                 'Student Number',
                 'Full Name',
@@ -120,7 +120,7 @@ class StudentReportController extends Controller
 
     private function safeCsvValue(string $value): string
     {
-        if (preg_match('/^[\\s]*[=+@-]/u', $value) === 1) {
+        if (preg_match('/^[\s]*[=+@-]/u', $value) === 1) {
             return "'".$value;
         }
 

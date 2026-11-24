@@ -29,28 +29,19 @@ class StudentRecordManagementTest extends TestCase
     public function test_staff_can_view_student_directory(): void
     {
         $staff = User::factory()->create(['role' => User::ROLE_STAFF]);
-
-        $this->actingAs($staff)
-            ->get(route('admin.students.index'))
-            ->assertOk();
+        $this->actingAs($staff)->get(route('admin.students.index'))->assertOk();
     }
 
     public function test_unknown_legacy_role_cannot_manage_student_records(): void
     {
         $legacyUser = User::factory()->create(['role' => 'instructor']);
-
-        $this->actingAs($legacyUser)
-            ->get(route('admin.students.index'))
-            ->assertForbidden();
+        $this->actingAs($legacyUser)->get(route('admin.students.index'))->assertForbidden();
     }
 
     public function test_student_cannot_manage_student_records(): void
     {
         $student = User::factory()->create(['role' => User::ROLE_STUDENT]);
-
-        $this->actingAs($student)
-            ->get(route('admin.students.index'))
-            ->assertForbidden();
+        $this->actingAs($student)->get(route('admin.students.index'))->assertForbidden();
     }
 
     public function test_staff_can_register_a_student_account_and_profile(): void
@@ -61,25 +52,20 @@ class StudentRecordManagementTest extends TestCase
             'name' => 'Bachelor of Science in Information Technology',
             'is_active' => true,
         ]);
-        $program->yearLevels()->attach(3);
 
-        $this->actingAs($staff)
-            ->post(route('admin.students.store'), [
-                'name' => 'Sample Student',
-                'email' => 'sample.student@example.test',
-                'password' => 'A-Strong-Demo-Password-2026',
-                'password_confirmation' => 'A-Strong-Demo-Password-2026',
-                'student_number' => 'DEMO-2026-001',
-                'program_id' => $program->id,
-                'year_level' => 3,
-                'status' => 'active',
-                // A crafted value from Staff must be ignored. Newly registered accounts start active.
-                'account_active' => '0',
-            ])
-            ->assertRedirect();
+        $this->actingAs($staff)->post(route('admin.students.store'), [
+            'name' => 'Sample Student',
+            'email' => 'sample.student@example.test',
+            'password' => 'A-Strong-Demo-Password-2026',
+            'password_confirmation' => 'A-Strong-Demo-Password-2026',
+            'student_number' => 'DEMO-2026-001',
+            'program_id' => $program->id,
+            'year_level' => 3,
+            'status' => 'active',
+            'account_active' => '0',
+        ])->assertRedirect();
 
         $user = User::where('email', 'sample.student@example.test')->first();
-
         $this->assertNotNull($user);
         $this->assertSame(User::ROLE_STUDENT, $user->role);
         $this->assertTrue($user->is_active);
@@ -103,26 +89,11 @@ class StudentRecordManagementTest extends TestCase
             'status' => 'active',
         ]);
 
-        $this->actingAs($staff)
-            ->patch(route('admin.students.account-status', $student), [
-                'is_active' => '0',
-            ])
-            ->assertForbidden();
+        $this->actingAs($staff)->patch(route('admin.students.account-status', $student), ['is_active' => '0'])->assertForbidden();
+        $this->actingAs($staff)->delete(route('admin.students.destroy', $student))->assertForbidden();
 
-        $this->actingAs($staff)
-            ->delete(route('admin.students.destroy', $student))
-            ->assertForbidden();
-
-        $this->assertDatabaseHas('students', [
-            'id' => $student->id,
-            'student_number' => 'DEMO-2026-002',
-            'status' => 'active',
-        ]);
-
-        $this->assertDatabaseHas('users', [
-            'id' => $studentUser->id,
-            'is_active' => true,
-        ]);
+        $this->assertDatabaseHas('students', ['id' => $student->id, 'student_number' => 'DEMO-2026-002', 'status' => 'active']);
+        $this->assertDatabaseHas('users', ['id' => $studentUser->id, 'is_active' => true]);
     }
 
     public function test_admin_can_deactivate_and_reactivate_a_student_portal_account(): void
@@ -135,17 +106,12 @@ class StudentRecordManagementTest extends TestCase
             'status' => 'active',
         ]);
 
-        $this->actingAs($admin)
-            ->patch(route('admin.students.account-status', $student), ['is_active' => '0'])
+        $this->actingAs($admin)->patch(route('admin.students.account-status', $student), ['is_active' => '0'])
             ->assertRedirect(route('admin.students.show', $student));
-
         $this->assertDatabaseHas('users', ['id' => $studentUser->id, 'is_active' => false]);
-        $this->assertDatabaseHas('students', ['id' => $student->id, 'status' => 'active']);
 
-        $this->actingAs($admin)
-            ->patch(route('admin.students.account-status', $student), ['is_active' => '1'])
+        $this->actingAs($admin)->patch(route('admin.students.account-status', $student), ['is_active' => '1'])
             ->assertRedirect(route('admin.students.show', $student));
-
         $this->assertDatabaseHas('users', ['id' => $studentUser->id, 'is_active' => true]);
     }
 
@@ -159,8 +125,7 @@ class StudentRecordManagementTest extends TestCase
             'status' => 'active',
         ]);
 
-        $this->actingAs($admin)
-            ->delete(route('admin.students.destroy', $student))
+        $this->actingAs($admin)->delete(route('admin.students.destroy', $student))
             ->assertRedirect(route('admin.students.index'));
 
         $this->assertDatabaseMissing('students', ['id' => $student->id]);
@@ -186,11 +151,9 @@ class StudentRecordManagementTest extends TestCase
             'student_id' => $student->id,
             'academic_year' => '2026-2027',
             'semester' => 'First Semester',
-            'status' => 'enrolled',
         ]);
 
-        $this->actingAs($admin)
-            ->delete(route('admin.students.destroy', $student))
+        $this->actingAs($admin)->delete(route('admin.students.destroy', $student))
             ->assertSessionHasErrors('student');
 
         $this->assertDatabaseHas('students', ['id' => $student->id]);
@@ -211,18 +174,15 @@ class StudentRecordManagementTest extends TestCase
             'status' => 'active',
         ]);
 
-        $this->actingAs($staff)
-            ->put(route('admin.students.update', $student), [
-                'name' => 'Updated by Registrar',
-                'email' => 'updated.by.registrar@example.test',
-                'student_number' => 'DEMO-2026-006-UPDATED',
-                'status' => 'graduated',
-                // These account-control values are deliberately not part of Staff's allowed fields.
-                'account_active' => '0',
-                'password' => 'Attempted-Unauthorized-Password-2026',
-                'password_confirmation' => 'Attempted-Unauthorized-Password-2026',
-            ])
-            ->assertRedirect(route('admin.students.show', $student));
+        $this->actingAs($staff)->put(route('admin.students.update', $student), [
+            'name' => 'Updated by Registrar',
+            'email' => 'updated.by.registrar@example.test',
+            'student_number' => 'DEMO-2026-006-UPDATED',
+            'status' => 'graduated',
+            'account_active' => '0',
+            'password' => 'Attempted-Unauthorized-Password-2026',
+            'password_confirmation' => 'Attempted-Unauthorized-Password-2026',
+        ])->assertRedirect(route('admin.students.show', $student));
 
         $this->assertDatabaseHas('users', [
             'id' => $studentUser->id,
@@ -230,12 +190,7 @@ class StudentRecordManagementTest extends TestCase
             'email' => 'updated.by.registrar@example.test',
             'is_active' => true,
         ]);
-
-        $this->assertTrue(password_verify(
-            'Original-Student-Password-2026',
-            $studentUser->fresh()->password,
-        ));
-
+        $this->assertTrue(password_verify('Original-Student-Password-2026', $studentUser->fresh()->password));
         $this->assertDatabaseHas('students', [
             'id' => $student->id,
             'student_number' => 'DEMO-2026-006-UPDATED',
@@ -253,30 +208,23 @@ class StudentRecordManagementTest extends TestCase
             'status' => 'active',
         ]);
 
-        $this->actingAs($studentUser)
-            ->get(route('admin.students.show', $otherStudent))
-            ->assertForbidden();
-
-        $this->actingAs($studentUser)
-            ->put(route('admin.students.update', $otherStudent), [
-                'name' => 'Unauthorized Change',
-                'email' => 'unauthorized.change@example.test',
-                'student_number' => 'UNAUTHORIZED-001',
-                'status' => 'graduated',
-            ])
-            ->assertForbidden();
+        $this->actingAs($studentUser)->get(route('admin.students.show', $otherStudent))->assertForbidden();
+        $this->actingAs($studentUser)->put(route('admin.students.update', $otherStudent), [
+            'name' => 'Unauthorized Change',
+            'email' => 'unauthorized.change@example.test',
+            'student_number' => 'UNAUTHORIZED-001',
+            'status' => 'graduated',
+        ])->assertForbidden();
 
         $this->assertDatabaseHas('users', [
             'id' => $otherStudentUser->id,
             'name' => $otherStudentUser->name,
             'email' => $otherStudentUser->email,
         ]);
-
         $this->assertDatabaseHas('students', [
             'id' => $otherStudent->id,
             'student_number' => 'DEMO-2026-007',
             'status' => 'active',
         ]);
     }
-
 }

@@ -1,15 +1,15 @@
 <?php
 
-namespace App\\Http\\Controllers\\Admin;
+namespace App\Http\Controllers\Admin;
 
-use App\\Http\\Controllers\\Controller;
-use App\\Models\\Enrollment;
-use App\\Models\\Student;
-use App\\Support\\AuditLogger;
-use Illuminate\\Http\\RedirectResponse;
-use Illuminate\\Http\\Request;
-use Illuminate\\Validation\\Rule;
-use Illuminate\\View\\View;
+use App\Http\Controllers\Controller;
+use App\Models\Enrollment;
+use App\Models\Student;
+use App\Support\AuditLogger;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 
 class EnrollmentController extends Controller
 {
@@ -59,7 +59,7 @@ class EnrollmentController extends Controller
                     ->where('academic_year', $request->input('academic_year'))
                     ->where('semester', $request->input('semester'))),
             ],
-            'academic_year' => ['required', 'regex:/^\\d{4}-\\d{4}$/'],
+            'academic_year' => ['required', 'regex:/^\d{4}-\d{4}$/'],
             'semester' => ['required', Rule::in(['First Semester', 'Second Semester', 'Midyear'])],
         ], [
             'student_id.unique' => 'This student already has an enrollment record for the selected academic year and semester.',

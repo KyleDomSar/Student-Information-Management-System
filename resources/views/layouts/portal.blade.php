@@ -56,27 +56,15 @@
             <nav class="nav flex-column">
                 <a class="nav-link {{ request()->routeIs('student.dashboard') ? 'active' : '' }}" href="{{ route('student.dashboard') }}"><i class="bi bi-grid"></i><span>Overview</span></a>
                 <a class="nav-link {{ request()->routeIs('student.profile') ? 'active' : '' }}" href="{{ route('student.profile') }}"><i class="bi bi-person"></i><span>My Profile</span></a>
-                <a class="nav-link {{ request()->routeIs('student.visitor-timeouts.*') ? 'active' : '' }}" href="{{ route('student.visitor-timeouts.index') }}"><i class="bi bi-clock-history"></i><span>Visitor Time-Out</span></a>
-                <a class="nav-link {{ request()->routeIs('student.enrollments.*') ? 'active' : '' }}" href="{{ route('student.enrollments.index') }}"><i class="bi bi-journal-check"></i><span>My Enrollments</span></a>
-                <a class="nav-link {{ request()->routeIs('student.grades.*') ? 'active' : '' }}" href="{{ route('student.grades.index') }}"><i class="bi bi-card-list"></i><span>My Grades</span></a>
-                <a class="nav-link {{ request()->routeIs('student.schedules.*') ? 'active' : '' }}" href="{{ route('student.schedules.index') }}"><i class="bi bi-calendar3"></i><span>My Class Schedule</span></a>
-            </nav>
+                <a class="nav-link {{ request()->routeIs('student.visitor-timeouts.*') ? 'active' : '' }}" href="{{ route('student.visitor-timeouts.index') }}"><i class="bi bi-clock-history"></i><span>Visitor Time-Out</span></a>\n            </nav>
         @else
             <div class="sidebar-label">Administration</div>
             <nav class="nav flex-column">
                 <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}"><i class="bi bi-grid"></i><span>Dashboard</span></a>
                 @if(in_array(auth()->user()->role, ['admin', 'staff'], true))
-                    <a class="nav-link {{ request()->routeIs('admin.students.*') ? 'active' : '' }}" href="{{ route('admin.students.index') }}"><i class="bi bi-people"></i><span>Students</span></a>
-                    <a class="nav-link {{ request()->routeIs('admin.academic-structure.*') ? 'active' : '' }}" href="{{ route('admin.academic-structure.index') }}"><i class="bi bi-building"></i><span>Academic Structure</span></a>
-                    <a class="nav-link {{ request()->routeIs('admin.programs.*') ? 'active' : '' }}" href="{{ route('admin.programs.index') }}"><i class="bi bi-book"></i><span>Programs</span></a>
-                    <a class="nav-link {{ request()->routeIs('admin.subjects.*') ? 'active' : '' }}" href="{{ route('admin.subjects.index') }}"><i class="bi bi-journal-bookmark"></i><span>Subjects</span></a>
-                    <a class="nav-link {{ request()->routeIs('admin.year-levels.*') ? 'active' : '' }}" href="{{ route('admin.year-levels.index') }}"><i class="bi bi-layers"></i><span>Year Levels</span></a>
+                    <a class="nav-link {{ request()->routeIs('admin.students.*') ? 'active' : '' }}" href="{{ route('admin.students.index') }}"><i class="bi bi-people"></i><span>Students</span></a>\n                    <a class="nav-link {{ request()->routeIs('admin.programs.*') ? 'active' : '' }}" href="{{ route('admin.programs.index') }}"><i class="bi bi-book"></i><span>Programs / Courses</span></a>\n                    <a class="nav-link {{ request()->routeIs('admin.year-levels.*') ? 'active' : '' }}" href="{{ route('admin.year-levels.index') }}"><i class="bi bi-layers"></i><span>Year Levels</span></a>
                     <a class="nav-link {{ request()->routeIs('admin.sections.*') ? 'active' : '' }}" href="{{ route('admin.sections.index') }}"><i class="bi bi-diagram-3"></i><span>Sections</span></a>
-                    <a class="nav-link {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}" href="{{ route('admin.reports.students') }}"><i class="bi bi-file-earmark-bar-graph"></i><span>Student Reports</span></a>
-                    <a class="nav-link {{ request()->routeIs('admin.enrollments.*') ? 'active' : '' }}" href="{{ route('admin.enrollments.index') }}"><i class="bi bi-journal-check"></i><span>Enrollments</span></a>
-                    <a class="nav-link {{ request()->routeIs('admin.grades.*') ? 'active' : '' }}" href="{{ route('admin.grades.index') }}"><i class="bi bi-card-checklist"></i><span>Gradebook</span></a>
-                    <a class="nav-link {{ request()->routeIs('admin.schedules.*') ? 'active' : '' }}" href="{{ route('admin.schedules.index') }}"><i class="bi bi-calendar3"></i><span>Class Schedules</span></a>
-                    @if(auth()->user()->isAdministrator())
+                    <a class="nav-link {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}" href="{{ route('admin.reports.students') }}"><i class="bi bi-file-earmark-bar-graph"></i><span>Student Reports</span></a>\n                    @if(auth()->user()->isAdministrator())
                         <a class="nav-link {{ request()->routeIs('admin.audit-logs.*') ? 'active' : '' }}" href="{{ route('admin.audit-logs.index') }}"><i class="bi bi-clock-history"></i><span>Audit Logs</span></a>
                         <a class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}"><i class="bi bi-shield-lock"></i><span>User Management</span></a>
                     @endif

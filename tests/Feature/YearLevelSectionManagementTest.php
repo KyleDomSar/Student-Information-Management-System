@@ -26,15 +26,11 @@ class YearLevelSectionManagementTest extends TestCase
 
     private function createProgram(): Program
     {
-        $program = Program::create([
+        return Program::create([
             'code' => 'BSIT',
             'name' => 'Bachelor of Science in Information Technology',
             'is_active' => true,
         ]);
-
-        $program->yearLevels()->sync(range(1, 6));
-
-        return $program;
     }
 
     public function test_staff_can_view_year_levels_and_sections(): void
@@ -87,7 +83,6 @@ class YearLevelSectionManagementTest extends TestCase
             ->assertRedirect(route('admin.year-levels.index'));
 
         $yearLevel = YearLevel::firstWhere('level_number', 7);
-
         $this->assertNotNull($yearLevel);
 
         $this->actingAs($admin)

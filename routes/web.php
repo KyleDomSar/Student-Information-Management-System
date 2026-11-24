@@ -1,23 +1,23 @@
 <?php
 
-use App\\Http\\Controllers\\Admin\\DashboardController as AdminDashboardController;
-use App\\Http\\Controllers\\Admin\\EnrollmentController as AdminEnrollmentController;
-use App\\Http\\Controllers\\Admin\\UserController as AdminUserController;
-use App\\Http\\Controllers\\Admin\\AuditLogController;
-use App\\Http\\Controllers\\Admin\\ProgramController;
-use App\\Http\\Controllers\\Admin\\StudentController;
-use App\\Http\\Controllers\\Admin\\StudentReportController;
-use App\\Http\\Controllers\\Admin\\YearLevelController;
-use App\\Http\\Controllers\\Admin\\SectionController;
-use App\\Http\\Controllers\\Auth\\AdminLoginController;
-use App\\Http\\Controllers\\Auth\\AuthenticatedSessionController;
-use App\\Http\\Controllers\\Auth\\PortalLoginController;
-use App\\Http\\Controllers\\Auth\\StudentLoginController;
-use App\\Http\\Controllers\\Student\\DashboardController as StudentDashboardController;
-use App\\Http\\Controllers\\Student\\EnrollmentController as StudentEnrollmentController;
-use App\\Http\\Controllers\\Student\\ProfileController;
-use App\\Http\\Controllers\\Student\\VisitorTimeoutController;
-use Illuminate\\Support\\Facades\\Route;
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\EnrollmentController as AdminEnrollmentController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Admin\AuditLogController;
+use App\Http\Controllers\Admin\ProgramController;
+use App\Http\Controllers\Admin\StudentController;
+use App\Http\Controllers\Admin\StudentReportController;
+use App\Http\Controllers\Admin\YearLevelController;
+use App\Http\Controllers\Admin\SectionController;
+use App\Http\Controllers\Auth\AdminLoginController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\PortalLoginController;
+use App\Http\Controllers\Auth\StudentLoginController;
+use App\Http\Controllers\Student\DashboardController as StudentDashboardController;
+use App\Http\Controllers\Student\EnrollmentController as StudentEnrollmentController;
+use App\Http\Controllers\Student\ProfileController;
+use App\Http\Controllers\Student\VisitorTimeoutController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     if (! auth()->check()) {

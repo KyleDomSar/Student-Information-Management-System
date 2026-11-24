@@ -1,68 +1,45 @@
 # Database Overview
 
-This describes the current database design implemented by the Laravel migrations and Eloquent models.
+This document describes the database tables used by the current SIMS implementation.
 
 ## 1. Core tables
 
 ### users
-Stores login credentials and the role assigned to each account.
+Stores account credentials and assigned roles.
 
 | Field | Purpose |
 |---|---|
 | id | Primary key |
-| name | Account holder's display name |
+| name | Account holder name |
 | email | Unique login email |
 | password | Hashed password |
 | role | admin, staff, or student |
 | is_active | Whether the account is enabled |
-| email_verified_at | Optional verification timestamp |
 | created_at / updated_at | Timestamps |
 
-### colleges
-Stores colleges under a campus. The initial reference data includes the 11 CvSU Main Campus colleges.
+### staff_profiles
+Stores optional staff identity details linked to an account.
 
 | Field | Purpose |
 |---|---|
 | id | Primary key |
-| name | Official college name |
-| campus | Campus label, initially Main Campus |
-| is_active | Whether the college can be assigned |
-
-### departments
-Stores departments belonging to a college. The initial reference data includes the five CEIT departments.
-
-| Field | Purpose |
-|---|---|
-| id | Primary key |
-| college_id | Foreign key to colleges.id |
-| code | Unique department code |
-| name | Department name |
-| is_active | Whether the department can be assigned |
+| user_id | Foreign key to users.id |
+| employee_number | Optional employee number |
+| position | Staff position |
+| department | Department label |
+| created_at / updated_at | Timestamps |
 
 ### programs
-Stores degree programs or courses.
+Stores programs or courses assigned to students.
 
 | Field | Purpose |
 |---|---|
 | id | Primary key |
-| college_id | Nullable foreign key to colleges.id |
-| department_id | Nullable foreign key to departments.id |
-| code | Unique program code |
-| name | Program name |
+| code | Program code |
+| name | Program/course name |
 | description | Optional description |
 | is_active | Whether the program is available |
-
-A program belongs to a college and may optionally be assigned to a department. Department assignments remain configurable because the public program directory does not establish every program's department mapping.
-
-### program_majors
-Stores optional majors or specializations under an academic program. The seeder includes the majors and specializations listed in the public Main Campus program directory.
-
-| Field | Purpose |
-|---|---|
-| id | Primary key |
-| program_id | Foreign key to programs.id |
-| name | Major or specialization name |
-| is_active | Whether the major is available for new assignments |
+| created_at / updated_at | Timestamps |
 
 ### year_levels
 Stores the year levels configured by the Administrator.
@@ -70,20 +47,9 @@ Stores the year levels configured by the Administrator.
 | Field | Purpose |
 |---|---|
 | id | Primary key |
-| level_number | Unique numeric year-level identifier |
+| level_number | Numeric year-level identifier |
 | name | Display name, such as First Year |
 | is_active | Whether the year level can be assigned |
-
-### program_year_levels
-Maps year levels permitted by each program. A program can define a different duration from another program.
-
-| Field | Purpose |
-|---|---|
-| id | Primary key |
-| program_id | Foreign key to programs.id |
-| year_level | References year_levels.level_number |
-
-Existing program/year combinations are backfilled from section and student records when the academic-structure migration runs.
 
 ### sections
 Stores section groups under a program and year level.
@@ -96,7 +62,7 @@ Stores section groups under a program and year level.
 | code | Section name or code |
 | is_active | Whether the section can be assigned |
 
-Section code is unique within a program and year level. New sections must use a year level configured for the selected program.
+A section belongs to one program and one year level. Its code is unique within that program and year level.
 
 ### students
 Stores student-specific profile and academic identifiers.
@@ -106,39 +72,14 @@ Stores student-specific profile and academic identifiers.
 | id | Primary key |
 | user_id | Foreign key to users.id, unique |
 | student_number | Unique student number |
-| program_id | Foreign key to programs.id |
-| program_major_id | Nullable foreign key to program_majors.id |
+| program_id | Nullable foreign key to programs.id |
 | section_id | Nullable foreign key to sections.id |
-| year_level | Numeric year-level identifier linked to year_levels.level_number |
-| status | Active, inactive, graduated, or other approved status |
+| year_level | Numeric year-level identifier |
+| status | Student status |
 | created_at / updated_at | Timestamps |
 
-### student_visitor_timeouts
-Stores visitor time-out timestamps recorded by a student through their own authenticated Student Portal account.
-
-| Field | Purpose |
-|---|---|
-| id | Primary key |
-| student_id | Foreign key to students.id |
-| time_out_at | Server-generated time-out date and time in the application timezone (Asia/Manila by default) |
-| created_at / updated_at | Record timestamps |
-
-The application does not accept a student ID or time-out time from the submitted form. The authenticated user's linked student profile is used to associate the record.
-
-### subjects
-Stores subject catalog information.
-
-| Field | Purpose |
-|---|---|
-| id | Primary key |
-| program_id | Nullable foreign key to programs.id, if program-specific |
-| code | Subject code |
-| title | Subject title |
-| units | Number of units |
-| is_active | Whether the subject is available |
-
 ### enrollments
-Stores a student's enrollment per academic year and semester.
+Stores a student's enrollment record for an academic year and semester.
 
 | Field | Purpose |
 |---|---|
@@ -146,37 +87,25 @@ Stores a student's enrollment per academic year and semester.
 | student_id | Foreign key to students.id |
 | academic_year | Example: 2026-2027 |
 | semester | First Semester, Second Semester, or Midyear |
-| status | Pending, enrolled, rejected, or dropped |
-| created_by | User ID of the staff member who created the record |
+| created_by | User ID of the staff member who recorded the enrollment |
 | created_at / updated_at | Timestamps |
 
-### enrollment_subjects
-Associates subjects with a particular enrollment and stores the student's grade for that subject.
+A unique constraint prevents duplicate records for the same student, academic year, and semester.
+
+### student_visitor_timeouts
+Stores time-out timestamps recorded through the authenticated Student Portal account.
 
 | Field | Purpose |
 |---|---|
 | id | Primary key |
-| enrollment_id | Foreign key to enrollments.id |
-| subject_id | Foreign key to subjects.id |
-| instructor_user_id | Optional foreign key to users.id |
-| final_grade | Nullable until encoded |
-| remarks | Optional grade remarks |
+| student_id | Foreign key to students.id |
+| time_out_at | Server-generated time-out date and time |
 | created_at / updated_at | Timestamps |
 
-### class_schedules
-Stores class meeting details for an enrolled subject.
-
-| Field | Purpose |
-|---|---|
-| id | Primary key |
-| enrollment_subject_id | Foreign key to enrollment_subjects.id |
-| day_of_week | Scheduled day |
-| start_time | Start time |
-| end_time | End time |
-| room | Room or location |
+The application uses the authenticated user's linked student profile. A submitted form cannot choose another student ID or alter the server timestamp.
 
 ### audit_logs
-Stores important administrative and academic record actions.
+Stores important administrative and student-account activities.
 
 | Field | Purpose |
 |---|---|
@@ -186,85 +115,48 @@ Stores important administrative and academic record actions.
 | target_type | Affected model or record type |
 | target_id | Affected record ID |
 | description | Sanitized summary |
+| ip_address | Request IP address |
+| user_agent | Request user agent |
 | created_at | Event timestamp |
 
-## 2. Relationships
+## 2. Main relationships
 
-- One college has many departments and programs.
-- One department belongs to one college and may have many programs.
-- One program belongs to one college and optionally one department.
-- One program has many students, subjects, sections, and majors.
-- Programs and year levels have a many-to-many relationship through `program_year_levels`.
-- One year level may be assigned to many students and sections and may be supported by many programs.
-- One section belongs to one program and year level and may be assigned to many students.
-- One student may be assigned to one program major and one section.
+- One user has one student profile or staff profile.
+- One program has many students and sections.
+- One year level has many students and sections.
+- One section belongs to one program and one year level.
 - One student has many enrollment records and visitor time-out records.
-- One enrollment has many enrollment-subject records.
-- One subject may appear in many enrollment-subject records.
-- One enrollment-subject record may have one or more schedule entries.
 - One user may create many audit log entries.
 
 ## 3. Relationship sketch
 
 ```text
-colleges
-  | 1-to-many
-  +---- departments
-  |          | 1-to-many
-  |          v
-  +------ programs ------ 1-to-many ------ program_majors
-             |
-             +------ 1-to-many ------ students
-             |
-             +------ 1-to-many ------ sections ------ many-to-1 ------ year_levels
-             |
-             +------ many-to-many ---- program_year_levels ---- many-to-1 ---- year_levels
-             |
-             +------ 1-to-many ------ subjects
-
-students
+users
+  | 1-to-1
+  +---- students
+  |        | many-to-1
+  |        +---- programs
+  |        |       | 1-to-many
+  |        |       +---- sections
+  |        |                | many-to-1
+  |        |                +---- year_levels
+  |        |
+  |        +---- enrollments
+  |        |
+  |        +---- student_visitor_timeouts
   |
-  | 1-to-many
-  +---- student_visitor_timeouts
+  +---- staff_profiles
   |
-  | 1-to-many
-  v
-enrollments
-  |
-  | 1-to-many
-  v
-enrollment_subjects ------ many-to-1 ------ subjects
-  |
-  | 1-to-many
-  v
-class_schedules
-
-users ------ 1-to-many ------ audit_logs
+  +---- audit_logs
 ```
 
-## 4. Scope classification and supplementary structures
+## 4. Database integrity and privacy rules
 
-The following tables directly support requirements named in the approved brief: `users`, `students`, `programs`, `subjects`, `year_levels`, `sections`, `enrollments`, and `student_visitor_timeouts`.
-
-The `student_visitor_timeouts` table is implemented. It stores the current server-generated timestamp for the authenticated student's own record. The brief does not define the exact visitor time-out workflow, so no visitor name, reason, destination, or approval fields have been assumed. The intended meaning should be confirmed with the instructor.
-
-The following are supplementary academic extensions, not explicitly required as separate structures or detailed workflows by the PDF:
-- `colleges`, `departments`, and `program_majors` provide a more detailed academic hierarchy than the brief requires.
-- `program_year_levels` allows different year-level ranges per program.
-- The term-based enrollment status workflow (pending, enrolled, rejected) and subject-level enrollment links implement a more detailed approval process than the brief describes.
-- Final-grade fields in `enrollment_subjects` and the `class_schedules` table support the optional gradebook and timetable features.
-
-These tables are retained in the prototype, but should be presented as supplementary academic functionality rather than mandatory PDF requirements.
-
-## 5. Database integrity and privacy rules
-
-- Add unique constraints to user email, student number, program code, department code, and supported academic structure combinations.
-- Prevent duplicate enrollment terms for the same student using a unique constraint on student, academic year, and semester.
-- Prevent duplicate subject entries within one enrollment using a unique constraint on enrollment and subject.
+- Enforce unique user email, student number, program code, and section code within its program/year level.
+- Prevent duplicate enrollment terms for the same student.
 - Add foreign keys and indexes to relationship columns.
-- Use database transactions when creating an enrollment and its subject records.
+- Use transactions when creating a student account and profile.
 - Do not store plaintext passwords.
-- Avoid adding personal or financial fields unless the project requirements need them.
-- The Student Portal must query records through the authenticated student's relationship, not through unrestricted IDs.
-- Visitor time-out records are created for the authenticated student only and are preserved from permanent student deletion.
-- Final grades are stored as nullable decimal values. The allowed minimum and maximum are configured through `SIMS_GRADE_MIN` and `SIMS_GRADE_MAX` in the local environment.
+- Collect only student data required by the approved project scope.
+- Query student-owned records through the authenticated student's relationship, not unrestricted IDs.
+- Preserve enrollment and visitor time-out history from permanent student deletion.

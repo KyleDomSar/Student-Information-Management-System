@@ -41,9 +41,9 @@
     <div class="col-6 col-xl-3">
         <div class="surface stat-card">
             <div class="stat-icon mb-3" style="background:#f3eefe;color:#8055c8"><i class="bi bi-hourglass-split"></i></div>
-            <div class="muted small fw-semibold">Pending approvals</div>
-            <div class="stat-value">{{ number_format($stats['pending_enrollments']) }}</div>
-            <div class="small muted">Awaiting staff action</div>
+            <div class="muted small fw-semibold">Programs / Courses</div>
+            <div class="stat-value">{{ number_format($stats['programs']) }}</div>
+            <div class="small muted">Available academic programs</div>
         </div>
     </div>
 </div>

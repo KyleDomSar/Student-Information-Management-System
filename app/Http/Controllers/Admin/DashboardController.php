@@ -1,14 +1,14 @@
 <?php
 
-namespace App\\Http\\Controllers\\Admin;
+namespace App\Http\Controllers\Admin;
 
-use App\\Http\\Controllers\\Controller;
-use App\\Models\\AuditLog;
-use App\\Models\\Enrollment;
-use App\\Models\\Program;
-use App\\Models\\Student;
-use App\\Models\\User;
-use Illuminate\\View\\View;
+use App\Http\Controllers\Controller;
+use App\Models\AuditLog;
+use App\Models\Enrollment;
+use App\Models\Program;
+use App\Models\Student;
+use App\Models\User;
+use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
