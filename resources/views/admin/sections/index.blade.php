@@ -11,10 +11,41 @@
     @endif
 </div>
 <div class="surface p-3 mb-3">
-    <form method="GET" action="{{ route('admin.sections.index') }}" class="row g-2">
-        <div class="col-md"><input type="search" name="search" value="{{ $search }}" class="form-control" placeholder="Search section or program"></div>
-        <div class="col-auto d-grid"><button class="btn btn-outline-primary" type="submit"><i class="bi bi-search me-1"></i> Search</button></div>
-        @if($search !== '')<div class="col-auto d-grid"><a href="{{ route('admin.sections.index') }}" class="btn btn-light">Clear</a></div>@endif
+    <form method="GET" action="{{ route('admin.sections.index') }}" class="row g-2 align-items-center">
+        <div class="col-md-5">
+            <label for="section-search" class="visually-hidden">Search sections</label>
+            <input id="section-search" type="search" name="search" value="{{ $search }}" class="form-control" placeholder="Search section, program, or year level">
+        </div>
+        <div class="col-sm-6 col-md-2">
+            <label for="section-program" class="visually-hidden">Filter by program</label>
+            <select id="section-program" name="program_id" class="form-select">
+                <option value="">All programs</option>
+                @foreach($programs as $program)
+                    <option value="{{ $program->id }}" @selected((string) $programId === (string) $program->id)>{{ $program->code }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="col-sm-6 col-md-2">
+            <label for="section-year-level" class="visually-hidden">Filter by year level</label>
+            <select id="section-year-level" name="year_level" class="form-select">
+                <option value="">All year levels</option>
+                @foreach($yearLevels as $yearLevel)
+                    <option value="{{ $yearLevel->level_number }}" @selected((string) $yearLevelNumber === (string) $yearLevel->level_number)>{{ $yearLevel->name }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="col-sm-6 col-md-2">
+            <label for="section-status" class="visually-hidden">Filter by status</label>
+            <select id="section-status" name="status" class="form-select">
+                <option value="">All statuses</option>
+                <option value="active" @selected($status === 'active')>Active</option>
+                <option value="inactive" @selected($status === 'inactive')>Inactive</option>
+            </select>
+        </div>
+        <div class="col-sm-6 col-md-1 d-grid"><button class="btn btn-outline-primary" type="submit" aria-label="Apply filters"><i class="bi bi-search"></i></button></div>
+        @if($search !== '' || $programId !== false || $yearLevelNumber !== false || $status !== '')
+            <div class="col-auto d-grid"><a href="{{ route('admin.sections.index') }}" class="btn btn-light">Clear filters</a></div>
+        @endif
     </form>
 </div>
 <div class="surface overflow-hidden">
@@ -23,7 +54,11 @@
         <span class="badge badge-soft rounded-pill">{{ auth()->user()->isAdministrator() ? 'Administrator' : 'Staff · View only' }}</span>
     </div>
     @if($sections->isEmpty())
-        <div class="p-5 text-center"><h2 class="h6 fw-bold">No sections found</h2><p class="muted small mb-0">{{ $search !== '' ? 'Try another search term.' : 'Add a section after configuring programs and year levels.' }}</p></div>
+        <div class="p-5 text-center">
+            <h2 class="h6 fw-bold">{{ $search !== '' || $programId !== false || $yearLevelNumber !== false || $status !== '' ? 'No matching sections found' : 'No sections found' }}</h2>
+            <p class="muted small mb-3">{{ $search !== '' || $programId !== false || $yearLevelNumber !== false || $status !== '' ? 'Try different search terms or clear the filters.' : 'Add a section after configuring programs and year levels.' }}</p>
+            @if($search !== '' || $programId !== false || $yearLevelNumber !== false || $status !== '')<a href="{{ route('admin.sections.index') }}" class="btn btn-light btn-sm">Clear filters</a>@endif
+        </div>
     @else
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0">
