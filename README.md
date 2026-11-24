@@ -30,7 +30,7 @@ A web-based Student Information Management System for academic use. SIMS has sep
 - Subject catalog management: search, create, update, and safe deactivation, with program association.
 - Enrollment workflow: staff create term enrollments, attach active subjects, and approve or reject pending requests.
 - Student Portal enrollment history and detail pages, scoped to the signed-in student's own profile.
-- Gradebook for Admin/Staff to encode and update numeric final grades for approved enrollments.
+- Gradebook for Admin/Staff to encode and update numeric final grades for approved enrollments. The minimum and maximum are configurable in `.env` (prototype default: 0–100).
 - Read-only Student Portal grade view, scoped to the signed-in student's approved enrollments.
 - Class schedule management for Admin/Staff, including day, time, room, and approved enrollment subject assignment.
 - Admin-only user management for administrator and staff accounts, including role changes, password updates, and safe account deactivation.
