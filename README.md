@@ -28,19 +28,21 @@ A web-based Student Information Management System for academic use. SIMS has sep
 - Admin/Staff student records management: searchable student directory, profile creation, viewing, editing, and safe account deactivation.
 - Academic program management: create, view, update, and safe deactivation.
 - Subject catalog management: search, create, update, and safe deactivation, with program association.
-- Audit events for student, program, and subject record changes.
+- Enrollment workflow: staff create term enrollments, attach active subjects, and approve or reject pending requests.
+- Student Portal enrollment history and detail pages, scoped to the signed-in student's own profile.
+- Duplicate student term prevention and subject-to-program validation.
+- Audit events for student, program, subject, and enrollment record changes.
 - Optional environment-configured local seed accounts.
 
 ### Still to be developed
 - Admin user and role management screens.
-- Enrollment processing and approval.
 - Grade encoding and student grade viewing.
 - Class schedule management.
 - Reports and export.
 - Document requests and tuition balance, only if required by the final project scope.
 - Additional authorization policies and comprehensive security testing.
 
-Enrollment processing, gradebook, audit log browsing, and user management are not implemented yet. Their navigation entries are shown as disabled placeholders.
+Gradebook, class schedule management, audit log browsing, and user management are not implemented yet. Their navigation entries are shown as disabled placeholders.
 
 ## Portal URLs
 
@@ -55,6 +57,8 @@ Enrollment processing, gradebook, audit log browsing, and user management are no
 | Student records | `/admin/students` |
 | Academic programs | `/admin/programs` |
 | Subject catalog | `/admin/subjects` |
+| Admin enrollment management | `/admin/enrollments` |
+| Student enrollment history | `/student/enrollments` |
 
 Both portals use the same `users` table and Laravel session guard. The login controller checks the account role, while route middleware enforces access on the server. Students have no routes for editing official academic records. The instructor role is reserved for a future instructor workspace and is not yet allowed to sign in.
 
