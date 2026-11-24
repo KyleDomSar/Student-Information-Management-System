@@ -6,7 +6,7 @@
 <div class="row justify-content-center align-items-center" style="min-height:65vh">
     <div class="col-sm-10 col-md-7 col-lg-5 col-xl-4">
         <div class="auth-card bg-white p-4 p-lg-5">
-            <a href="{{ route('login') }}" class="small text-decoration-none" style="color:#138b78"><i class="bi bi-arrow-left"></i> Choose portal</a>
+            <a href="{{ route('login', [], false) }}" class="small text-decoration-none" style="color:#138b78"><i class="bi bi-arrow-left"></i> Choose portal</a>
             <div class="brand-mark mt-4 mb-3" style="background:#138b78"><i class="bi bi-mortarboard"></i></div>
             <div class="small fw-bold text-uppercase mb-2" style="color:#138b78">Student Portal</div>
             <h1 class="h3 fw-bold mb-2">Hello, student</h1>
@@ -16,7 +16,7 @@
                 <div class="alert alert-danger small" role="alert">{{ $errors->first() }}</div>
             @endif
 
-            <form method="POST" action="{{ route('student.login.store') }}">
+            <form method="POST" action="{{ route('student.login.store', [], false) }}">
                 @csrf
                 <div class="mb-3">
                     <label for="email" class="form-label fw-semibold small">Student email</label>
