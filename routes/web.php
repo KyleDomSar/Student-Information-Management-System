@@ -4,6 +4,8 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\EnrollmentController as AdminEnrollmentController;
 use App\Http\Controllers\Admin\GradeController as AdminGradeController;
 use App\Http\Controllers\Admin\ClassScheduleController as AdminClassScheduleController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Admin\AuditLogController;
 use App\Http\Controllers\Admin\ProgramController;
 use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\Admin\SubjectController;
@@ -67,6 +69,13 @@ Route::prefix('admin')
             Route::put('/grades/{enrollmentSubject}', [AdminGradeController::class, 'update'])->name('grades.update');
             Route::resource('schedules', AdminClassScheduleController::class)
                 ->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
+        });
+
+        // User administration and security audit records are Admin-only.
+        Route::middleware('role:admin')->group(function () {
+            Route::resource('users', AdminUserController::class)
+                ->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
+            Route::get('/audit-logs', [AuditLogController::class, 'index'])->name('audit-logs.index');
         });
     });
 
