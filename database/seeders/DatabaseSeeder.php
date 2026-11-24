@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
                 default => 'th',
             };
 
-            YearLevel::updateOrCreate(
+            YearLevel::firstOrCreate(
                 ['level_number' => $number],
                 ['name' => $number.$suffix.' Year', 'is_active' => true],
             );
