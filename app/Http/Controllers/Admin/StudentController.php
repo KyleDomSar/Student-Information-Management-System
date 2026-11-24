@@ -46,6 +46,8 @@ class StudentController extends Controller
         $yearLevels = YearLevel::where('is_active', true)->orderBy('level_number')->get();
         $sections = Section::with(['program', 'yearLevel'])
             ->where('is_active', true)
+            ->whereHas('program', fn ($query) => $query->where('is_active', true))
+            ->whereHas('yearLevel', fn ($query) => $query->where('is_active', true))
             ->orderBy('year_level')
             ->orderBy('code')
             ->get();
@@ -142,8 +144,17 @@ class StudentController extends Controller
             ->get();
 
         $sections = Section::with(['program', 'yearLevel'])
-            ->where('is_active', true)
-            ->orWhereKey($student->section_id)
+            ->where(function ($query) use ($student) {
+                $query->where(function ($availableQuery) {
+                    $availableQuery->where('is_active', true)
+                        ->whereHas('program', fn ($programQuery) => $programQuery->where('is_active', true))
+                        ->whereHas('yearLevel', fn ($yearLevelQuery) => $yearLevelQuery->where('is_active', true));
+                });
+
+                if ($student->section_id) {
+                    $query->orWhereKey($student->section_id);
+                }
+            })
             ->orderBy('year_level')
             ->orderBy('code')
             ->get();
