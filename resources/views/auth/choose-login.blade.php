@@ -13,7 +13,7 @@
 
         <div class="row g-4">
             <div class="col-md-6">
-                <a href="{{ route('admin.login') }}" class="auth-card bg-white p-4 p-lg-5 d-block h-100 text-decoration-none text-dark">
+                <a href="{{ route('admin.login', [], false) }}" class="auth-card bg-white p-4 p-lg-5 d-block h-100 text-decoration-none text-dark">
                     <div class="brand-mark mb-4"><i class="bi bi-shield-lock"></i></div>
                     <div class="small text-primary fw-bold text-uppercase mb-2">For authorized personnel</div>
                     <h2 class="h4 fw-bold">Admin & Staff</h2>
@@ -22,7 +22,7 @@
                 </a>
             </div>
             <div class="col-md-6">
-                <a href="{{ route('student.login') }}" class="auth-card bg-white p-4 p-lg-5 d-block h-100 text-decoration-none text-dark">
+                <a href="{{ route('student.login', [], false) }}" class="auth-card bg-white p-4 p-lg-5 d-block h-100 text-decoration-none text-dark">
                     <div class="brand-mark mb-4" style="background:#138b78"><i class="bi bi-mortarboard"></i></div>
                     <div class="small fw-bold text-uppercase mb-2" style="color:#138b78">For enrolled students</div>
                     <h2 class="h4 fw-bold">Student Portal</h2>
