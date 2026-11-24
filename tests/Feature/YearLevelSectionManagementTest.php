@@ -323,4 +323,32 @@ class YearLevelSectionManagementTest extends TestCase
             'is_active' => false,
         ]);
     }
+
+    public function test_sections_year_level_filter_hides_inactive_levels_unless_they_are_selected(): void
+    {
+        $this->createYearLevels();
+        YearLevel::where('level_number', 4)->update(['is_active' => false]);
+
+        $program = $this->createProgram();
+        Section::create([
+            'program_id' => $program->id,
+            'year_level' => 4,
+            'code' => '4A',
+            'is_active' => true,
+        ]);
+
+        $admin = User::factory()->create(['role' => User::ROLE_ADMIN]);
+
+        $this->actingAs($admin)
+            ->get(route('admin.sections.index'))
+            ->assertOk()
+            ->assertSee('4A')
+            ->assertDontSee('value="4">4 Year</option>');
+
+        $this->actingAs($admin)
+            ->get(route('admin.sections.index', ['year_level' => 4]))
+            ->assertOk()
+            ->assertSee('4A')
+            ->assertSee('value="4"');
+    }
 }
