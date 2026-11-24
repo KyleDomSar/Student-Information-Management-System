@@ -214,4 +214,113 @@ class YearLevelSectionManagementTest extends TestCase
 
         $this->assertDatabaseMissing('students', ['student_number' => 'SIMS-SECTION-002']);
     }
+
+    public function test_admin_can_search_year_levels_by_number_or_name_and_filter_status(): void
+    {
+        $this->createYearLevels();
+        YearLevel::where('level_number', 4)->update(['is_active' => false]);
+
+        $admin = User::factory()->create(['role' => User::ROLE_ADMIN]);
+
+        $this->actingAs($admin)
+            ->get(route('admin.year-levels.index', ['search' => '3']))
+            ->assertOk()
+            ->assertSee('3 Year')
+            ->assertDontSee('2 Year');
+
+        $this->actingAs($admin)
+            ->get(route('admin.year-levels.index', ['search' => 'Second Year']))
+            ->assertOk()
+            ->assertSee('2 Year')
+            ->assertDontSee('3 Year');
+
+        $this->actingAs($admin)
+            ->get(route('admin.year-levels.index', ['status' => 'inactive']))
+            ->assertOk()
+            ->assertSee('4 Year')
+            ->assertDontSee('3 Year');
+    }
+
+    public function test_admin_can_search_and_filter_sections_by_program_year_level_and_status(): void
+    {
+        $this->createYearLevels();
+        $program = $this->createProgram();
+
+        Section::create([
+            'program_id' => $program->id,
+            'year_level' => 1,
+            'code' => '1A',
+            'is_active' => true,
+        ]);
+
+        Section::create([
+            'program_id' => $program->id,
+            'year_level' => 2,
+            'code' => '2A',
+            'is_active' => true,
+        ]);
+
+        $admin = User::factory()->create(['role' => User::ROLE_ADMIN]);
+
+        $this->actingAs($admin)
+            ->get(route('admin.sections.index', ['search' => '2 Year']))
+            ->assertOk()
+            ->assertSee('2A')
+            ->assertDontSee('1A');
+
+        $this->actingAs($admin)
+            ->get(route('admin.sections.index', ['search' => 'BSIT']))
+            ->assertOk()
+            ->assertSee('1A')
+            ->assertSee('2A');
+
+        $this->actingAs($admin)
+            ->get(route('admin.sections.index', [
+                'program_id' => $program->id,
+                'year_level' => 2,
+                'status' => 'active',
+            ]))
+            ->assertOk()
+            ->assertSee('2A')
+            ->assertDontSee('1A');
+    }
+
+    public function test_admin_can_update_and_deactivate_a_section_without_deleting_it(): void
+    {
+        $this->createYearLevels();
+        $program = $this->createProgram();
+        $admin = User::factory()->create(['role' => User::ROLE_ADMIN]);
+
+        $section = Section::create([
+            'program_id' => $program->id,
+            'year_level' => 1,
+            'code' => '1A',
+            'is_active' => true,
+        ]);
+
+        $this->actingAs($admin)
+            ->put(route('admin.sections.update', $section), [
+                'program_id' => $program->id,
+                'year_level' => 1,
+                'code' => '1B',
+                'is_active' => '1',
+            ])
+            ->assertRedirect(route('admin.sections.index'));
+
+        $this->assertDatabaseHas('sections', [
+            'id' => $section->id,
+            'code' => '1B',
+            'is_active' => true,
+        ]);
+
+        $this->actingAs($admin)
+            ->delete(route('admin.sections.destroy', $section))
+            ->assertRedirect(route('admin.sections.index'));
+
+        $this->assertDatabaseHas('sections', [
+            'id' => $section->id,
+            'code' => '1B',
+            'is_active' => false,
+        ]);
+    }
 }
