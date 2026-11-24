@@ -74,19 +74,25 @@ class YearLevelSectionManagementTest extends TestCase
     {
         $this->createYearLevels();
         $admin = User::factory()->create(['role' => User::ROLE_ADMIN]);
-        $yearLevel = YearLevel::firstWhere('level_number', 6);
 
         $this->actingAs($admin)
-            ->put(route('admin.year-levels.update', $yearLevel), [
-                'level_number' => 6,
-                'name' => 'Sixth Year',
-                'is_active' => '0',
+            ->post(route('admin.year-levels.store'), [
+                'level_number' => 7,
+                'name' => 'Seventh Year',
             ])
+            ->assertRedirect(route('admin.year-levels.index'));
+
+        $yearLevel = YearLevel::firstWhere('level_number', 7);
+
+        $this->assertNotNull($yearLevel);
+
+        $this->actingAs($admin)
+            ->delete(route('admin.year-levels.destroy', $yearLevel))
             ->assertRedirect(route('admin.year-levels.index'));
 
         $this->assertDatabaseHas('year_levels', [
             'id' => $yearLevel->id,
-            'name' => 'Sixth Year',
+            'name' => 'Seventh Year',
             'is_active' => false,
         ]);
     }
