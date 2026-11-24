@@ -99,15 +99,14 @@ Implemented:
 - Staff student registration and authorized student-record updates.
 - Administrator-only student account activation/deactivation.
 - Administrator-only deletion of student records when no enrollment history exists. Deletion is blocked when academic history exists to preserve data integrity.
-- Administrator-only program and subject catalog maintenance; Staff can view and use existing catalog entries in registrar workflows.
+- Administrator-only program, subject, year-level, and section catalog maintenance; Staff can view catalogs and use existing entries in registrar workflows.
+- Students can be assigned to sections that match their program and year level.
 - Student self-service updates for name and email.
 - Student self-service password change with current-password verification.
 - Student-owned enrollment, grade, and class-schedule views.
 - Audit events for authentication and implemented record changes.
 
 Still required by the approved brief:
-- Year-level administration.
-- Section administration and student section assignment.
 - Student visitor time-out recording. The precise data fields and workflow should be confirmed before implementation.
 - Student information reports and student lists for Staff and Administrators.
 - Complete security testing against every row of the approved role matrix.
