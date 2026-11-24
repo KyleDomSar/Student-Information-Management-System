@@ -6,7 +6,7 @@
 <div class="row justify-content-center align-items-center" style="min-height:65vh">
     <div class="col-sm-10 col-md-7 col-lg-5 col-xl-4">
         <div class="auth-card bg-white p-4 p-lg-5">
-            <a href="{{ route('login') }}" class="small text-decoration-none text-primary"><i class="bi bi-arrow-left"></i> Choose portal</a>
+            <a href="{{ route('login', [], false) }}" class="small text-decoration-none text-primary"><i class="bi bi-arrow-left"></i> Choose portal</a>
             <div class="brand-mark mt-4 mb-3"><i class="bi bi-shield-lock"></i></div>
             <div class="small text-primary fw-bold text-uppercase mb-2">Admin / Staff portal</div>
             <h1 class="h3 fw-bold mb-2">Welcome back</h1>
@@ -16,7 +16,7 @@
                 <div class="alert alert-danger small" role="alert">{{ $errors->first() }}</div>
             @endif
 
-            <form method="POST" action="{{ route('admin.login.store') }}">
+            <form method="POST" action="{{ route('admin.login.store', [], false) }}">
                 @csrf
                 <div class="mb-3">
                     <label for="email" class="form-label fw-semibold small">Email address</label>
