@@ -8,6 +8,8 @@ use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\AuditLogController;
 use App\Http\Controllers\Admin\ProgramController;
 use App\Http\Controllers\Admin\StudentController;
+use App\Http\Controllers\Admin\YearLevelController;
+use App\Http\Controllers\Admin\SectionController;
 use App\Http\Controllers\Admin\SubjectController;
 use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
@@ -57,6 +59,8 @@ Route::prefix('admin')
             Route::resource('students', StudentController::class)->except(['destroy']);
             Route::get('/programs', [ProgramController::class, 'index'])->name('programs.index');
             Route::get('/subjects', [SubjectController::class, 'index'])->name('subjects.index');
+            Route::get('/year-levels', [YearLevelController::class, 'index'])->name('year-levels.index');
+            Route::get('/sections', [SectionController::class, 'index'])->name('sections.index');
             Route::get('/enrollments', [AdminEnrollmentController::class, 'index'])->name('enrollments.index');
             Route::get('/enrollments/create', [AdminEnrollmentController::class, 'create'])->name('enrollments.create');
             Route::post('/enrollments', [AdminEnrollmentController::class, 'store'])->name('enrollments.store');
@@ -75,6 +79,8 @@ Route::prefix('admin')
             Route::delete('/students/{student}', [StudentController::class, 'destroy'])->name('students.destroy');
             Route::resource('programs', ProgramController::class)->only(['create', 'store', 'edit', 'update', 'destroy']);
             Route::resource('subjects', SubjectController::class)->only(['create', 'store', 'edit', 'update', 'destroy']);
+            Route::resource('year-levels', YearLevelController::class)->except(['index', 'show']);
+            Route::resource('sections', SectionController::class)->except(['index', 'show']);
             Route::resource('users', AdminUserController::class)
                 ->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
             Route::get('/audit-logs', [AuditLogController::class, 'index'])->name('audit-logs.index');
