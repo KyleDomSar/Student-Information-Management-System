@@ -349,6 +349,6 @@ class YearLevelSectionManagementTest extends TestCase
             ->get(route('admin.sections.index', ['year_level' => 4]))
             ->assertOk()
             ->assertSee('4A')
-            ->assertSee('value="4"');
+            ->assertSee('value="4"', false);
     }
 }
