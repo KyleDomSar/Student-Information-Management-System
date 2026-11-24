@@ -63,8 +63,13 @@ class EnrollmentController extends Controller
             ],
             'academic_year' => [
                 'required',
+                'string',
                 'regex:/^\d{4}-\d{4}$/',
                 function (string $attribute, mixed $value, \Closure $fail): void {
+                    if (! is_string($value) || ! preg_match('/^\d{4}-\d{4}$/', $value)) {
+                        return;
+                    }
+
                     [$startYear, $endYear] = array_map('intval', explode('-', $value));
 
                     if ($endYear !== $startYear + 1) {
@@ -72,7 +77,7 @@ class EnrollmentController extends Controller
                     }
                 },
             ],
-            'semester' => ['required', Rule::in(['First Semester', 'Second Semester', 'Midyear'])],
+            'semester' => ['required', 'string', Rule::in(['First Semester', 'Second Semester', 'Midyear'])],
         ], [
             'student_id.unique' => 'This student already has an enrollment record for the selected academic year and semester.',
         ]);
