@@ -64,9 +64,9 @@ See [Database Overview](DATABASE_OVERVIEW.md) for the initial relationships.
 
 ## 5. Implementation status
 
-Implemented in the repository: centralized portal authentication, role middleware, student profile management, academic program management, subject catalog management, enrollment creation and approval, student-owned enrollment views, Admin/Staff grade encoding, student-owned read-only grade views, class schedule management, student-owned timetable views, audit event recording for the implemented actions, and automated feature tests.
+Implemented in the repository: centralized portal authentication, role middleware, student profile management, academic program management, subject catalog management, enrollment creation and approval, student-owned enrollment views, Admin/Staff grade encoding, student-owned read-only grade views, class schedule management, student-owned timetable views, Admin-only user management, Admin-only audit log viewing, audit event recording for the implemented actions, and automated feature tests.
 
-Planned next: audit log viewer, user management, and additional reporting.
+Planned next: reports, optional document requests/tuition information, and any instructor workspace required by the final project scope.
 
 ## 6. Explicitly out of scope for the first milestone
 
