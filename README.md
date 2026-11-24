@@ -30,13 +30,15 @@ A web-based Student Information Management System for academic use. SIMS has sep
 - Subject catalog management: search, create, update, and safe deactivation, with program association.
 - Enrollment workflow: staff create term enrollments, attach active subjects, and approve or reject pending requests.
 - Student Portal enrollment history and detail pages, scoped to the signed-in student's own profile.
+- Gradebook for Admin/Staff to encode and update numeric final grades for approved enrollments.
+- Read-only Student Portal grade view, scoped to the signed-in student's approved enrollments.
+- Pending and rejected enrollments are excluded from grade entry and student grade results.
 - Duplicate student term prevention and subject-to-program validation.
 - Audit events for student, program, subject, and enrollment record changes.
 - Optional environment-configured local seed accounts.
 
 ### Still to be developed
 - Admin user and role management screens.
-- Grade encoding and student grade viewing.
 - Class schedule management.
 - Reports and export.
 - Document requests and tuition balance, only if required by the final project scope.
@@ -59,6 +61,8 @@ Gradebook, class schedule management, audit log browsing, and user management ar
 | Subject catalog | `/admin/subjects` |
 | Admin enrollment management | `/admin/enrollments` |
 | Student enrollment history | `/student/enrollments` |
+| Admin Gradebook | `/admin/grades` |
+| Student grades | `/student/grades` |
 
 Both portals use the same `users` table and Laravel session guard. The login controller checks the account role, while route middleware enforces access on the server. Students have no routes for editing official academic records. The instructor role is reserved for a future instructor workspace and is not yet allowed to sign in.
 
