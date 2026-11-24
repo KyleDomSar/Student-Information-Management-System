@@ -81,7 +81,7 @@ class AdminSecurityToolsTest extends TestCase
         ]);
     }
 
-    public function test_last_active_admin_cannot_be_demoted_or_deactivated(): void
+    public function test_admin_cannot_change_own_role_or_deactivate_own_account(): void
     {
         $admin = User::factory()->create(['role' => User::ROLE_ADMIN]);
         $staff = User::factory()->create(['role' => User::ROLE_STAFF]);
@@ -108,6 +108,28 @@ class AdminSecurityToolsTest extends TestCase
         $this->assertDatabaseHas('users', [
             'id' => $staff->id,
             'role' => User::ROLE_STAFF,
+        ]);
+    }
+
+    public function test_admin_can_deactivate_another_admin_while_remaining_active(): void
+    {
+        $actingAdmin = User::factory()->create(['role' => User::ROLE_ADMIN]);
+        $otherAdmin = User::factory()->create(['role' => User::ROLE_ADMIN]);
+
+        $this->actingAs($actingAdmin)
+            ->delete(route('admin.users.destroy', $otherAdmin))
+            ->assertRedirect(route('admin.users.index'));
+
+        $this->assertDatabaseHas('users', [
+            'id' => $actingAdmin->id,
+            'role' => User::ROLE_ADMIN,
+            'is_active' => true,
+        ]);
+
+        $this->assertDatabaseHas('users', [
+            'id' => $otherAdmin->id,
+            'role' => User::ROLE_ADMIN,
+            'is_active' => false,
         ]);
     }
 
