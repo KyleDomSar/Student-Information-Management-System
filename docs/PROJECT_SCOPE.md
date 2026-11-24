@@ -35,7 +35,7 @@ Build a straightforward web-based Student Information Management System (SIMS) t
 - Academic program management (create, list, update, and safe deactivation).
 - Subject catalog management (search, create, update, and safe deactivation).
 - Enrollment management: create term records, attach subjects, and approve or reject pending enrollment.
-- Grade management with role restrictions.
+- Grade management: Admin/Staff encode and update numeric final grades for approved enrollments; students can only view their own grades.
 - Class schedule management.
 - User and role management for administrators.
 - Audit log viewer.
@@ -44,7 +44,7 @@ Build a straightforward web-based Student Information Management System (SIMS) t
 - Personal dashboard.
 - Read-only profile.
 - Enrollment status and history (read-only, restricted to the signed-in student's own records).
-- Grades.
+- Grades (read-only, limited to the signed-in student's approved enrollments).
 - Class schedule.
 - Optional document request and account-balance features only if required by the instructor.
 
@@ -64,9 +64,9 @@ See [Database Overview](DATABASE_OVERVIEW.md) for the initial relationships.
 
 ## 5. Implementation status
 
-Implemented in the repository: centralized portal authentication, role middleware, student profile management, academic program management, subject catalog management, enrollment creation and approval, student-owned enrollment views, audit event recording for the implemented actions, and automated feature tests.
+Implemented in the repository: centralized portal authentication, role middleware, student profile management, academic program management, subject catalog management, enrollment creation and approval, student-owned enrollment views, Admin/Staff grade encoding, student-owned read-only grade views, audit event recording for the implemented actions, and automated feature tests.
 
-Planned next: gradebook, class scheduling, audit log viewer, and user management.
+Planned next: class scheduling, audit log viewer, user management, and additional reporting.
 
 ## 6. Explicitly out of scope for the first milestone
 
