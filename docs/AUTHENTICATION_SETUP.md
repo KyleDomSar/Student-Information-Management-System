@@ -46,15 +46,18 @@ The seeder does not create an Administrator if either credential is missing. Do 
 - Inactive accounts cannot sign in.
 - Student routes require the `student` role.
 - Admin/Staff routes require the `admin` or `staff` role, with Administrator-only actions protected by an additional `role:admin` middleware.
-- Staff cannot change student-account activation status, delete student records, maintain the program/subject catalogs, manage user roles, or view audit logs.
+- Staff cannot change student-account activation status, delete student records, maintain the program/course list, manage user roles, or view audit logs.
 - Students can update only their own name and email through the profile page. Official academic information remains controlled by authorized school personnel.
 - Students can change their own password after verifying their current password.
-- Student enrollment, grade, and timetable queries are scoped to the authenticated student's own profile.
+- Student enrollment records are scoped to the authenticated student's own profile.
 
 ## Audit events
 
 Login and logout events, failed login attempts, profile updates, password changes, and implemented administrative/academic record changes are recorded without storing passwords or session secrets.
 
-## Remaining authentication/security work
+## Authentication/security verification checklist
 
-Continue testing every route against the approved Administrator, Staff / Registrar, and Student permission matrix. Add the remaining year-level, section, visitor time-out, and reporting modules without weakening role restrictions.
+- [ ] Verify login and logout for all three approved roles.
+- [ ] Confirm Staff cannot access administrator-only account management or audit logs.
+- [ ] Confirm students can access only their own profile, enrollment, and Visitor Time-Out records.
+- [ ] Re-run the automated feature tests after changes to authentication or permissions.
