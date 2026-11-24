@@ -49,4 +49,4 @@ The seeder does not create an administrator if either credential is missing. Do 
 
 ## Not implemented yet
 
-Student account provisioning, user management screens, password-reset workflow, grade editing, enrollment management, and full CRUD modules are planned for later milestones.
+Password-reset workflow, enrollment cancellation/reversal, and any additional modules required by the final project scope are planned for later milestones.
