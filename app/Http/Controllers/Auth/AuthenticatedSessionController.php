@@ -21,6 +21,6 @@ class AuthenticatedSessionController
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route($loginRoute);
+        return new RedirectResponse(route($loginRoute, [], false));
     }
 }
