@@ -162,7 +162,7 @@ For a complete classroom demonstration, use a separate database. This keeps your
    DB_PASSWORD=
    ```
 
-3. In Laragon Terminal, from `C:\\laragon\\www\\SIMS`, run:
+3. In Laragon Terminal, from `C:\laragon\www\SIMS`, run:
 
    ```bash
    php artisan config:clear
