@@ -28,8 +28,8 @@
     @method('PUT')
     <div class="surface p-3 p-md-4">
         <div class="mb-3">
-            <label for="final_grade" class="form-label small fw-semibold">Final grade (0 to 100) *</label>
-            <input id="final_grade" type="number" name="final_grade" min="0" max="100" step="0.01" value="{{ old('final_grade', $enrollmentSubject->final_grade) }}" class="form-control" required>
+            <label for="final_grade" class="form-label small fw-semibold">Final grade ({{ config('sims.grade_scale.minimum') }} to {{ config('sims.grade_scale.maximum') }}) *</label>
+            <input id="final_grade" type="number" name="final_grade" min="{{ config('sims.grade_scale.minimum') }}" max="{{ config('sims.grade_scale.maximum') }}" step="0.01" value="{{ old('final_grade', $enrollmentSubject->final_grade) }}" class="form-control" required>
             @error('final_grade')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
             <div class="form-text">Enter the official numeric grade provided by the instructor or registrar.</div>
         </div>
