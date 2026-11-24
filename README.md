@@ -32,19 +32,20 @@ A web-based Student Information Management System for academic use. SIMS has sep
 - Student Portal enrollment history and detail pages, scoped to the signed-in student's own profile.
 - Gradebook for Admin/Staff to encode and update numeric final grades for approved enrollments.
 - Read-only Student Portal grade view, scoped to the signed-in student's approved enrollments.
-- Pending and rejected enrollments are excluded from grade entry and student grade results.
+- Class schedule management for Admin/Staff, including day, time, room, and approved enrollment subject assignment.
+- Read-only Student Portal timetable, scoped to the signed-in student's approved enrollments.
+- Pending and rejected enrollments are excluded from grade entry, student grade results, and student timetable.
 - Duplicate student term prevention and subject-to-program validation.
 - Audit events for student, program, subject, and enrollment record changes.
 - Optional environment-configured local seed accounts.
 
 ### Still to be developed
 - Admin user and role management screens.
-- Class schedule management.
 - Reports and export.
 - Document requests and tuition balance, only if required by the final project scope.
 - Additional authorization policies and comprehensive security testing.
 
-Gradebook, class schedule management, audit log browsing, and user management are not implemented yet. Their navigation entries are shown as disabled placeholders.
+Audit log browsing, user management, reports, and document/tuition workflows are not implemented yet. Their navigation entries or related pages are still planned.
 
 ## Portal URLs
 
@@ -63,6 +64,8 @@ Gradebook, class schedule management, audit log browsing, and user management ar
 | Student enrollment history | `/student/enrollments` |
 | Admin Gradebook | `/admin/grades` |
 | Student grades | `/student/grades` |
+| Admin class schedules | `/admin/schedules` |
+| Student timetable | `/student/schedules` |
 
 Both portals use the same `users` table and Laravel session guard. The login controller checks the account role, while route middleware enforces access on the server. Students have no routes for editing official academic records. The instructor role is reserved for a future instructor workspace and is not yet allowed to sign in.
 
