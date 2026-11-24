@@ -20,16 +20,18 @@
             <input id="email" type="email" name="email" value="{{ old('email', $student?->user?->email ?? '') }}" class="form-control" maxlength="255" required>
             @error('email')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
         </div>
-        <div class="col-md-6">
-            <label for="password" class="form-label small fw-semibold">{{ $isEdit ? 'New password (optional)' : 'Temporary password *' }}</label>
-            <input id="password" type="password" name="password" class="form-control" minlength="10" autocomplete="new-password" {{ $isEdit ? '' : 'required' }}>
-            @if($isEdit)<div class="form-text">Leave blank to keep the current password.</div>@endif
-            @error('password')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
-        </div>
-        <div class="col-md-6">
-            <label for="password_confirmation" class="form-label small fw-semibold">Confirm {{ $isEdit ? 'new ' : '' }}password {{ $isEdit ? '' : '*' }}</label>
-            <input id="password_confirmation" type="password" name="password_confirmation" class="form-control" minlength="10" autocomplete="new-password" {{ $isEdit ? '' : 'required' }}>
-        </div>
+        @if(!$isEdit || auth()->user()->isAdministrator())
+            <div class="col-md-6">
+                <label for="password" class="form-label small fw-semibold">{{ $isEdit ? 'Reset password (optional)' : 'Temporary password *' }}</label>
+                <input id="password" type="password" name="password" class="form-control" minlength="10" autocomplete="new-password" {{ $isEdit ? '' : 'required' }}>
+                @if($isEdit)<div class="form-text">Leave blank to keep the current password. Staff cannot reset an existing student account password.</div>@endif
+                @error('password')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
+            </div>
+            <div class="col-md-6">
+                <label for="password_confirmation" class="form-label small fw-semibold">Confirm {{ $isEdit ? 'new ' : '' }}password {{ $isEdit ? '' : '*' }}</label>
+                <input id="password_confirmation" type="password" name="password_confirmation" class="form-control" minlength="10" autocomplete="new-password" {{ $isEdit ? '' : 'required' }}>
+            </div>
+        @endif
     </div>
 </div>
 
@@ -69,14 +71,16 @@
                 @endforeach
             </select>
         </div>
-        <div class="col-md-6">
-            <label for="account_active" class="form-label small fw-semibold">Portal account *</label>
-            <select id="account_active" name="account_active" class="form-select" required>
-                <option value="1" @selected((string) old('account_active', $student ? ($student->user->is_active ? '1' : '0') : '1') === '1')>Active, can sign in</option>
-                <option value="0" @selected((string) old('account_active', $student ? ($student->user->is_active ? '1' : '0') : '1') === '0')>Inactive, sign-in blocked</option>
-            </select>
-            <div class="form-text">This controls portal access separately from academic status.</div>
-        </div>
+        @if(!$isEdit && auth()->user()->isAdministrator())
+            <div class="col-md-6">
+                <label for="account_active" class="form-label small fw-semibold">Portal account *</label>
+                <select id="account_active" name="account_active" class="form-select" required>
+                    <option value="1" @selected((string) old('account_active', '1') === '1')>Active, can sign in</option>
+                    <option value="0" @selected((string) old('account_active', '1') === '0')>Inactive, sign-in blocked</option>
+                </select>
+                <div class="form-text">Only administrators can activate or deactivate student portal accounts.</div>
+            </div>
+        @endif
     </div>
 </div>
 
