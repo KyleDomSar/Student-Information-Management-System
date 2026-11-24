@@ -17,18 +17,6 @@ Stores account credentials and assigned roles.
 | is_active | Whether the account is enabled |
 | created_at / updated_at | Timestamps |
 
-### staff_profiles
-Stores optional staff identity details linked to an account.
-
-| Field | Purpose |
-|---|---|
-| id | Primary key |
-| user_id | Foreign key to users.id |
-| employee_number | Optional employee number |
-| position | Staff position |
-| department | Department label |
-| created_at / updated_at | Timestamps |
-
 ### programs
 Stores programs or courses assigned to students.
 
@@ -121,7 +109,7 @@ Stores important administrative and student-account activities.
 
 ## 2. Main relationships
 
-- One user has one student profile or staff profile.
+- One user has one student profile.
 - One program has many students and sections.
 - One year level has many students and sections.
 - One section belongs to one program and one year level.
@@ -144,8 +132,6 @@ users
   |        +---- enrollments
   |        |
   |        +---- student_visitor_timeouts
-  |
-  +---- staff_profiles
   |
   +---- audit_logs
 ```

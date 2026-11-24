@@ -9,6 +9,7 @@ return new class extends Migration
 {
     public function up(): void
     {
+        Schema::dropIfExists('staff_profiles');
         Schema::dropIfExists('class_schedules');
         Schema::dropIfExists('enrollment_subjects');
         Schema::dropIfExists('subjects');
@@ -58,6 +59,15 @@ return new class extends Migration
 
     public function down(): void
     {
+        Schema::create('staff_profiles', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->unique()->constrained()->cascadeOnDelete();
+            $table->string('employee_number', 50)->nullable()->unique();
+            $table->string('position')->nullable();
+            $table->string('department')->nullable();
+            $table->timestamps();
+        });
+
         Schema::create('colleges', function (Blueprint $table) {
             $table->id();
             $table->string('name', 255);
