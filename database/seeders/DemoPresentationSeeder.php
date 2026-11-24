@@ -291,8 +291,7 @@ class DemoPresentationSeeder extends Seeder
             ];
 
             foreach (array_slice($demoStudents, 0, count($timeoutDates)) as $index => $student) {
-                $timeout = StudentVisitorTimeout::firstOrCreate([
-                    'student_id' => $student->id,
+                $timeout = $student->visitorTimeouts()->firstOrCreate([
                     'time_out_at' => $timeoutDates[$index],
                 ]);
 
