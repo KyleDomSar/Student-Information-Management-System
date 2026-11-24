@@ -62,7 +62,7 @@
                 @foreach($subjects as $subject)
                     <div class="col-md-6">
                         <label class="border rounded-3 p-3 d-flex gap-2 h-100">
-                            <input class="form-check-input mt-1" type="checkbox" name="subjects[]" value="{{ $subject->id }}" @checked(in_array((string) $subject->id, array_map('strval', old('subjects', [])), true))>
+                            <input class="form-check-input mt-1" type="checkbox" name="subjects[]" value="{{ $subject->id }}" @checked(in_array((string) $subject->id, array_map('strval', (array) old('subjects', [])), true))>
                             <span>
                                 <span class="d-block fw-semibold">{{ $subject->code }} · {{ $subject->title }}</span>
                                 <span class="d-block muted small">{{ $subject->units }} units · {{ $subject->program?->code ?? 'General subject' }}</span>
