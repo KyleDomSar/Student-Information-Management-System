@@ -31,6 +31,7 @@ class EnrollmentController extends Controller
         // Query through the authenticated student's relationship to prevent IDOR.
         $enrollmentRecord = $student->enrollments()
             ->with([
+                'student',
                 'enrollmentSubjects.subject.program',
                 'enrollmentSubjects.classSchedules',
             ])
