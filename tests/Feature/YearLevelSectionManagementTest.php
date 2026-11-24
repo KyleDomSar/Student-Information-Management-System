@@ -41,7 +41,7 @@ class YearLevelSectionManagementTest extends TestCase
         $this->actingAs($staff)
             ->get(route('admin.year-levels.index'))
             ->assertOk()
-            ->assertSee('First Year');
+            ->assertSee('1 Year');
 
         $this->actingAs($staff)
             ->get(route('admin.sections.index'))
