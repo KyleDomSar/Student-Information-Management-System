@@ -141,6 +141,34 @@ All permissions are enforced on the server. Hiding a button in the interface is 
    php artisan test
    ```
 
+## Optional presentation demo data
+
+The project includes an **opt-in** seeder with fictional records for classroom demonstrations. It creates or updates a dedicated demo Registrar account, 11 demo Student accounts, demo Sections under currently active CEIT Programs and Year Levels, sample enrollment history, Visitor Time-Out entries, and clearly labeled `[DEMO]` audit-log descriptions.
+
+Run it only when you want sample data in your local database:
+
+```bash
+php artisan db:seed --class=DemoPresentationSeeder
+```
+
+The seeder:
+- Is not called by the normal `php artisan db:seed` command.
+- Runs only when `APP_ENV=local` or `APP_ENV=testing`.
+- Uses reserved `.test` email addresses and `SIMS-DEMO-2026-` student numbers.
+- Uses existing active Programs and Year Levels. It does not reactivate inactive academic records.
+- Is repeatable. Running it again updates the same demo records instead of adding duplicates.
+- Does not delete, reset, or overwrite non-demo student records.
+- Does not require a migration.
+
+**Local demo logins**
+
+| Portal | Email | Password |
+|---|---|---|
+| Admin / Staff | `registrar.demo@sims.test` | `Demo@2026!` |
+| Student | `alyssa.santos.demo@sims.test` | `Demo@2026!` |
+
+Use your existing Administrator account for the Admin portal. The demo password is for local presentation only. Do not deploy these demo credentials or use them for real student information.
+
 ## Offline local use after one-time setup
 
 SIMS can run on your own computer without an internet connection after its PHP and Node dependencies are installed and its frontend assets are built once.
