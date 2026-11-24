@@ -22,7 +22,7 @@ Suggested route groups:
 - `/admin/*`: authenticated admin or staff, with per-action permission checks.
 - `/student/*`: authenticated student only.
 
-For student-owned data, scope queries to the authenticated student's profile. Never trust a student ID supplied by a URL, hidden input, or request body without checking ownership.
+For student-owned data, scope queries to the authenticated student's profile. Never trust a student ID supplied by a URL, hidden input, or request body without checking ownership. Student enrollment details are fetched through the authenticated student's `enrollments()` relationship, so changing the enrollment ID cannot expose another student's record.
 
 Example principle:
 
