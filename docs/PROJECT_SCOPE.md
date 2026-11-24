@@ -17,7 +17,7 @@ Build a straightforward web-based Student Information Management System (SIMS) t
 | View grades | Yes | Yes | Assigned classes | Own grades only |
 | Manage class schedules | Yes | Yes | Assigned classes only | No |
 | View class schedule | Yes | Yes | Assigned classes | Own schedule only |
-| View audit logs | Yes | Limited, if authorized | No | No |
+| View audit logs | Yes | No | No | No |
 
 **Important:** Permissions must be checked on the server for every protected route and record operation. Frontend visibility is not a security boundary.
 
