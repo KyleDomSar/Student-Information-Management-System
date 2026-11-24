@@ -163,8 +163,8 @@ class PresentationDatabaseSeeder extends Seeder
     }
 
     /**
-     * @param IlluminateSupportCollection<string, Program> $programs
-     * @param IlluminateSupportCollection<int, YearLevel> $yearLevels
+     * @param \\Illuminate\\Support\\Collection<string, Program> $programs
+     * @param \\Illuminate\\Support\\Collection<int, YearLevel> $yearLevels
      * @return array<string, Section>
      */
     private function seedSections(User $admin, $programs, $yearLevels): array
@@ -252,8 +252,8 @@ class PresentationDatabaseSeeder extends Seeder
     }
 
     /**
-     * @param IlluminateSupportCollection<string, Program> $programs
-     * @param IlluminateSupportCollection<int, YearLevel> $yearLevels
+     * @param \\Illuminate\\Support\\Collection<string, Program> $programs
+     * @param \\Illuminate\\Support\\Collection<int, YearLevel> $yearLevels
      * @param array<string, Section> $sections
      * @return array<int, Student>
      */
