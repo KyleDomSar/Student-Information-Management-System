@@ -1,19 +1,19 @@
 <?php
 
-namespace Tests\\Feature;
+namespace Tests\Feature;
 
-use App\\Models\\AuditLog;
-use App\\Models\\Enrollment;
-use App\\Models\\Program;
-use App\\Models\\Section;
-use App\\Models\\Student;
-use App\\Models\\StudentVisitorTimeout;
-use App\\Models\\User;
-use App\\Models\\YearLevel;
-use Database\\Seeders\\PresentationDatabaseSeeder;
-use Illuminate\\Foundation\\Testing\\RefreshDatabase;
-use Illuminate\\Support\\Facades\\Hash;
-use Tests\\TestCase;
+use App\Models\AuditLog;
+use App\Models\Enrollment;
+use App\Models\Program;
+use App\Models\Section;
+use App\Models\Student;
+use App\Models\StudentVisitorTimeout;
+use App\Models\User;
+use App\Models\YearLevel;
+use Database\Seeders\PresentationDatabaseSeeder;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
+use Tests\TestCase;
 
 class PresentationDatabaseSeederTest extends TestCase
 {
