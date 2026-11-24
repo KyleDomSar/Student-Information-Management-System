@@ -11,11 +11,7 @@
     <div class="row g-3">
         <div class="col-md-4">
             <label for="level_number" class="form-label small fw-semibold">Year level number *</label>
-            <select id="level_number" name="level_number" class="form-select" required>
-                @foreach(range(1, 6) as $number)
-                    <option value="{{ $number }}" @selected((string) old('level_number', $yearLevel?->level_number ?? '') === (string) $number)>{{ $number }}</option>
-                @endforeach
-            </select>
+            <input id="level_number" type="number" name="level_number" value="{{ old('level_number', $yearLevel?->level_number ?? '') }}" class="form-control" min="1" max="255" required>
             @error('level_number')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
         </div>
         <div class="col-md-8">
@@ -33,7 +29,7 @@
             </div>
         @endif
     </div>
-    <div class="form-text mt-3">A year level number cannot be changed while sections use that level.</div>
+    <div class="form-text mt-3">A year level number cannot be changed while student records or sections use that level.</div>
 </div>
 <div class="d-flex flex-wrap gap-2 mt-3">
     <button type="submit" class="btn btn-primary"><i class="bi bi-check2 me-1"></i>{{ $isEdit ? 'Save changes' : 'Create year level' }}</button>
