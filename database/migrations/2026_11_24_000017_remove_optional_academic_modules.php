@@ -29,6 +29,7 @@ return new class extends Migration
         Schema::dropIfExists('colleges');
 
         Schema::table('enrollments', function (Blueprint $table) {
+            $table->dropIndex('enrollments_status_index');
             $table->dropColumn('status');
         });
 
