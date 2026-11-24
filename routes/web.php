@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\EnrollmentController as AdminEnrollmentController;
 use App\Http\Controllers\Admin\ProgramController;
 use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\Admin\SubjectController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\PortalLoginController;
 use App\Http\Controllers\Auth\StudentLoginController;
 use App\Http\Controllers\Student\DashboardController as StudentDashboardController;
+use App\Http\Controllers\Student\EnrollmentController as StudentEnrollmentController;
 use App\Http\Controllers\Student\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -51,6 +53,11 @@ Route::prefix('admin')
                 ->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
             Route::resource('subjects', SubjectController::class)
                 ->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
+            Route::get('/enrollments', [AdminEnrollmentController::class, 'index'])->name('enrollments.index');
+            Route::get('/enrollments/create', [AdminEnrollmentController::class, 'create'])->name('enrollments.create');
+            Route::post('/enrollments', [AdminEnrollmentController::class, 'store'])->name('enrollments.store');
+            Route::get('/enrollments/{enrollment}', [AdminEnrollmentController::class, 'show'])->name('enrollments.show');
+            Route::patch('/enrollments/{enrollment}/status', [AdminEnrollmentController::class, 'updateStatus'])->name('enrollments.update-status');
         });
     });
 
@@ -60,4 +67,6 @@ Route::prefix('student')
     ->group(function () {
         Route::get('/dashboard', StudentDashboardController::class)->name('dashboard');
         Route::get('/profile', ProfileController::class)->name('profile');
+        Route::get('/enrollments', [StudentEnrollmentController::class, 'index'])->name('enrollments.index');
+        Route::get('/enrollments/{enrollment}', [StudentEnrollmentController::class, 'show'])->name('enrollments.show');
     });
