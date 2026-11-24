@@ -141,6 +141,38 @@ All permissions are enforced on the server. Hiding a button in the interface is 
    php artisan test
    ```
 
+## Offline local use after one-time setup
+
+SIMS can run on your own computer without an internet connection after its PHP and Node dependencies are installed and its frontend assets are built once.
+
+While internet is available, complete the local setup steps above, including:
+
+```bash
+composer install
+npm install
+npm run build
+```
+
+Bootstrap CSS, Bootstrap Icons, and Bootstrap JavaScript are bundled into the local Vite build. The login pages and authenticated portals do not need a CDN connection at runtime. The interface uses system fonts, so it does not need a remote font service either.
+
+For normal offline use:
+
+1. Start Laragon and make sure its local MySQL service is running.
+2. Open Laragon Terminal in `C:\laragon\www\SIMS`.
+3. Start the app:
+
+   ```bash
+   php artisan serve
+   ```
+
+4. Open `http://127.0.0.1:8000/login`.
+
+The application records are stored in the local MySQL database configured by `DB_DATABASE=sims_db`. Stopping `php artisan serve` does not delete database records. Starting the server again reconnects to the same database. Stopping Laragon/MySQL also does not normally delete the database; keep the Laragon data directory intact.
+
+Do not use `php artisan migrate:fresh`, `php artisan db:wipe`, or delete the Laragon MySQL data directory on a database that contains records you need to keep. Back up `sims_db` regularly using phpMyAdmin Export or `mysqldump`.
+
+When you change frontend CSS or JavaScript, rebuild assets with `npm run build`. That build step and installing dependencies may need internet access the first time or when dependencies change, but serving the already-built local app does not require internet.
+
 ## Create the initial local Administrator account
 
 The seeder creates or updates the Administrator account only when both credentials are set in your **local, untracked** `.env` file:
