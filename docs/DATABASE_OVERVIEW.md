@@ -27,9 +27,35 @@ Stores student-specific profile and academic identifiers.
 | user_id | Foreign key to users.id, unique |
 | student_number | Unique student number |
 | program_id | Foreign key to programs.id |
-| year_level | Current year level |
+| section_id | Nullable foreign key to sections.id |
+| year_level | Numeric year-level identifier linked to year_levels.level_number |
 | status | Active, inactive, graduated, or other approved status |
 | created_at / updated_at | Timestamps |
+
+### year_levels
+Stores the year levels configured by the Administrator.
+
+| Field | Purpose |
+|---|---|
+| id | Primary key |
+| level_number | Unique numeric year-level identifier |
+| name | Display name, such as First Year |
+| is_active | Whether the year level can be assigned |
+| created_at / updated_at | Timestamps |
+
+### sections
+Stores section groups under a program and year level.
+
+| Field | Purpose |
+|---|---|
+| id | Primary key |
+| program_id | Foreign key to programs.id |
+| year_level | Foreign key to year_levels.level_number |
+| code | Section name or code |
+| is_active | Whether the section can be assigned |
+| created_at / updated_at | Timestamps |
+
+Section code is unique within a program and year level.
 
 ### programs
 Stores academic programs or courses.
@@ -104,11 +130,13 @@ Stores important administrative and academic record actions.
 | description | Sanitized summary |
 | created_at | Event timestamp |
 
-## 2. Planned requirement-driven tables\n\nThe approved project brief also requires management of year levels and sections, plus student visitor time-out recording. These are not yet present in the current migrations. Their tables and relationships will be added in a later migration after the visitor time-out workflow is confirmed.\n\n## 3. Relationships
+## 2. Planned requirement-driven tables\n\nYear-level and section management are now represented by the year_levels and sections tables, with students.section_id linking student records to their assigned section. Year levels are configured by the Administrator rather than assuming a fixed institution-wide list. Student visitor time-out recording remains pending until the exact workflow and required data fields are confirmed.\n\n## 3. Relationships
 
 - One user account may have one student profile.
-- One program has many students.
-- One program may have many subjects.
+- One program has many students, subjects, and sections.
+- One year level may be assigned to many students and sections.
+- One section belongs to one program and year level and may be assigned to many students.
+- One student may be assigned to one section.
 - One student has many enrollment records.
 - One enrollment has many enrollment-subject records.
 - One subject may appear in many enrollment-subject records.
@@ -123,6 +151,10 @@ users
   | 1 to 0..1
   v
 students -------- many to 1 -------- programs
+  |                                  |
+  | many to 1                        | 1 to many
+  v                                  v
+sections <--------- many to 1 ---- year_levels
   |
   | 1 to many
   v
