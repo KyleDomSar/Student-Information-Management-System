@@ -1,91 +1,125 @@
 # Project Scope
 
+This document follows the approved **Student Information Management System** project brief for the College of Engineering and Information Technology, Cavite State University. The approved brief is the source of truth for the required roles, functions, and security controls.
+
 ## 1. Project objective
 
-Build a straightforward web-based Student Information Management System (SIMS) that centralizes student academic records while separating administrative tasks from student self-service access.
+Develop a web-based application that centralizes student records in a database. Authorized personnel can register students, update personal information, manage courses and sections, and generate student reports. Students can log in to view personal and academic information.
 
-## 2. User roles and permissions
+The system aims to improve record management, reduce manual paperwork, and protect confidential student information through secure login, role-based access control, and activity monitoring.
 
-| Feature | Admin | Staff / Registrar | Instructor | Student |
-|---|---:|---:|---:|---:|
-| Manage user accounts and roles | Yes | No | No | No |
-| View all student records | Yes | Yes | Assigned classes only | Own record only |
-| Create and update student records | Yes | Yes | No | No |
-| Manage programs and subjects | Yes | Yes | No | No |
-| Manage enrollment records | Yes | Yes | View assigned classes | View own enrollment |
-| Encode or update grades | Yes | Authorized only | Assigned classes only | No |
-| View grades | Yes | Yes | Assigned classes | Own grades only |
-| Manage class schedules | Yes | Yes | Assigned classes only | No |
-| View class schedule | Yes | Yes | Assigned classes | Own schedule only |
-| View audit logs | Yes | No | No | No |
+## 2. Official user roles and permissions
 
-**Important:** Permissions must be checked on the server for every protected route and record operation. Frontend visibility is not a security boundary.
+| Function | Student | Staff / Registrar | Administrator |
+|---|---:|---:|---:|
+| Log in and log out | Yes | Yes | Yes |
+| View personal profile | Yes | Yes | Yes |
+| Register students | No | Yes | Yes |
+| Edit student records | Limited | Yes | Yes |
+| Delete student records | No | No | Yes |
+| Manage student accounts | No | No | Yes |
+| Manage courses and sections | No | Limited | Yes |
+| Generate reports | No | Yes | Yes |
+| Manage user roles | No | No | Yes |
+| View activity logs | No | No | Yes |
 
-## 3. Initial modules
+Permission rules:
+- **Administrator:** full system administration, student account management, role management, deletion, reports, and activity-log access.
+- **Staff / Registrar:** register students, update authorized student information, manage enrollment information, assign students to courses and sections, search records, and generate student lists and reports.
+- **Student:** view personal and academic information, update only permitted personal information, change their own password, and record visitor time-out as defined by the approved workflow.
 
-### Authentication
-- Separate Admin/Staff and Student login pages.
-- Shared Laravel authentication backend and users table.
-- Password hashing, session regeneration after login, logout invalidation, and login throttling.
-- No public student self-registration in the initial release.
+All restrictions must be enforced on the backend for every route and record operation.
 
-### Admin / Staff portal
-- Dashboard with simple summary cards.
-- Student records management (search, create, view, update, and safe account deactivation).
-- Academic program management (create, list, update, and safe deactivation).
-- Subject catalog management (search, create, update, and safe deactivation).
-- Enrollment management: create term records, attach subjects, and approve or reject pending enrollment.
-- Grade management: Admin/Staff encode and update numeric final grades for approved enrollments; students can only view their own grades.
-- Class schedule management: assign meeting days, times, and rooms to approved enrollment subjects.
-- User and role management for administrators.
-- Audit log viewer.
+## 3. Required system modules
 
-### Student portal
-- Personal dashboard.
-- Read-only profile.
-- Enrollment status and history (read-only, restricted to the signed-in student's own records).
-- Grades (read-only, limited to the signed-in student's approved enrollments).
-- Class schedule (read-only, restricted to approved enrollments belonging to the signed-in student).
-- Optional document request and account-balance features only if required by the instructor.
+### 3.1 Student Module
+- Secure login and logout.
+- View personal profile.
+- View student number and enrollment information.
+- View course and year level.
+- View assigned section.
+- View academic information, if included in the project scope.
+- Record visitor time-out.
+- Update permitted personal information.
+- Change account password.
 
-## 4. Initial database entities
+### 3.2 Administrator Module
+- Admin login.
+- Dashboard displaying the total number of registered students.
+- Add, edit, view, and manage student records.
+- Create and manage student accounts.
+- Manage courses and programs.
+- Manage year levels and sections.
+- Activate or deactivate student accounts.
+- Search and filter student records.
+- Generate student information reports.
+- View system activity logs.
+- Manage staff accounts and permissions.
 
-- Users
-- Students
-- Staff profiles (only if needed)
-- Programs
-- Subjects
-- Enrollments
-- Enrollment subjects
-- Class schedules
-- Audit logs
+### 3.3 Staff / Registrar Module
+- Register new students.
+- Update student profiles.
+- Manage enrollment information.
+- Assign students to courses and sections.
+- Search student records.
+- Generate student lists.
+- View and update authorized student information.
 
-See [Database Overview](DATABASE_OVERVIEW.md) for the initial relationships.
+## 4. Required security controls
 
-## 5. Implementation status
+The project must demonstrate:
+1. **Password Hashing:** securely store user passwords.
+2. **Authentication:** require users to log in before accessing the system.
+3. **Role-Based Access Control:** assign different permissions to students, staff, and administrators.
+4. **Data Confidentiality:** protect personal and academic information from unauthorized access.
+5. **SQL Injection Prevention:** use prepared statements or safe ORM/query-builder methods.
+6. **Input Validation:** validate user inputs.
+7. **Session Management:** secure user sessions.
+8. **Activity Logs:** record important system activities.
+9. **Account Management:** allow administrators to manage and deactivate accounts.
+10. **Data Integrity:** prevent unauthorized changes or deletion of records.
 
-Implemented in the repository: centralized portal authentication, role middleware, student profile management, academic program management, subject catalog management, enrollment creation and approval, student-owned enrollment views, Admin/Staff grade encoding, student-owned read-only grade views, class schedule management, student-owned timetable views, Admin-only user management, Admin-only audit log viewing, audit event recording for the implemented actions, and automated feature tests.
+## 5. Workflow from the approved brief
 
-Planned next: reports, optional document requests/tuition information, and any instructor workspace required by the final project scope.
+1. The Administrator creates staff accounts and configures the system.
+2. The Registrar logs in.
+3. The Registrar registers a new student.
+4. The Registrar enters the student's personal and academic information.
+5. The system saves the information in the database.
+6. The student receives or is assigned an account.
+7. The student logs in and views personal information.
+8. The Administrator monitors student records and system activities.
 
-## 6. Explicitly out of scope for the first milestone
+## 6. Current implementation status
 
-To keep the project achievable, the first milestone will not include:
-- Online payment processing or storage of card details.
-- Public student account registration.
-- Automated SMS or email gateways.
-- Integration with an existing university information system.
-- Complex analytics or learning management features.
+Implemented:
+- Centralized Laravel authentication with separate Admin/Staff and Student login pages.
+- Server-side role middleware for the three supported roles: Administrator, Staff / Registrar, and Student.
+- Administrator-only user management and activity-log viewing.
+- Staff student registration and authorized student-record updates.
+- Administrator-only student account activation/deactivation.
+- Administrator-only deletion of student records when no enrollment history exists. Deletion is blocked when academic history exists to preserve data integrity.
+- Administrator-only program and subject catalog maintenance; Staff can view and use existing catalog entries in registrar workflows.
+- Student self-service updates for name and email.
+- Student self-service password change with current-password verification.
+- Student-owned enrollment, grade, and class-schedule views.
+- Audit events for authentication and implemented record changes.
 
-These can be considered later if they are required.
+Still required by the approved brief:
+- Year-level administration.
+- Section administration and student section assignment.
+- Student visitor time-out recording. The precise data fields and workflow should be confirmed before implementation.
+- Student information reports and student lists for Staff and Administrators.
+- Complete security testing against every row of the approved role matrix.
 
-## 7. Acceptance criteria for the first milestone
+The gradebook and timetable are supplementary academic-information features in the current prototype. They do not replace the remaining required modules above.
 
-- Admin/Staff and Student have separate login pages and dashboards.
-- A student cannot access administrative routes.
-- A student cannot view another student's data by changing an ID in the URL.
-- A student cannot create, update, or delete official academic records.
-- Authorized staff can manage student and academic records.
-- Passwords are never stored in plaintext.
-- Important record changes create audit log entries.
-- The app uses fictional sample data during development.
+## 7. Data integrity rules
+
+- Never expose a student's private record to another student.
+- Student self-service must not permit changes to student number, program, year level, section, enrollment, or official academic results.
+- Staff must not delete student records or manage student account activation.
+- Only Administrators can manage user roles and access activity logs.
+- Do not permanently delete student records that have enrollment history.
+- Use database transactions for related record creation and updates.
+- Use fictional student records during development and demonstrations.
