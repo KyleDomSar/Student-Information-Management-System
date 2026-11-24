@@ -54,11 +54,9 @@ Route::prefix('admin')
 
         // Student and program records are restricted to Admin and Registrar/Staff.
         Route::middleware('role:admin,staff')->group(function () {
-            Route::resource('students', StudentController::class);
-            Route::resource('programs', ProgramController::class)
-                ->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
-            Route::resource('subjects', SubjectController::class)
-                ->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
+            Route::resource('students', StudentController::class)->except(['destroy']);
+            Route::get('/programs', [ProgramController::class, 'index'])->name('programs.index');
+            Route::get('/subjects', [SubjectController::class, 'index'])->name('subjects.index');
             Route::get('/enrollments', [AdminEnrollmentController::class, 'index'])->name('enrollments.index');
             Route::get('/enrollments/create', [AdminEnrollmentController::class, 'create'])->name('enrollments.create');
             Route::post('/enrollments', [AdminEnrollmentController::class, 'store'])->name('enrollments.store');
@@ -71,8 +69,12 @@ Route::prefix('admin')
                 ->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
         });
 
-        // User administration and security audit records are Admin-only.
+        // Student account controls and destructive record deletion are Admin-only.
         Route::middleware('role:admin')->group(function () {
+            Route::patch('/students/{student}/account-status', [StudentController::class, 'updateAccountStatus'])->name('students.account-status');
+            Route::delete('/students/{student}', [StudentController::class, 'destroy'])->name('students.destroy');
+            Route::resource('programs', ProgramController::class)->only(['create', 'store', 'edit', 'update', 'destroy']);
+            Route::resource('subjects', SubjectController::class)->only(['create', 'store', 'edit', 'update', 'destroy']);
             Route::resource('users', AdminUserController::class)
                 ->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
             Route::get('/audit-logs', [AuditLogController::class, 'index'])->name('audit-logs.index');
@@ -85,6 +87,8 @@ Route::prefix('student')
     ->group(function () {
         Route::get('/dashboard', StudentDashboardController::class)->name('dashboard');
         Route::get('/profile', ProfileController::class)->name('profile');
+        Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+        Route::put('/password', [ProfileController::class, 'updatePassword'])->name('password.update');
         Route::get('/enrollments', [StudentEnrollmentController::class, 'index'])->name('enrollments.index');
         Route::get('/enrollments/{enrollment}', [StudentEnrollmentController::class, 'show'])->name('enrollments.show');
         Route::get('/grades', StudentGradeController::class)->name('grades.index');
