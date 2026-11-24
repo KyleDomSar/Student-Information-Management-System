@@ -1,6 +1,6 @@
 # Database Overview
 
-This is the initial logical database design. Table names and fields may be adjusted when Laravel migrations and Eloquent models are implemented.
+This describes the current initial database design implemented by the Laravel migrations and Eloquent models. Additional fields may be introduced as the project scope evolves.
 
 ## 1. Core tables
 
@@ -142,9 +142,12 @@ users -------- 1 to many -------- audit_logs
 ## 4. Database integrity and privacy rules
 
 - Add unique constraints to user email, student number, program code, and subject code.
+- Prevent duplicate enrollment terms for the same student using a unique constraint on student, academic year, and semester.
+- Prevent duplicate subject entries within one enrollment using a unique constraint on enrollment and subject.
 - Add foreign keys and indexes to relationship columns.
 - Use database transactions when creating an enrollment and its subject records.
 - Prevent duplicate subject entries within the same enrollment.
 - Do not store plaintext passwords.
 - Avoid adding personal or financial fields unless the project requirements need them.
 - The Student Portal must query records through the authenticated student's relationship, not through unrestricted IDs.
+- Final grades are stored as nullable decimal values. The allowed minimum and maximum are configured through `SIMS_GRADE_MIN` and `SIMS_GRADE_MAX` in the local environment.
