@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Program;
+use App\Models\Section;
 use App\Models\Student;
 use App\Models\User;
+use App\Models\YearLevel;
 use App\Support\AuditLogger;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -20,7 +22,7 @@ class StudentController extends Controller
         $search = trim((string) $request->query('search', ''));
 
         $students = Student::query()
-            ->with(['user', 'program'])
+            ->with(['user', 'program', 'section'])
             ->when($search !== '', function ($query) use ($search) {
                 $query->where(function ($studentQuery) use ($search) {
                     $studentQuery
@@ -42,8 +44,14 @@ class StudentController extends Controller
     public function create(): View
     {
         $programs = Program::where('is_active', true)->orderBy('name')->get();
+        $yearLevels = YearLevel::where('is_active', true)->orderBy('level_number')->get();
+        $sections = Section::with(['program', 'yearLevel'])
+            ->where('is_active', true)
+            ->orderBy('year_level')
+            ->orderBy('code')
+            ->get();
 
-        return view('admin.students.create', compact('programs'));
+        return view('admin.students.create', compact('programs', 'yearLevels', 'sections'));
     }
 
     public function store(Request $request, AuditLogger $auditLogger): RedirectResponse
@@ -54,7 +62,15 @@ class StudentController extends Controller
             'password' => ['required', 'string', 'min:10', 'confirmed'],
             'student_number' => ['required', 'string', 'max:50', Rule::unique('students', 'student_number')],
             'program_id' => ['nullable', 'integer', Rule::exists('programs', 'id')->where('is_active', true)],
-            'year_level' => ['nullable', 'integer', 'between:1,6'],
+            'year_level' => ['nullable', 'integer', Rule::exists('year_levels', 'level_number')->where('is_active', true)],
+            'section_id' => [
+                'nullable',
+                'integer',
+                Rule::exists('sections', 'id')->where(fn ($query) => $query
+                    ->where('is_active', true)
+                    ->where('program_id', $request->input('program_id'))
+                    ->where('year_level', $request->input('year_level'))),
+            ],
             'status' => ['required', Rule::in(['active', 'inactive', 'graduated'])],
         ];
 
@@ -81,6 +97,7 @@ class StudentController extends Controller
                 'student_number' => $data['student_number'],
                 'program_id' => $data['program_id'] ?? null,
                 'year_level' => $data['year_level'] ?? null,
+                'section_id' => $data['section_id'] ?? null,
                 'status' => $data['status'],
             ]);
         });
@@ -100,20 +117,33 @@ class StudentController extends Controller
 
     public function show(Student $student): View
     {
-        $student->load(['user', 'program', 'enrollments.enrollmentSubjects.subject']);
+        $student->load(['user', 'program', 'section', 'enrollments.enrollmentSubjects.subject']);
 
         return view('admin.students.show', compact('student'));
     }
 
     public function edit(Student $student): View
     {
-        $student->load('user');
+        $student->load(['user', 'section']);
+
         $programs = Program::where('is_active', true)
             ->orWhereKey($student->program_id)
             ->orderBy('name')
             ->get();
 
-        return view('admin.students.edit', compact('student', 'programs'));
+        $yearLevels = YearLevel::where('is_active', true)
+            ->orWhere('level_number', $student->year_level)
+            ->orderBy('level_number')
+            ->get();
+
+        $sections = Section::with(['program', 'yearLevel'])
+            ->where('is_active', true)
+            ->orWhereKey($student->section_id)
+            ->orderBy('year_level')
+            ->orderBy('code')
+            ->get();
+
+        return view('admin.students.edit', compact('student', 'programs', 'yearLevels', 'sections'));
     }
 
     public function update(Request $request, Student $student, AuditLogger $auditLogger): RedirectResponse
@@ -140,7 +170,23 @@ class StudentController extends Controller
                     fn ($query) => $query->where('is_active', true)->orWhere('id', $student->program_id)
                 ),
             ],
-            'year_level' => ['nullable', 'integer', 'between:1,6'],
+            'year_level' => [
+                'nullable',
+                'integer',
+                Rule::exists('year_levels', 'level_number')->where(
+                    fn ($query) => $query->where('is_active', true)->orWhere('level_number', $student->year_level)
+                ),
+            ],
+            'section_id' => [
+                'nullable',
+                'integer',
+                Rule::exists('sections', 'id')->where(fn ($query) => $query
+                    ->where(fn ($activeQuery) => $activeQuery
+                        ->where('is_active', true)
+                        ->orWhere('id', $student->section_id))
+                    ->where('program_id', $request->input('program_id'))
+                    ->where('year_level', $request->input('year_level'))),
+            ],
             'status' => ['required', Rule::in(['active', 'inactive', 'graduated'])],
         ];
 
@@ -166,6 +212,7 @@ class StudentController extends Controller
                 'student_number' => $data['student_number'],
                 'program_id' => $data['program_id'] ?? null,
                 'year_level' => $data['year_level'] ?? null,
+                'section_id' => $data['section_id'] ?? null,
                 'status' => $data['status'],
             ]);
         });
