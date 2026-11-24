@@ -9,9 +9,8 @@ use App\Models\Student;
 use App\Models\YearLevel;
 use App\Support\AuditLogger;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response\StreamedResponse;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -37,7 +36,7 @@ class StudentReportController extends Controller
         ));
     }
 
-    public function export(Request $request, AuditLogger $auditLogger): StreamedResponse|RedirectResponse
+    public function export(Request $request, AuditLogger $auditLogger): StreamedResponse
     {
         $filters = $this->validatedFilters($request);
         $students = $this->studentQuery($filters)->get();
