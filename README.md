@@ -115,6 +115,11 @@ Both portals use the same `users` table and Laravel session guard. The login con
    ```
 
 10. Open `http://127.0.0.1:8000/login` or use the Laragon virtual host if configured.
+11. Run the automated feature tests when validating changes:
+
+   ```bash
+   php artisan test
+   ```
 
 ## Create local demo accounts
 
@@ -144,6 +149,8 @@ php artisan db:seed
 ```
 
 Use fictional records only. These demo values are local configuration examples, not pre-created GitHub credentials.
+
+The prototype grade scale defaults to 0–100. Configure `SIMS_GRADE_MIN` and `SIMS_GRADE_MAX` in your local `.env` to match the grading scale approved for the project.
 
 ## Security notes
 
