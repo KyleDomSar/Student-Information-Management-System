@@ -101,6 +101,7 @@ Implemented:
 - Administrator-only deletion of student records when no enrollment history exists. Deletion is blocked when academic history exists to preserve data integrity.
 - Administrator-only program, subject, year-level, and section catalog maintenance; Staff can view catalogs and use existing entries in registrar workflows.
 - Students can be assigned to sections that match their program and year level.
+- Staff and Administrators can filter student lists and export student information reports as CSV.
 - Student self-service updates for name and email.
 - Student self-service password change with current-password verification.
 - Student-owned enrollment, grade, and class-schedule views.
@@ -108,7 +109,6 @@ Implemented:
 
 Still required by the approved brief:
 - Student visitor time-out recording. The precise data fields and workflow should be confirmed before implementation.
-- Student information reports and student lists for Staff and Administrators.
 - Complete security testing against every row of the approved role matrix.
 
 The gradebook and timetable are supplementary academic-information features in the current prototype. They do not replace the remaining required modules above.
