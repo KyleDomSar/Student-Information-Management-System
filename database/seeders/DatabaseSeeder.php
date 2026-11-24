@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Student;
-use App\Models\YearLevel;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -16,20 +15,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        foreach (range(1, 6) as $number) {
-            $suffix = match ($number) {
-                1 => 'st',
-                2 => 'nd',
-                3 => 'rd',
-                default => 'th',
-            };
-
-            YearLevel::firstOrCreate(
-                ['level_number' => $number],
-                ['name' => $number.$suffix.' Year', 'is_active' => true],
-            );
-        }
-
         $admin = config('sims.seed_admin');
 
         if ($admin['email'] && $admin['password']) {
