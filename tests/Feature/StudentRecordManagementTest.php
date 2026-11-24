@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Enrollment;
 use App\Models\Program;
 use App\Models\Student;
 use App\Models\User;
@@ -21,11 +22,11 @@ class StudentRecordManagementTest extends TestCase
             ->assertOk();
     }
 
-    public function test_instructor_cannot_manage_student_records(): void
+    public function test_unknown_legacy_role_cannot_manage_student_records(): void
     {
-        $instructor = User::factory()->create(['role' => User::ROLE_INSTRUCTOR]);
+        $legacyUser = User::factory()->create(['role' => 'instructor']);
 
-        $this->actingAs($instructor)
+        $this->actingAs($legacyUser)
             ->get(route('admin.students.index'))
             ->assertForbidden();
     }
@@ -39,7 +40,7 @@ class StudentRecordManagementTest extends TestCase
             ->assertForbidden();
     }
 
-    public function test_staff_can_create_a_student_account_and_profile(): void
+    public function test_staff_can_register_a_student_account_and_profile(): void
     {
         $staff = User::factory()->create(['role' => User::ROLE_STAFF]);
         $program = Program::create([
@@ -58,7 +59,8 @@ class StudentRecordManagementTest extends TestCase
                 'program_id' => $program->id,
                 'year_level' => 3,
                 'status' => 'active',
-                'account_active' => '1',
+                // A crafted value from Staff must be ignored. Newly registered accounts start active.
+                'account_active' => '0',
             ])
             ->assertRedirect();
 
@@ -77,7 +79,7 @@ class StudentRecordManagementTest extends TestCase
         ]);
     }
 
-    public function test_deactivating_a_student_preserves_the_profile(): void
+    public function test_staff_cannot_change_student_account_status_or_delete_the_record(): void
     {
         $staff = User::factory()->create(['role' => User::ROLE_STAFF]);
         $studentUser = User::factory()->create(['role' => User::ROLE_STUDENT]);
@@ -88,18 +90,96 @@ class StudentRecordManagementTest extends TestCase
         ]);
 
         $this->actingAs($staff)
+            ->patch(route('admin.students.account-status', $student), [
+                'is_active' => '0',
+            ])
+            ->assertForbidden();
+
+        $this->actingAs($staff)
             ->delete(route('admin.students.destroy', $student))
-            ->assertRedirect(route('admin.students.index'));
+            ->assertForbidden();
 
         $this->assertDatabaseHas('students', [
             'id' => $student->id,
             'student_number' => 'DEMO-2026-002',
-            'status' => 'inactive',
+            'status' => 'active',
         ]);
 
         $this->assertDatabaseHas('users', [
             'id' => $studentUser->id,
-            'is_active' => false,
+            'is_active' => true,
         ]);
+    }
+
+    public function test_admin_can_deactivate_and_reactivate_a_student_portal_account(): void
+    {
+        $admin = User::factory()->create(['role' => User::ROLE_ADMIN]);
+        $studentUser = User::factory()->create(['role' => User::ROLE_STUDENT]);
+        $student = Student::create([
+            'user_id' => $studentUser->id,
+            'student_number' => 'DEMO-2026-003',
+            'status' => 'active',
+        ]);
+
+        $this->actingAs($admin)
+            ->patch(route('admin.students.account-status', $student), ['is_active' => '0'])
+            ->assertRedirect(route('admin.students.show', $student));
+
+        $this->assertDatabaseHas('users', ['id' => $studentUser->id, 'is_active' => false]);
+        $this->assertDatabaseHas('students', ['id' => $student->id, 'status' => 'active']);
+
+        $this->actingAs($admin)
+            ->patch(route('admin.students.account-status', $student), ['is_active' => '1'])
+            ->assertRedirect(route('admin.students.show', $student));
+
+        $this->assertDatabaseHas('users', ['id' => $studentUser->id, 'is_active' => true]);
+    }
+
+    public function test_admin_can_delete_a_student_record_without_enrollment_history(): void
+    {
+        $admin = User::factory()->create(['role' => User::ROLE_ADMIN]);
+        $studentUser = User::factory()->create(['role' => User::ROLE_STUDENT]);
+        $student = Student::create([
+            'user_id' => $studentUser->id,
+            'student_number' => 'DEMO-2026-004',
+            'status' => 'active',
+        ]);
+
+        $this->actingAs($admin)
+            ->delete(route('admin.students.destroy', $student))
+            ->assertRedirect(route('admin.students.index'));
+
+        $this->assertDatabaseMissing('students', ['id' => $student->id]);
+        $this->assertDatabaseMissing('users', ['id' => $studentUser->id]);
+        $this->assertDatabaseHas('audit_logs', [
+            'user_id' => $admin->id,
+            'action' => 'student.deleted',
+            'target_type' => 'Student',
+            'target_id' => $student->id,
+        ]);
+    }
+
+    public function test_admin_cannot_delete_student_record_with_enrollment_history(): void
+    {
+        $admin = User::factory()->create(['role' => User::ROLE_ADMIN]);
+        $studentUser = User::factory()->create(['role' => User::ROLE_STUDENT]);
+        $student = Student::create([
+            'user_id' => $studentUser->id,
+            'student_number' => 'DEMO-2026-005',
+            'status' => 'active',
+        ]);
+        Enrollment::create([
+            'student_id' => $student->id,
+            'academic_year' => '2026-2027',
+            'semester' => 'First',
+            'status' => 'enrolled',
+        ]);
+
+        $this->actingAs($admin)
+            ->delete(route('admin.students.destroy', $student))
+            ->assertSessionHasErrors('student');
+
+        $this->assertDatabaseHas('students', ['id' => $student->id]);
+        $this->assertDatabaseHas('users', ['id' => $studentUser->id]);
     }
 }
