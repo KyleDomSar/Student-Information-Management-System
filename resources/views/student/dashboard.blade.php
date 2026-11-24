@@ -63,6 +63,7 @@
                     <span class="muted small">Student number</span>
                     <span class="fw-semibold">{{ $student->student_number }}</span>
                 </div>
+                <a href="{{ route('student.enrollments.index') }}" class="btn btn-outline-primary w-100 mt-4">View enrollment history <i class="bi bi-arrow-right ms-1"></i></a>
             </div>
         </div>
     </div>
@@ -77,7 +78,7 @@
         @else
             <div class="table-responsive">
                 <table class="table align-middle mb-0">
-                    <thead class="table-light"><tr><th>Academic year</th><th>Semester</th><th>Status</th><th class="text-end">Subjects</th></tr></thead>
+                    <thead class="table-light"><tr><th>Academic year</th><th>Semester</th><th>Status</th><th class="text-end">Subjects</th><th class="text-end">Details</th></tr></thead>
                     <tbody>
                     @foreach($student->enrollments as $enrollment)
                         <tr>
@@ -85,6 +86,7 @@
                             <td>{{ $enrollment->semester }}</td>
                             <td><span class="badge text-bg-light text-capitalize">{{ $enrollment->status }}</span></td>
                             <td class="text-end">{{ $enrollment->enrollmentSubjects->count() }}</td>
+                            <td class="text-end"><a href="{{ route('student.enrollments.show', $enrollment) }}" class="btn btn-sm btn-outline-primary">View</a></td>
                         </tr>
                     @endforeach
                     </tbody>
