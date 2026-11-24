@@ -43,7 +43,15 @@ class SectionController extends Controller
             })
             ->when($programId !== false, fn ($query) => $query->where('program_id', $programId))
             ->when($yearLevelNumber !== false, fn ($query) => $query->where('year_level', $yearLevelNumber))
-            ->when($status !== '', fn ($query) => $query->where('is_active', $status === 'active'))
+            ->when($status === 'active', fn ($query) => $query
+                ->where('sections.is_active', true)
+                ->whereHas('program', fn ($programQuery) => $programQuery->where('is_active', true))
+                ->whereHas('yearLevel', fn ($yearLevelQuery) => $yearLevelQuery->where('is_active', true)))
+            ->when($status === 'inactive', fn ($query) => $query->where(function ($inactiveQuery) {
+                $inactiveQuery->where('sections.is_active', false)
+                    ->orWhereHas('program', fn ($programQuery) => $programQuery->where('is_active', false))
+                    ->orWhereHas('yearLevel', fn ($yearLevelQuery) => $yearLevelQuery->where('is_active', false));
+            }))
             ->orderBy('year_level')
             ->orderBy('code')
             ->paginate(10)
