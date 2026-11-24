@@ -6,12 +6,25 @@ use App\Models\Enrollment;
 use App\Models\Program;
 use App\Models\Student;
 use App\Models\User;
+use App\Models\YearLevel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class StudentRecordManagementTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        foreach (range(1, 6) as $number) {
+            YearLevel::firstOrCreate(
+                ['level_number' => $number],
+                ['name' => $number.' Year', 'is_active' => true],
+            );
+        }
+    }
 
     public function test_staff_can_view_student_directory(): void
     {
