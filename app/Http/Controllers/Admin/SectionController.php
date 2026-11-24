@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\\Http\\Controllers\\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Models\Program;
-use App\Models\Section;
-use App\Models\YearLevel;
-use App\Support\AuditLogger;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
-use Illuminate\View\View;
+use App\\Http\\Controllers\\Controller;
+use App\\Models\\Program;
+use App\\Models\\Section;
+use App\\Models\\YearLevel;
+use App\\Support\\AuditLogger;
+use Illuminate\\Http\\RedirectResponse;
+use Illuminate\\Http\\Request;
+use Illuminate\\Validation\\Rule;
+use Illuminate\\View\\View;
 
 class SectionController extends Controller
 {
@@ -18,7 +18,7 @@ class SectionController extends Controller
     {
         $search = trim((string) $request->query('search', ''));
 
-        $sections = Section::with(['program.college', 'program.department', 'yearLevel'])
+        $sections = Section::with(['program', 'yearLevel'])
             ->withCount('students')
             ->when($search !== '', function ($query) use ($search) {
                 $query->where('code', 'like', '%'.$search.'%')
@@ -36,10 +36,7 @@ class SectionController extends Controller
 
     public function create(): View
     {
-        $programs = Program::with('yearLevels')
-            ->where('is_active', true)
-            ->orderBy('name')
-            ->get();
+        $programs = Program::where('is_active', true)->orderBy('name')->get();
         $yearLevels = YearLevel::where('is_active', true)->orderBy('level_number')->get();
 
         return view('admin.sections.create', compact('programs', 'yearLevels'));
@@ -51,12 +48,7 @@ class SectionController extends Controller
 
         $data = $request->validate([
             'program_id' => ['required', 'integer', Rule::exists('programs', 'id')->where('is_active', true)],
-            'year_level' => [
-                'required',
-                'integer',
-                Rule::exists('year_levels', 'level_number')->where('is_active', true),
-                Rule::exists('program_year_levels', 'year_level')->where('program_id', $request->input('program_id')),
-            ],
+            'year_level' => ['required', 'integer', Rule::exists('year_levels', 'level_number')->where('is_active', true)],
             'code' => [
                 'required',
                 'string',
@@ -82,11 +74,11 @@ class SectionController extends Controller
 
     public function edit(Section $section): View
     {
-        $programs = Program::with('yearLevels')
-            ->where('is_active', true)
+        $programs = Program::where('is_active', true)
             ->orWhereKey($section->program_id)
             ->orderBy('name')
             ->get();
+
         $yearLevels = YearLevel::where('is_active', true)
             ->orWhere('level_number', $section->year_level)
             ->orderBy('level_number')
@@ -103,14 +95,9 @@ class SectionController extends Controller
             'program_id' => ['required', 'integer', Rule::exists('programs', 'id')->where(
                 fn ($query) => $query->where('is_active', true)->orWhere('id', $section->program_id)
             )],
-            'year_level' => [
-                'required',
-                'integer',
-                Rule::exists('year_levels', 'level_number')->where(
-                    fn ($query) => $query->where('is_active', true)->orWhere('level_number', $section->year_level)
-                ),
-                Rule::exists('program_year_levels', 'year_level')->where('program_id', $request->input('program_id')),
-            ],
+            'year_level' => ['required', 'integer', Rule::exists('year_levels', 'level_number')->where(
+                fn ($query) => $query->where('is_active', true)->orWhere('level_number', $section->year_level)
+            )],
             'code' => [
                 'required',
                 'string',

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Student;
+namespace App\\Http\\Controllers\\Student;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\View\View;
+use App\\Http\\Controllers\\Controller;
+use Illuminate\\Http\\Request;
+use Illuminate\\View\\View;
 
 class DashboardController extends Controller
 {
@@ -18,8 +18,6 @@ class DashboardController extends Controller
                 'yearLevelRecord',
                 'visitorTimeouts' => fn ($query) => $query->latest('time_out_at')->limit(5),
                 'enrollments' => fn ($query) => $query->latest()->limit(5),
-                'enrollments.enrollmentSubjects.subject',
-                'enrollments.enrollmentSubjects.classSchedules',
             ])
             ->first();
 

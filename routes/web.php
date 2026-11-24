@@ -1,29 +1,23 @@
 <?php
 
-use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
-use App\Http\Controllers\Admin\EnrollmentController as AdminEnrollmentController;
-use App\Http\Controllers\Admin\GradeController as AdminGradeController;
-use App\Http\Controllers\Admin\ClassScheduleController as AdminClassScheduleController;
-use App\Http\Controllers\Admin\UserController as AdminUserController;
-use App\Http\Controllers\Admin\AuditLogController;
-use App\Http\Controllers\Admin\AcademicStructureController;
-use App\Http\Controllers\Admin\ProgramController;
-use App\Http\Controllers\Admin\StudentController;
-use App\Http\Controllers\Admin\StudentReportController;
-use App\Http\Controllers\Admin\YearLevelController;
-use App\Http\Controllers\Admin\SectionController;
-use App\Http\Controllers\Admin\SubjectController;
-use App\Http\Controllers\Auth\AdminLoginController;
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
-use App\Http\Controllers\Auth\PortalLoginController;
-use App\Http\Controllers\Auth\StudentLoginController;
-use App\Http\Controllers\Student\DashboardController as StudentDashboardController;
-use App\Http\Controllers\Student\EnrollmentController as StudentEnrollmentController;
-use App\Http\Controllers\Student\GradeController as StudentGradeController;
-use App\Http\Controllers\Student\ClassScheduleController as StudentClassScheduleController;
-use App\Http\Controllers\Student\ProfileController;
-use App\Http\Controllers\Student\VisitorTimeoutController;
-use Illuminate\Support\Facades\Route;
+use App\\Http\\Controllers\\Admin\\DashboardController as AdminDashboardController;
+use App\\Http\\Controllers\\Admin\\EnrollmentController as AdminEnrollmentController;
+use App\\Http\\Controllers\\Admin\\UserController as AdminUserController;
+use App\\Http\\Controllers\\Admin\\AuditLogController;
+use App\\Http\\Controllers\\Admin\\ProgramController;
+use App\\Http\\Controllers\\Admin\\StudentController;
+use App\\Http\\Controllers\\Admin\\StudentReportController;
+use App\\Http\\Controllers\\Admin\\YearLevelController;
+use App\\Http\\Controllers\\Admin\\SectionController;
+use App\\Http\\Controllers\\Auth\\AdminLoginController;
+use App\\Http\\Controllers\\Auth\\AuthenticatedSessionController;
+use App\\Http\\Controllers\\Auth\\PortalLoginController;
+use App\\Http\\Controllers\\Auth\\StudentLoginController;
+use App\\Http\\Controllers\\Student\\DashboardController as StudentDashboardController;
+use App\\Http\\Controllers\\Student\\EnrollmentController as StudentEnrollmentController;
+use App\\Http\\Controllers\\Student\\ProfileController;
+use App\\Http\\Controllers\\Student\\VisitorTimeoutController;
+use Illuminate\\Support\\Facades\\Route;
 
 Route::get('/', function () {
     if (! auth()->check()) {
@@ -56,13 +50,10 @@ Route::prefix('admin')
     ->middleware(['auth', 'role:admin,staff'])
     ->group(function () {
         Route::get('/dashboard', AdminDashboardController::class)->name('dashboard');
-        Route::get('/academic-structure', [AcademicStructureController::class, 'index'])->name('academic-structure.index');
 
-        // Student and program records are restricted to Admin and Registrar/Staff.
         Route::middleware('role:admin,staff')->group(function () {
             Route::resource('students', StudentController::class)->except(['destroy']);
             Route::get('/programs', [ProgramController::class, 'index'])->name('programs.index');
-            Route::get('/subjects', [SubjectController::class, 'index'])->name('subjects.index');
             Route::get('/year-levels', [YearLevelController::class, 'index'])->name('year-levels.index');
             Route::get('/sections', [SectionController::class, 'index'])->name('sections.index');
             Route::get('/reports/students', [StudentReportController::class, 'index'])->name('reports.students');
@@ -71,25 +62,12 @@ Route::prefix('admin')
             Route::get('/enrollments/create', [AdminEnrollmentController::class, 'create'])->name('enrollments.create');
             Route::post('/enrollments', [AdminEnrollmentController::class, 'store'])->name('enrollments.store');
             Route::get('/enrollments/{enrollment}', [AdminEnrollmentController::class, 'show'])->name('enrollments.show');
-            Route::patch('/enrollments/{enrollment}/status', [AdminEnrollmentController::class, 'updateStatus'])->name('enrollments.update-status');
-            Route::get('/grades', [AdminGradeController::class, 'index'])->name('grades.index');
-            Route::get('/grades/{enrollmentSubject}/edit', [AdminGradeController::class, 'edit'])->name('grades.edit');
-            Route::put('/grades/{enrollmentSubject}', [AdminGradeController::class, 'update'])->name('grades.update');
-            Route::resource('schedules', AdminClassScheduleController::class)
-                ->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
         });
 
-        // Student account controls and destructive record deletion are Admin-only.
         Route::middleware('role:admin')->group(function () {
-            Route::post('/academic-structure/colleges', [AcademicStructureController::class, 'storeCollege'])->name('academic-structure.colleges.store');
-            Route::post('/academic-structure/departments', [AcademicStructureController::class, 'storeDepartment'])->name('academic-structure.departments.store');
-            Route::patch('/academic-structure/colleges/{college}/status', [AcademicStructureController::class, 'updateCollegeStatus'])->name('academic-structure.colleges.status');
-            Route::patch('/academic-structure/departments/{department}/status', [AcademicStructureController::class, 'updateDepartmentStatus'])->name('academic-structure.departments.status');
-            Route::patch('/academic-structure/majors/{major}/status', [AcademicStructureController::class, 'updateMajorStatus'])->name('academic-structure.majors.status');
             Route::patch('/students/{student}/account-status', [StudentController::class, 'updateAccountStatus'])->name('students.account-status');
             Route::delete('/students/{student}', [StudentController::class, 'destroy'])->name('students.destroy');
             Route::resource('programs', ProgramController::class)->only(['create', 'store', 'edit', 'update', 'destroy']);
-            Route::resource('subjects', SubjectController::class)->only(['create', 'store', 'edit', 'update', 'destroy']);
             Route::resource('year-levels', YearLevelController::class)->except(['index', 'show']);
             Route::resource('sections', SectionController::class)->except(['index', 'show']);
             Route::resource('users', AdminUserController::class)
@@ -107,9 +85,9 @@ Route::prefix('student')
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::put('/password', [ProfileController::class, 'updatePassword'])->name('password.update');
         Route::get('/visitor-timeouts', [VisitorTimeoutController::class, 'index'])->name('visitor-timeouts.index');
-        Route::post('/visitor-timeouts', [VisitorTimeoutController::class, 'store'])->middleware('throttle:5,1')->name('visitor-timeouts.store');
+        Route::post('/visitor-timeouts', [VisitorTimeoutController::class, 'store'])
+            ->middleware('throttle:5,1')
+            ->name('visitor-timeouts.store');
         Route::get('/enrollments', [StudentEnrollmentController::class, 'index'])->name('enrollments.index');
         Route::get('/enrollments/{enrollment}', [StudentEnrollmentController::class, 'show'])->name('enrollments.show');
-        Route::get('/grades', StudentGradeController::class)->name('grades.index');
-        Route::get('/schedules', StudentClassScheduleController::class)->name('schedules.index');
     });

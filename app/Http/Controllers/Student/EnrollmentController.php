@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Student;
+namespace App\\Http\\Controllers\\Student;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\View\View;
+use App\\Http\\Controllers\\Controller;
+use Illuminate\\Http\\Request;
+use Illuminate\\View\\View;
 
 class EnrollmentController extends Controller
 {
@@ -12,12 +12,11 @@ class EnrollmentController extends Controller
     {
         $student = $request->user()->student;
 
-        $enrollments = $student
-            ? $student->enrollments()
-                ->withCount('enrollmentSubjects')
-                ->latest()
-                ->paginate(10)
-            : collect();
+        abort_unless($student, 404);
+
+        $enrollments = $student->enrollments()
+            ->latest()
+            ->paginate(10);
 
         return view('student.enrollments.index', compact('enrollments'));
     }
@@ -28,14 +27,7 @@ class EnrollmentController extends Controller
 
         abort_unless($student, 404);
 
-        // Query through the authenticated student's relationship to prevent IDOR.
-        $enrollmentRecord = $student->enrollments()
-            ->with([
-                'student',
-                'enrollmentSubjects.subject.program',
-                'enrollmentSubjects.classSchedules',
-            ])
-            ->findOrFail($enrollment);
+        $enrollmentRecord = $student->enrollments()->findOrFail($enrollment);
 
         return view('student.enrollments.show', [
             'enrollment' => $enrollmentRecord,

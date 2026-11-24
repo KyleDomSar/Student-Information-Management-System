@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Models;
+namespace App\\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\\Database\\Eloquent\\Model;
+use Illuminate\\Database\\Eloquent\\Relations\\BelongsTo;
 
 class Enrollment extends Model
 {
@@ -12,7 +11,6 @@ class Enrollment extends Model
         'student_id',
         'academic_year',
         'semester',
-        'status',
         'created_by',
     ];
 
@@ -24,10 +22,5 @@ class Enrollment extends Model
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
-    }
-
-    public function enrollmentSubjects(): HasMany
-    {
-        return $this->hasMany(EnrollmentSubject::class);
     }
 }

@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\\Http\\Controllers\\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Models\AuditLog;
-use App\Models\Enrollment;
-use App\Models\Student;
-use App\Models\User;
-use Illuminate\View\View;
+use App\\Http\\Controllers\\Controller;
+use App\\Models\\AuditLog;
+use App\\Models\\Enrollment;
+use App\\Models\\Program;
+use App\\Models\\Student;
+use App\\Models\\User;
+use Illuminate\\View\\View;
 
 class DashboardController extends Controller
 {
@@ -17,12 +18,11 @@ class DashboardController extends Controller
 
         $stats = [
             'students' => Student::count(),
-            'staff' => User::whereIn('role', ['admin', 'staff'])->count(),
+            'staff' => User::whereIn('role', [User::ROLE_ADMIN, User::ROLE_STAFF])->count(),
+            'programs' => Program::where('is_active', true)->count(),
             'enrollments' => Enrollment::count(),
-            'pending_enrollments' => Enrollment::where('status', 'pending')->count(),
         ];
 
-        // Audit activity is restricted to administrators.
         $canViewAuditLogs = $user->isAdministrator();
         $recentLogs = $canViewAuditLogs
             ? AuditLog::with('user')->latest('created_at')->limit(8)->get()

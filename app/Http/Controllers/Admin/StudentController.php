@@ -1,20 +1,19 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\\Http\\Controllers\\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Models\Program;
-use App\Models\ProgramMajor;
-use App\Models\Section;
-use App\Models\Student;
-use App\Models\User;
-use App\Models\YearLevel;
-use App\Support\AuditLogger;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rule;
-use Illuminate\View\View;
+use App\\Http\\Controllers\\Controller;
+use App\\Models\\Program;
+use App\\Models\\Section;
+use App\\Models\\Student;
+use App\\Models\\User;
+use App\\Models\\YearLevel;
+use App\\Support\\AuditLogger;
+use Illuminate\\Http\\RedirectResponse;
+use Illuminate\\Http\\Request;
+use Illuminate\\Support\\Facades\\DB;
+use Illuminate\\Validation\\Rule;
+use Illuminate\\View\\View;
 
 class StudentController extends Controller
 {
@@ -23,14 +22,13 @@ class StudentController extends Controller
         $search = trim((string) $request->query('search', ''));
 
         $students = Student::query()
-            ->with(['user', 'program', 'major', 'section'])
+            ->with(['user', 'program', 'section'])
             ->when($search !== '', function ($query) use ($search) {
                 $query->where(function ($studentQuery) use ($search) {
                     $studentQuery
                         ->where('student_number', 'like', "%{$search}%")
                         ->orWhereHas('user', function ($userQuery) use ($search) {
-                            $userQuery
-                                ->where('name', 'like', "%{$search}%")
+                            $userQuery->where('name', 'like', "%{$search}%")
                                 ->orWhere('email', 'like', "%{$search}%");
                         });
                 });
@@ -44,17 +42,15 @@ class StudentController extends Controller
 
     public function create(): View
     {
-        $programs = Program::with(['college', 'department'])->where('is_active', true)->orderBy('name')->get();
-        $yearLevels = YearLevel::with('programs:id')->where('is_active', true)->orderBy('level_number')->get();
-        $majors = ProgramMajor::with('program')->where('is_active', true)->orderBy('name')->get();
-
+        $programs = Program::where('is_active', true)->orderBy('name')->get();
+        $yearLevels = YearLevel::where('is_active', true)->orderBy('level_number')->get();
         $sections = Section::with(['program', 'yearLevel'])
             ->where('is_active', true)
             ->orderBy('year_level')
             ->orderBy('code')
             ->get();
 
-        return view('admin.students.create', compact('programs', 'yearLevels', 'sections', 'majors'));
+        return view('admin.students.create', compact('programs', 'yearLevels', 'sections'));
     }
 
     public function store(Request $request, AuditLogger $auditLogger): RedirectResponse
@@ -64,14 +60,8 @@ class StudentController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users', 'email')],
             'password' => ['required', 'string', 'min:10', 'confirmed'],
             'student_number' => ['required', 'string', 'max:50', Rule::unique('students', 'student_number')],
-            'program_id' => ['nullable', 'required_with:year_level', 'integer', Rule::exists('programs', 'id')->where('is_active', true)],
-            'year_level' => [
-                'nullable',
-                'integer',
-                Rule::exists('year_levels', 'level_number')->where('is_active', true),
-                Rule::exists('program_year_levels', 'year_level')->where('program_id', $request->input('program_id')),
-            ],
-            'program_major_id' => ['nullable', 'integer', Rule::exists('program_majors', 'id')->where(fn ($query) => $query->where('program_id', $request->input('program_id'))->where('is_active', true))],
+            'program_id' => ['nullable', 'integer', Rule::exists('programs', 'id')->where('is_active', true)],
+            'year_level' => ['nullable', 'integer', Rule::exists('year_levels', 'level_number')->where('is_active', true)],
             'section_id' => [
                 'nullable',
                 'integer',
@@ -105,7 +95,6 @@ class StudentController extends Controller
                 'user_id' => $user->id,
                 'student_number' => $data['student_number'],
                 'program_id' => $data['program_id'] ?? null,
-                'program_major_id' => $data['program_major_id'] ?? null,
                 'year_level' => $data['year_level'] ?? null,
                 'section_id' => $data['section_id'] ?? null,
                 'status' => $data['status'],
@@ -120,8 +109,7 @@ class StudentController extends Controller
             $request,
         );
 
-        return redirect()
-            ->route('admin.students.show', $student)
+        return redirect()->route('admin.students.show', $student)
             ->with('success', 'Student account and profile created successfully.');
     }
 
@@ -129,12 +117,11 @@ class StudentController extends Controller
     {
         $student->load([
             'user',
-            'program.college',
-            'program.department',
-            'major',
+            'program',
+            'yearLevelRecord',
             'section',
             'visitorTimeouts' => fn ($query) => $query->latest('time_out_at')->limit(10),
-            'enrollments.enrollmentSubjects.subject',
+            'enrollments' => fn ($query) => $query->latest(),
         ]);
 
         return view('admin.students.show', compact('student'));
@@ -142,21 +129,16 @@ class StudentController extends Controller
 
     public function edit(Student $student): View
     {
-        $student->load(['user', 'section', 'major']);
+        $student->load(['user', 'section']);
 
-        $programs = Program::with(['college', 'department'])->where('is_active', true)
+        $programs = Program::where('is_active', true)
             ->orWhereKey($student->program_id)
             ->orderBy('name')
             ->get();
 
-        $yearLevels = YearLevel::with('programs:id')->where('is_active', true)
+        $yearLevels = YearLevel::where('is_active', true)
             ->orWhere('level_number', $student->year_level)
             ->orderBy('level_number')
-            ->get();
-
-        $majors = ProgramMajor::with('program')->where('is_active', true)
-            ->orWhereKey($student->program_major_id)
-            ->orderBy('name')
             ->get();
 
         $sections = Section::with(['program', 'yearLevel'])
@@ -166,58 +148,34 @@ class StudentController extends Controller
             ->orderBy('code')
             ->get();
 
-        return view('admin.students.edit', compact('student', 'programs', 'yearLevels', 'sections', 'majors'));
+        return view('admin.students.edit', compact('student', 'programs', 'yearLevels', 'sections'));
     }
 
     public function update(Request $request, Student $student, AuditLogger $auditLogger): RedirectResponse
     {
         $rules = [
             'name' => ['required', 'string', 'max:255'],
-            'email' => [
-                'required',
-                'string',
-                'email',
-                'max:255',
-                Rule::unique('users', 'email')->ignore($student->user_id),
-            ],
-            'student_number' => [
-                'required',
-                'string',
-                'max:50',
-                Rule::unique('students', 'student_number')->ignore($student->id),
-            ],
+            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users', 'email')->ignore($student->user_id)],
+            'student_number' => ['required', 'string', 'max:50', Rule::unique('students', 'student_number')->ignore($student->id)],
             'program_id' => [
                 'nullable',
-                'required_with:year_level',
                 'integer',
-                Rule::exists('programs', 'id')->where(
-                    fn ($query) => $query->where('is_active', true)->orWhere('id', $student->program_id)
-                ),
+                Rule::exists('programs', 'id')->where(fn ($query) => $query
+                    ->where('is_active', true)
+                    ->orWhere('id', $student->program_id)),
             ],
             'year_level' => [
                 'nullable',
                 'integer',
-                Rule::exists('year_levels', 'level_number')->where(
-                    fn ($query) => $query->where('is_active', true)->orWhere('level_number', $student->year_level)
-                ),
-                Rule::exists('program_year_levels', 'year_level')->where(
-                    fn ($query) => $query->where('program_id', $request->input('program_id'))
-                ),
-            ],
-            'program_major_id' => [
-                'nullable',
-                'integer',
-                Rule::exists('program_majors', 'id')->where(fn ($query) => $query
-                    ->where('program_id', $request->input('program_id'))
-                    ->where(fn ($nested) => $nested->where('is_active', true)->orWhere('id', $student->program_major_id))),
+                Rule::exists('year_levels', 'level_number')->where(fn ($query) => $query
+                    ->where('is_active', true)
+                    ->orWhere('level_number', $student->year_level)),
             ],
             'section_id' => [
                 'nullable',
                 'integer',
                 Rule::exists('sections', 'id')->where(fn ($query) => $query
-                    ->where(fn ($activeQuery) => $activeQuery
-                        ->where('is_active', true)
-                        ->orWhere('id', $student->section_id))
+                    ->where(fn ($active) => $active->where('is_active', true)->orWhere('id', $student->section_id))
                     ->where('program_id', $request->input('program_id'))
                     ->where('year_level', $request->input('year_level'))),
             ],
@@ -241,11 +199,9 @@ class StudentController extends Controller
             }
 
             $student->user->update($userData);
-
             $student->update([
                 'student_number' => $data['student_number'],
                 'program_id' => $data['program_id'] ?? null,
-                'program_major_id' => $data['program_major_id'] ?? null,
                 'year_level' => $data['year_level'] ?? null,
                 'section_id' => $data['section_id'] ?? null,
                 'status' => $data['status'],
@@ -260,8 +216,7 @@ class StudentController extends Controller
             $request,
         );
 
-        return redirect()
-            ->route('admin.students.show', $student)
+        return redirect()->route('admin.students.show', $student)
             ->with('success', 'Student record updated successfully.');
     }
 
@@ -269,10 +224,7 @@ class StudentController extends Controller
     {
         abort_unless($request->user()->isAdministrator(), 403);
 
-        $data = $request->validate([
-            'is_active' => ['required', 'boolean'],
-        ]);
-
+        $data = $request->validate(['is_active' => ['required', 'boolean']]);
         $student->user->update(['is_active' => (bool) $data['is_active']]);
 
         $auditLogger->record(
@@ -283,27 +235,23 @@ class StudentController extends Controller
             $request,
         );
 
-        return redirect()
-            ->route('admin.students.show', $student)
+        return redirect()->route('admin.students.show', $student)
             ->with('success', 'Student portal account status updated. The academic record was preserved.');
     }
 
-    /**
-     * Permanent deletion is reserved for administrators and blocked when academic history exists.
-     */
     public function destroy(Request $request, Student $student, AuditLogger $auditLogger): RedirectResponse
     {
         abort_unless($request->user()->isAdministrator(), 403);
 
         if ($student->enrollments()->exists()) {
             return back()->withErrors([
-                'student' => 'This student has enrollment history and cannot be permanently deleted. Deactivate the portal account to preserve academic records.',
+                'student' => 'This student has enrollment history and cannot be permanently deleted. Deactivate the portal account instead.',
             ]);
         }
 
         if ($student->visitorTimeouts()->exists()) {
             return back()->withErrors([
-                'student' => 'This student has visitor time-out history and cannot be permanently deleted. The student account can be deactivated instead.',
+                'student' => 'This student has visitor time-out history and cannot be permanently deleted. Deactivate the portal account instead.',
             ]);
         }
 
@@ -323,8 +271,7 @@ class StudentController extends Controller
             $request,
         );
 
-        return redirect()
-            ->route('admin.students.index')
+        return redirect()->route('admin.students.index')
             ->with('success', 'Student record and its login account were deleted.');
     }
 }
