@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\EnrollmentController as AdminEnrollmentController;
 use App\Http\Controllers\Admin\GradeController as AdminGradeController;
+use App\Http\Controllers\Admin\ClassScheduleController as AdminClassScheduleController;
 use App\Http\Controllers\Admin\ProgramController;
 use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\Admin\SubjectController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\Auth\StudentLoginController;
 use App\Http\Controllers\Student\DashboardController as StudentDashboardController;
 use App\Http\Controllers\Student\EnrollmentController as StudentEnrollmentController;
 use App\Http\Controllers\Student\GradeController as StudentGradeController;
+use App\Http\Controllers\Student\ClassScheduleController as StudentClassScheduleController;
 use App\Http\Controllers\Student\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -63,6 +65,8 @@ Route::prefix('admin')
             Route::get('/grades', [AdminGradeController::class, 'index'])->name('grades.index');
             Route::get('/grades/{enrollmentSubject}/edit', [AdminGradeController::class, 'edit'])->name('grades.edit');
             Route::put('/grades/{enrollmentSubject}', [AdminGradeController::class, 'update'])->name('grades.update');
+            Route::resource('schedules', AdminClassScheduleController::class)
+                ->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
         });
     });
 
@@ -75,4 +79,5 @@ Route::prefix('student')
         Route::get('/enrollments', [StudentEnrollmentController::class, 'index'])->name('enrollments.index');
         Route::get('/enrollments/{enrollment}', [StudentEnrollmentController::class, 'show'])->name('enrollments.show');
         Route::get('/grades', StudentGradeController::class)->name('grades.index');
+        Route::get('/schedules', StudentClassScheduleController::class)->name('schedules.index');
     });
