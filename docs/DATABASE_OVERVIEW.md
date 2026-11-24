@@ -13,7 +13,7 @@ Stores login credentials and the role assigned to each account.
 | name | Account holder's display name |
 | email | Unique login email |
 | password | Hashed password |
-| role | admin, staff, instructor, or student |
+| role | admin, staff, or student |
 | is_active | Whether the account is enabled |
 | email_verified_at | Optional verification timestamp |
 | created_at / updated_at | Timestamps |
@@ -104,7 +104,7 @@ Stores important administrative and academic record actions.
 | description | Sanitized summary |
 | created_at | Event timestamp |
 
-## 2. Relationships
+## 2. Planned requirement-driven tables\n\nThe approved project brief also requires management of year levels and sections, plus student visitor time-out recording. These are not yet present in the current migrations. Their tables and relationships will be added in a later migration after the visitor time-out workflow is confirmed.\n\n## 3. Relationships
 
 - One user account may have one student profile.
 - One program has many students.
@@ -115,7 +115,7 @@ Stores important administrative and academic record actions.
 - One enrollment-subject record may have one or more schedule entries.
 - One user may create many audit log entries.
 
-## 3. Relationship sketch
+## 4. Relationship sketch
 
 ```text
 users
@@ -139,7 +139,7 @@ class_schedules                       programs
 users -------- 1 to many -------- audit_logs
 ```
 
-## 4. Database integrity and privacy rules
+## 5. Database integrity and privacy rules
 
 - Add unique constraints to user email, student number, program code, and subject code.
 - Prevent duplicate enrollment terms for the same student using a unique constraint on student, academic year, and semester.
