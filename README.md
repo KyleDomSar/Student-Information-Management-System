@@ -54,15 +54,14 @@ All permissions are enforced on the server. Hiding a button in the interface is 
 - Enrollment workflow: authorized staff create term enrollments, attach active subjects, and approve or reject pending requests.
 - Gradebook for Admin/Staff to encode and update numeric final grades for approved enrollments. The prototype grade range is configurable in `.env`.
 - Read-only Student Portal enrollment, grade, and class schedule views scoped to the signed-in student's own records.
+- Student visitor time-out recording with server-generated Asia/Manila timestamps, private self-service history, and audit logging.
 - Duplicate student term prevention and subject-to-program validation.
-- Audit events for student record changes, account status changes, enrollment, grades, catalog changes, authentication, and student self-service updates.
+- Audit events for student record changes, account status changes, enrollment, grades, catalog changes, authentication, visitor time-out recording, and student self-service updates.
 
 ### Required work still in progress
-The following items are explicitly listed in the approved project brief and are not yet implemented:
-- Student visitor time-out recording. The exact data-entry workflow should be confirmed with the instructor before finalizing its fields.
-- Additional security testing against the approved permission matrix.
+- Complete security testing against every row of the approved permission matrix.
 
-The gradebook and class timetable are supplementary academic-information features in the current prototype. The only required feature not yet implemented is visitor time-out recording, pending clarification of its exact workflow.
+The visitor time-out feature currently records the authenticated student's time-out timestamp and keeps a private history. The approved brief does not specify additional visitor details or an approval workflow, so those fields and processes have not been assumed. The gradebook and class timetable are supplementary academic-information features in the current prototype.
 
 ## Main portal URLs
 
@@ -75,6 +74,7 @@ The gradebook and class timetable are supplementary academic-information feature
 | Student dashboard | `/student/dashboard` |
 | Student profile and personal details | `/student/profile` |
 | Student password update | `/student/password` (PUT endpoint) |
+| Student visitor time-out history | `/student/visitor-timeouts` |
 | Student records | `/admin/students` |
 | Academic structure | `/admin/academic-structure` |
 | Academic programs | `/admin/programs` |
@@ -182,7 +182,7 @@ Use fictional records only. These are local configuration examples, not pre-crea
 - Student-owned records are queried through the authenticated user's student relationship.
 - Student self-service accepts only name and email. Academic identifiers and records remain staff-controlled.
 - Only Administrators can manage user roles, activate/deactivate student accounts, delete eligible student records, and view audit logs.
-- Permanent student deletion is blocked when enrollment history exists.
+- Permanent student deletion is blocked when enrollment or visitor time-out history exists.
 
 ## Documentation
 

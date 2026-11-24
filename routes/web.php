@@ -22,6 +22,7 @@ use App\Http\Controllers\Student\EnrollmentController as StudentEnrollmentContro
 use App\Http\Controllers\Student\GradeController as StudentGradeController;
 use App\Http\Controllers\Student\ClassScheduleController as StudentClassScheduleController;
 use App\Http\Controllers\Student\ProfileController;
+use App\Http\Controllers\Student\VisitorTimeoutController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -105,6 +106,8 @@ Route::prefix('student')
         Route::get('/profile', ProfileController::class)->name('profile');
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::put('/password', [ProfileController::class, 'updatePassword'])->name('password.update');
+        Route::get('/visitor-timeouts', [VisitorTimeoutController::class, 'index'])->name('visitor-timeouts.index');
+        Route::post('/visitor-timeouts', [VisitorTimeoutController::class, 'store'])->middleware('throttle:5,1')->name('visitor-timeouts.store');
         Route::get('/enrollments', [StudentEnrollmentController::class, 'index'])->name('enrollments.index');
         Route::get('/enrollments/{enrollment}', [StudentEnrollmentController::class, 'show'])->name('enrollments.show');
         Route::get('/grades', StudentGradeController::class)->name('grades.index');

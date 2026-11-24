@@ -72,6 +72,21 @@
         </div>
     </div>
 
+    <div class="surface p-3 p-md-4 mb-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div>
+                <div class="eyebrow mb-1">STUDENT MODULE</div>
+                <h2 class="h5 fw-bold mb-1">Visitor time-out</h2>
+                @if($student->visitorTimeouts->isNotEmpty())
+                    <p class="muted small mb-0">Most recent: {{ $student->visitorTimeouts->first()->time_out_at->format('M d, Y · h:i A') }}</p>
+                @else
+                    <p class="muted small mb-0">No time-out records have been added yet.</p>
+                @endif
+            </div>
+            <a href="{{ route('student.visitor-timeouts.index') }}" class="btn btn-outline-primary">Open visitor time-out <i class="bi bi-arrow-right ms-1"></i></a>
+        </div>
+    </div>
+
     <div class="surface overflow-hidden">
         <div class="p-3 p-md-4 border-bottom">
             <h2 class="h5 fw-bold mb-1">Enrollment history</h2>

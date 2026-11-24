@@ -127,7 +127,15 @@ class StudentController extends Controller
 
     public function show(Student $student): View
     {
-        $student->load(['user', 'program.college', 'program.department', 'major', 'section', 'enrollments.enrollmentSubjects.subject']);
+        $student->load([
+            'user',
+            'program.college',
+            'program.department',
+            'major',
+            'section',
+            'visitorTimeouts' => fn ($query) => $query->latest('time_out_at')->limit(10),
+            'enrollments.enrollmentSubjects.subject',
+        ]);
 
         return view('admin.students.show', compact('student'));
     }
@@ -290,6 +298,12 @@ class StudentController extends Controller
         if ($student->enrollments()->exists()) {
             return back()->withErrors([
                 'student' => 'This student has enrollment history and cannot be permanently deleted. Deactivate the portal account to preserve academic records.',
+            ]);
+        }
+
+        if ($student->visitorTimeouts()->exists()) {
+            return back()->withErrors([
+                'student' => 'This student has visitor time-out history and cannot be permanently deleted. The student account can be deactivated instead.',
             ]);
         }
 

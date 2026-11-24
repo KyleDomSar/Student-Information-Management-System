@@ -105,13 +105,13 @@ Implemented:
 - Student self-service updates for name and email.
 - Student self-service password change with current-password verification.
 - Student-owned enrollment, grade, and class-schedule views.
+- Student visitor time-out recording with an automatically generated Asia/Manila timestamp, private history, and audit-log entry.
 - Audit events for authentication and implemented record changes.
 
-Still required by the approved brief:
-- Student visitor time-out recording. The precise data fields and workflow should be confirmed before implementation.
+Remaining work:
 - Complete security testing against every row of the approved role matrix.
 
-The gradebook and timetable are supplementary academic-information features in the current prototype. They do not replace the remaining required modules above.
+The visitor time-out implementation intentionally records only the authenticated student's timestamp and does not add visitor names, reasons, destination details, or an approval workflow because those details are not specified in the approved brief. The gradebook and timetable are supplementary academic-information features in the current prototype.
 
 ## 7. Data integrity rules
 
@@ -119,6 +119,6 @@ The gradebook and timetable are supplementary academic-information features in t
 - Student self-service must not permit changes to student number, program, year level, section, enrollment, or official academic results.
 - Staff must not delete student records or manage student account activation.
 - Only Administrators can manage user roles and access activity logs.
-- Do not permanently delete student records that have enrollment history.
+- Do not permanently delete student records that have enrollment or visitor time-out history.
 - Use database transactions for related record creation and updates.
 - Use fictional student records during development and demonstrations.

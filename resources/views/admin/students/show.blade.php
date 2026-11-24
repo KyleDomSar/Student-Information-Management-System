@@ -22,7 +22,7 @@
                     {{ $student->user->is_active ? 'Deactivate portal account' : 'Activate portal account' }}
                 </button>
             </form>
-            @if($student->enrollments->isEmpty())
+            @if($student->enrollments->isEmpty() && $student->visitorTimeouts->isEmpty())
                 <form method="POST" action="{{ route('admin.students.destroy', $student) }}" onsubmit="return confirm('Permanently delete this student record and its login account? This cannot be undone.');">
                     @csrf
                     @method('DELETE')
@@ -56,6 +56,31 @@
         <div class="col-md-4"><div class="small muted">Email</div><div class="fw-semibold text-break">{{ $student->user->email }}</div></div>
         <div class="col-md-4"><div class="small muted">Account created</div><div class="fw-semibold">{{ $student->created_at?->format('M d, Y') }}</div></div>
     </div>
+</div>
+
+<div class="surface overflow-hidden mb-3">
+    <div class="p-3 p-md-4 border-bottom">
+        <h2 class="h5 fw-bold mb-1">Visitor time-out history</h2>
+        <p class="small muted mb-0">Latest 10 records submitted by this student's account.</p>
+    </div>
+    @if($student->visitorTimeouts->isEmpty())
+        <div class="p-4 text-center muted">No visitor time-out records.</div>
+    @else
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead class="table-light"><tr><th>Record #</th><th>Date</th><th>Time</th></tr></thead>
+                <tbody>
+                @foreach($student->visitorTimeouts as $timeout)
+                    <tr>
+                        <td class="fw-semibold">#{{ $timeout->id }}</td>
+                        <td>{{ $timeout->time_out_at->format('M d, Y') }}</td>
+                        <td>{{ $timeout->time_out_at->format('h:i:s A') }}</td>
+                    </tr>
+                @endforeach
+                </tbody>
+            </table>
+        </div>
+    @endif
 </div>
 
 <div class="surface overflow-hidden">

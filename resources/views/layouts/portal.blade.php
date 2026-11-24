@@ -56,6 +56,7 @@
             <nav class="nav flex-column">
                 <a class="nav-link {{ request()->routeIs('student.dashboard') ? 'active' : '' }}" href="{{ route('student.dashboard') }}"><i class="bi bi-grid"></i><span>Overview</span></a>
                 <a class="nav-link {{ request()->routeIs('student.profile') ? 'active' : '' }}" href="{{ route('student.profile') }}"><i class="bi bi-person"></i><span>My Profile</span></a>
+                <a class="nav-link {{ request()->routeIs('student.visitor-timeouts.*') ? 'active' : '' }}" href="{{ route('student.visitor-timeouts.index') }}"><i class="bi bi-clock-history"></i><span>Visitor Time-Out</span></a>
                 <a class="nav-link {{ request()->routeIs('student.enrollments.*') ? 'active' : '' }}" href="{{ route('student.enrollments.index') }}"><i class="bi bi-journal-check"></i><span>My Enrollments</span></a>
                 <a class="nav-link {{ request()->routeIs('student.grades.*') ? 'active' : '' }}" href="{{ route('student.grades.index') }}"><i class="bi bi-card-list"></i><span>My Grades</span></a>
                 <a class="nav-link {{ request()->routeIs('student.schedules.*') ? 'active' : '' }}" href="{{ route('student.schedules.index') }}"><i class="bi bi-calendar3"></i><span>My Class Schedule</span></a>

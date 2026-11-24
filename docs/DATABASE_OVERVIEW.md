@@ -113,6 +113,18 @@ Stores student-specific profile and academic identifiers.
 | status | Active, inactive, graduated, or other approved status |
 | created_at / updated_at | Timestamps |
 
+### student_visitor_timeouts
+Stores visitor time-out timestamps recorded by a student through their own authenticated Student Portal account.
+
+| Field | Purpose |
+|---|---|
+| id | Primary key |
+| student_id | Foreign key to students.id |
+| time_out_at | Server-generated time-out date and time in the application timezone (Asia/Manila by default) |
+| created_at / updated_at | Record timestamps |
+
+The application does not accept a student ID or time-out time from the submitted form. The authenticated user's linked student profile is used to associate the record.
+
 ### subjects
 Stores subject catalog information.
 
@@ -186,7 +198,7 @@ Stores important administrative and academic record actions.
 - One year level may be assigned to many students and sections and may be supported by many programs.
 - One section belongs to one program and year level and may be assigned to many students.
 - One student may be assigned to one program major and one section.
-- One student has many enrollment records.
+- One student has many enrollment records and visitor time-out records.
 - One enrollment has many enrollment-subject records.
 - One subject may appear in many enrollment-subject records.
 - One enrollment-subject record may have one or more schedule entries.
@@ -213,6 +225,9 @@ colleges
 students
   |
   | 1-to-many
+  +---- student_visitor_timeouts
+  |
+  | 1-to-many
   v
 enrollments
   |
@@ -231,7 +246,7 @@ users ------ 1-to-many ------ audit_logs
 
 Student visitor time-out recording remains pending until the exact workflow and required data fields are confirmed. No visitor table has been added yet, to avoid assuming fields or processes that are not specified in the approved brief.
 
-## 5. Database integrity and privacy rules
+## 4. Database integrity and privacy rules
 
 - Add unique constraints to user email, student number, program code, department code, and supported academic structure combinations.
 - Prevent duplicate enrollment terms for the same student using a unique constraint on student, academic year, and semester.
@@ -241,4 +256,5 @@ Student visitor time-out recording remains pending until the exact workflow and 
 - Do not store plaintext passwords.
 - Avoid adding personal or financial fields unless the project requirements need them.
 - The Student Portal must query records through the authenticated student's relationship, not through unrestricted IDs.
+- Visitor time-out records are created for the authenticated student only and are preserved from permanent student deletion.
 - Final grades are stored as nullable decimal values. The allowed minimum and maximum are configured through `SIMS_GRADE_MIN` and `SIMS_GRADE_MAX` in the local environment.

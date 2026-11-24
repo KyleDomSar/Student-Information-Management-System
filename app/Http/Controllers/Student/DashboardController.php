@@ -16,6 +16,7 @@ class DashboardController extends Controller
                 'program',
                 'section',
                 'yearLevelRecord',
+                'visitorTimeouts' => fn ($query) => $query->latest('time_out_at')->limit(5),
                 'enrollments' => fn ($query) => $query->latest()->limit(5),
                 'enrollments.enrollmentSubjects.subject',
                 'enrollments.enrollmentSubjects.classSchedules',

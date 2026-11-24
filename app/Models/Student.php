@@ -55,4 +55,9 @@ class Student extends Model
     {
         return $this->hasMany(Enrollment::class);
     }
+
+    public function visitorTimeouts(): HasMany
+    {
+        return $this->hasMany(StudentVisitorTimeout::class);
+    }
 }
