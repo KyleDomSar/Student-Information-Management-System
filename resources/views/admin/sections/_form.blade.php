@@ -34,11 +34,17 @@
         </div>
         @if($isEdit)
             <div class="col-md-6">
-                <label for="is_active" class="form-label small fw-semibold">Status *</label>
+                <label for="is_active" class="form-label small fw-semibold">Section record status *</label>
                 <select id="is_active" name="is_active" class="form-select" required>
                     <option value="1" @selected((string) old('is_active', $section->is_active ? '1' : '0') === '1')>Active</option>
                     <option value="0" @selected((string) old('is_active', $section->is_active ? '1' : '0') === '0')>Inactive</option>
                 </select>
+                <div class="form-text">A section is available only when its own status, program, and year level are all active.</div>
+                @if(!$section->program->is_active || !$section->yearLevel->is_active)
+                    <div class="alert alert-warning small mt-2 mb-0">
+                        This section is currently unavailable because its {{ !$section->program->is_active ? 'program' : 'year level' }} is inactive. Reactivating the parent record restores availability only when this section's own status is also Active.
+                    </div>
+                @endif
             </div>
         @endif
     </div>
