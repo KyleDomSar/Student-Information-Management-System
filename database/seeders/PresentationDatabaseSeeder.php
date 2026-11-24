@@ -56,7 +56,7 @@ class PresentationDatabaseSeeder extends Seeder
                 ['is_active' => true],
             );
 
-            $admin = User::updateOrCreate(
+            User::updateOrCreate(
                 ['email' => 'admin.presentation@sims.test'],
                 [
                     'name' => 'SIMS Presentation Administrator',
@@ -122,7 +122,7 @@ class PresentationDatabaseSeeder extends Seeder
                         'user_id' => $staff->id,
                         'description' => '[PRESENTATION] Sample enrollment for '.$student->student_number.' ('.$academicYear.', '.$semester.').',
                         'created_at' => Carbon::parse($academicYear === '2026-2027'
-                            ? '2026-11-25 09:15:00'
+                            ? '2026-11-20 09:15:00'
                             : '2026-06-15 09:15:00'),
                     ],
                 );
@@ -154,7 +154,7 @@ class PresentationDatabaseSeeder extends Seeder
                 [
                     'user_id' => $staff->id,
                     'description' => '[PRESENTATION] Created the sample student profile '.$student->student_number.'.',
-                    'created_at' => Carbon::parse('2026-11-24 08:45:00'),
+                    'created_at' => Carbon::parse('2026-11-20 08:45:00'),
                 ],
             );
 
