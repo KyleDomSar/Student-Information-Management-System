@@ -35,11 +35,11 @@ jobs:
       - name: Generate application key
         run: php artisan key:generate
 
-      - name: Run Laravel feature tests
-        run: php artisan test
-
       - name: Install frontend dependencies
         run: npm install
 
       - name: Build frontend assets
         run: npm run build
+
+      - name: Run Laravel feature tests
+        run: php artisan test
