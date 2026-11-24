@@ -27,7 +27,9 @@ class EnrollmentController extends Controller
 
         abort_unless($student, 404);
 
-        $enrollmentRecord = $student->enrollments()->findOrFail($enrollment);
+        $enrollmentRecord = $student->enrollments()
+            ->with(['student.program', 'student.yearLevelRecord', 'student.section'])
+            ->findOrFail($enrollment);
 
         return view('student.enrollments.show', [
             'enrollment' => $enrollmentRecord,

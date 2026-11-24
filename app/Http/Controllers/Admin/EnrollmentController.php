@@ -8,6 +8,7 @@ use App\Models\Student;
 use App\Support\AuditLogger;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -23,6 +24,7 @@ class EnrollmentController extends Controller
                 $query->where(function ($enrollmentQuery) use ($search) {
                     $enrollmentQuery
                         ->where('academic_year', 'like', "%{$search}%")
+                        ->orWhere('semester', 'like', "%{$search}%")
                         ->orWhereHas('student', function ($studentQuery) use ($search) {
                             $studentQuery->where('student_number', 'like', "%{$search}%")
                                 ->orWhereHas('user', fn ($userQuery) => $userQuery->where('name', 'like', "%{$search}%"));
@@ -59,8 +61,23 @@ class EnrollmentController extends Controller
                     ->where('academic_year', $request->input('academic_year'))
                     ->where('semester', $request->input('semester'))),
             ],
-            'academic_year' => ['required', 'regex:/^\d{4}-\d{4}$/'],
-            'semester' => ['required', Rule::in(['First Semester', 'Second Semester', 'Midyear'])],
+            'academic_year' => [
+                'required',
+                'string',
+                'regex:/^\d{4}-\d{4}$/',
+                function (string $attribute, mixed $value, \Closure $fail): void {
+                    if (! is_string($value) || ! preg_match('/^\d{4}-\d{4}$/', $value)) {
+                        return;
+                    }
+
+                    [$startYear, $endYear] = array_map('intval', explode('-', $value));
+
+                    if ($endYear !== $startYear + 1) {
+                        $fail('The academic year must contain consecutive years, such as 2026-2027.');
+                    }
+                },
+            ],
+            'semester' => ['required', 'string', Rule::in(['First Semester', 'Second Semester', 'Midyear'])],
         ], [
             'student_id.unique' => 'This student already has an enrollment record for the selected academic year and semester.',
         ]);
@@ -71,18 +88,22 @@ class EnrollmentController extends Controller
             return back()->withErrors(['student_id' => 'The selected student account is inactive.'])->withInput();
         }
 
-        $enrollment = Enrollment::create([
-            ...$data,
-            'created_by' => $request->user()->id,
-        ]);
+        $enrollment = DB::transaction(function () use ($data, $request, $auditLogger, $student) {
+            $record = Enrollment::create([
+                ...$data,
+                'created_by' => $request->user()->id,
+            ]);
 
-        $auditLogger->record(
-            $request->user(),
-            'enrollment.created',
-            $enrollment,
-            'Recorded enrollment for '.$student->student_number.' ('.$enrollment->academic_year.', '.$enrollment->semester.').',
-            $request,
-        );
+            $auditLogger->record(
+                $request->user(),
+                'enrollment.created',
+                $record,
+                'Recorded enrollment for '.$student->student_number.' ('.$record->academic_year.', '.$record->semester.').',
+                $request,
+            );
+
+            return $record;
+        });
 
         return redirect()->route('admin.enrollments.show', $enrollment)
             ->with('success', 'Enrollment record created successfully.');

@@ -10,7 +10,7 @@
 </div>
 <div class="surface p-3 mb-3">
     <form method="GET" action="{{ route('admin.enrollments.index') }}" class="row g-2">
-        <div class="col-md"><input type="search" name="search" value="{{ $search }}" class="form-control" placeholder="Search student, student number, or academic year"></div>
+        <div class="col-md"><input type="search" name="search" value="{{ $search }}" class="form-control" placeholder="Search student, student number, academic year, or semester"></div>
         <div class="col-auto d-grid"><button class="btn btn-outline-primary" type="submit"><i class="bi bi-search me-1"></i> Search</button></div>
         @if($search !== '')<div class="col-auto d-grid"><a href="{{ route('admin.enrollments.index') }}" class="btn btn-light">Clear</a></div>@endif
     </form>
