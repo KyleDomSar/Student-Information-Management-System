@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
 
-            $table->index(['student_id', 'academic_year', 'semester']);
+            $table->unique(['student_id', 'academic_year', 'semester'], 'enrollments_student_term_unique');
         });
     }
 
