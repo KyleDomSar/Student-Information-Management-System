@@ -73,6 +73,30 @@ class PresentationDatabaseSeederTest extends TestCase
         $this->assertSame($firstCounts, $this->recordCounts());
     }
 
+    public function test_seeded_accounts_can_sign_in_to_their_respective_portals(): void
+    {
+        $this->seed(PresentationDatabaseSeeder::class);
+
+        $this->post(route('admin.login.store'), [
+            'email' => 'admin.presentation@sims.test',
+            'password' => 'Admin@SIMS2026!',
+        ])->assertRedirect(route('admin.dashboard'));
+
+        $this->post(route('logout'));
+
+        $this->post(route('admin.login.store'), [
+            'email' => 'registrar.presentation@sims.test',
+            'password' => 'Staff@SIMS2026!',
+        ])->assertRedirect(route('admin.dashboard'));
+
+        $this->post(route('logout'));
+
+        $this->post(route('student.login.store'), [
+            'email' => 'alyssa.santos.presentation@sims.test',
+            'password' => 'Student@SIMS2026!',
+        ])->assertRedirect(route('student.dashboard'));
+    }
+
     private function recordCounts(): array
     {
         return [
