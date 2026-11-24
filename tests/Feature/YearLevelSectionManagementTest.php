@@ -117,6 +117,15 @@ class YearLevelSectionManagementTest extends TestCase
             ->assertForbidden();
 
         $this->actingAs($staff)
+            ->put(route('admin.sections.update', $section), [
+                'program_id' => $program->id,
+                'year_level' => 1,
+                'code' => '1A',
+                'is_active' => '0',
+            ])
+            ->assertForbidden();
+
+        $this->actingAs($staff)
             ->delete(route('admin.sections.destroy', $section))
             ->assertForbidden();
 
@@ -350,5 +359,107 @@ class YearLevelSectionManagementTest extends TestCase
             ->assertOk()
             ->assertSee('4A')
             ->assertSee('value="4"', false);
+    }
+
+    public function test_admin_can_reactivate_a_section_after_deactivation(): void
+    {
+        $this->createYearLevels();
+        $program = $this->createProgram();
+        $admin = User::factory()->create(['role' => User::ROLE_ADMIN]);
+
+        $section = Section::create([
+            'program_id' => $program->id,
+            'year_level' => 1,
+            'code' => 'REACTIVATE-1A',
+            'is_active' => true,
+        ]);
+
+        $this->actingAs($admin)
+            ->delete(route('admin.sections.destroy', $section))
+            ->assertRedirect(route('admin.sections.index'));
+
+        $this->assertDatabaseHas('sections', [
+            'id' => $section->id,
+            'is_active' => false,
+        ]);
+
+        $this->actingAs($admin)
+            ->put(route('admin.sections.update', $section), [
+                'program_id' => $program->id,
+                'year_level' => 1,
+                'code' => 'REACTIVATE-1A',
+                'is_active' => '1',
+            ])
+            ->assertRedirect(route('admin.sections.index'));
+
+        $this->assertDatabaseHas('sections', [
+            'id' => $section->id,
+            'is_active' => true,
+        ]);
+    }
+
+    public function test_admin_cannot_create_sections_under_inactive_programs_or_year_levels(): void
+    {
+        $this->createYearLevels();
+        YearLevel::where('level_number', 3)->update(['is_active' => false]);
+
+        $activeProgram = $this->createProgram();
+        $inactiveProgram = Program::create([
+            'code' => 'BSINACTIVE',
+            'name' => 'Inactive Program',
+            'is_active' => false,
+        ]);
+        $admin = User::factory()->create(['role' => User::ROLE_ADMIN]);
+
+        $this->actingAs($admin)
+            ->from(route('admin.sections.create'))
+            ->post(route('admin.sections.store'), [
+                'program_id' => $inactiveProgram->id,
+                'year_level' => 1,
+                'code' => 'INVALID-PROGRAM',
+            ])
+            ->assertSessionHasErrors('program_id');
+
+        $this->actingAs($admin)
+            ->from(route('admin.sections.create'))
+            ->post(route('admin.sections.store'), [
+                'program_id' => $activeProgram->id,
+                'year_level' => 3,
+                'code' => 'INVALID-YEAR',
+            ])
+            ->assertSessionHasErrors('year_level');
+
+        $this->assertDatabaseCount('sections', 0);
+    }
+
+    public function test_section_under_inactive_year_level_is_displayed_and_filtered_as_inactive(): void
+    {
+        $this->createYearLevels();
+        YearLevel::where('level_number', 4)->update(['is_active' => false]);
+
+        $program = $this->createProgram();
+        $section = Section::create([
+            'program_id' => $program->id,
+            'year_level' => 4,
+            'code' => 'INACTIVE-YEAR-4A',
+            'is_active' => true,
+        ]);
+        $admin = User::factory()->create(['role' => User::ROLE_ADMIN]);
+
+        $this->actingAs($admin)
+            ->get(route('admin.sections.index'))
+            ->assertOk()
+            ->assertSee('INACTIVE-YEAR-4A')
+            ->assertSee('Year level inactive');
+
+        $this->actingAs($admin)
+            ->get(route('admin.sections.index', ['status' => 'active']))
+            ->assertOk()
+            ->assertDontSee('INACTIVE-YEAR-4A');
+
+        $this->actingAs($admin)
+            ->get(route('admin.sections.index', ['status' => 'inactive']))
+            ->assertOk()
+            ->assertSee('INACTIVE-YEAR-4A');
     }
 }
