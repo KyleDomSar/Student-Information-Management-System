@@ -12,13 +12,26 @@ use Illuminate\View\View;
 
 class ProgramController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
-        $programs = Program::withCount('students')
-            ->orderBy('name')
-            ->paginate(10);
+        $search = trim((string) $request->query('search', ''));
+        $requestedStatus = $request->query('status');
+        $status = in_array($requestedStatus, ['active', 'inactive'], true) ? $requestedStatus : '';
 
-        return view('admin.programs.index', compact('programs'));
+        $programs = Program::withCount('students')
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where(function ($searchQuery) use ($search) {
+                    $searchQuery->where('code', 'like', '%'.$search.'%')
+                        ->orWhere('name', 'like', '%'.$search.'%')
+                        ->orWhere('description', 'like', '%'.$search.'%');
+                });
+            })
+            ->when($status !== '', fn ($query) => $query->where('is_active', $status === 'active'))
+            ->orderBy('name')
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('admin.programs.index', compact('programs', 'search', 'status'));
     }
 
     public function create(): View
