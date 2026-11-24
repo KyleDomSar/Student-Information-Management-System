@@ -14,6 +14,8 @@ class DashboardController extends Controller
             ->student()
             ->with([
                 'program',
+                'section',
+                'yearLevelRecord',
                 'enrollments' => fn ($query) => $query->latest()->limit(5),
                 'enrollments.enrollmentSubjects.subject',
                 'enrollments.enrollmentSubjects.classSchedules',
