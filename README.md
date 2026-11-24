@@ -1,6 +1,6 @@
 # Student Information Management System (SIMS)
 
-A web-based Student Information Management System for academic use. SIMS has separate Admin/Staff and Student portals backed by one centralized authentication system and server-side role-based access control.
+A web-based Student Information Management System for the College of Engineering and Information Technology. This project follows the approved project brief and provides separate Administrator/Staff and Student interfaces using one centralized authentication system.
 
 ## Technology stack
 
@@ -12,43 +12,60 @@ A web-based Student Information Management System for academic use. SIMS has sep
 | Local development | Laragon |
 | Version control | Git and GitHub |
 
+## Official user roles
+
+The approved project brief defines exactly three roles:
+
+| Function | Student | Staff / Registrar | Administrator |
+|---|---:|---:|---:|
+| Log in and log out | Yes | Yes | Yes |
+| View personal profile | Yes | Yes | Yes |
+| Register students | No | Yes | Yes |
+| Edit student records | Limited | Yes | Yes |
+| Delete student records | No | No | Yes |
+| Manage student accounts | No | No | Yes |
+| Manage courses and sections | No | Limited | Yes |
+| Generate reports | No | Yes | Yes |
+| Manage user roles | No | No | Yes |
+| View activity logs | No | No | Yes |
+
+All permissions are enforced on the server. Hiding a button in the interface is not treated as an access-control measure.
+
 ## Current implementation
 
 ### Implemented foundation
-- Laravel 13 application structure.
-- MySQL configuration for the project's PHP 8.3 runtime.
-- Shared `users` authentication model with `admin`, `staff`, `instructor`, and `student` roles.
+- Laravel 13 application structure and MySQL database configuration.
+- Centralized authentication using one `users` table and Laravel session guard.
 - Separate Admin/Staff and Student login pages.
-- One session-based authentication backend.
-- Server-side role middleware for protected portal routes.
-- Login throttling, session regeneration, secure logout, and login activity audit events.
-- Initial database models and migrations for students, staff profiles, programs, subjects, enrollments, class schedules, and audit logs.
-- Admin/Staff dashboard with basic record counts and recent audit activity.
-- Student dashboard and read-only student profile/enrollment views.
-- Admin/Staff student records management: searchable student directory, profile creation, viewing, editing, and safe account deactivation.
-- Academic program management: create, view, update, and safe deactivation.
-- Subject catalog management: search, create, update, and safe deactivation, with program association.
-- Enrollment workflow: staff create term enrollments, attach active subjects, and approve or reject pending requests.
-- Student Portal enrollment history and detail pages, scoped to the signed-in student's own profile.
-- Gradebook for Admin/Staff to encode and update numeric final grades for approved enrollments. The minimum and maximum are configurable in `.env` (prototype default: 0–100).
-- Read-only Student Portal grade view, scoped to the signed-in student's approved enrollments.
-- Class schedule management for Admin/Staff, including day, time, room, and approved enrollment subject assignment.
-- Admin-only user management for administrator and staff accounts, including role changes, password updates, and safe account deactivation.
-- Admin-only searchable audit log viewer for authentication and academic record activity.
-- Read-only Student Portal timetable, scoped to the signed-in student's approved enrollments.
-- Pending and rejected enrollments are excluded from grade entry, student grade results, and student timetable.
+- Official app roles: `admin`, `staff`, and `student`. Unsupported legacy role values cannot access either portal.
+- Login throttling, session regeneration, secure logout, password hashing, and authentication audit events.
+- Admin-only user and role management.
+- Admin-only audit log viewer.
+- Admin/Staff dashboard and Student dashboard.
+- Student registration and record search, view, and update for authorized personnel.
+- Admin-only student account activation/deactivation.
+- Admin-only permanent deletion for student records without enrollment history. Deletion is blocked when academic history exists.
+- Admin-only program and subject catalog maintenance. Staff can view the catalogs and use existing entries in authorized registrar workflows.
+- Student self-service update of permitted personal details (name and email).
+- Student self-service password change requiring the current password.
+- Students cannot edit their student number, program, year level, student status, enrollment, grades, or schedules.
+- Enrollment workflow: authorized staff create term enrollments, attach active subjects, and approve or reject pending requests.
+- Gradebook for Admin/Staff to encode and update numeric final grades for approved enrollments. The prototype grade range is configurable in `.env`.
+- Read-only Student Portal enrollment, grade, and class schedule views scoped to the signed-in student's own records.
 - Duplicate student term prevention and subject-to-program validation.
-- Audit events for student, program, subject, and enrollment record changes.
-- Optional environment-configured local seed accounts.
+- Audit events for student record changes, account status changes, enrollment, grades, catalog changes, authentication, and student self-service updates.
 
-### Still to be developed
-- Reports and export.
-- Document requests and tuition balance, only if required by the final project scope.
-- Additional authorization policies and comprehensive security testing.
+### Required work still in progress
+The following items are explicitly listed in the approved project brief and are not yet implemented:
+- Year-level management.
+- Section management and assigning students to sections.
+- Student visitor time-out recording. The exact data-entry workflow should be confirmed with the instructor before finalizing its fields.
+- Student information reports and student lists for Administrators and Staff.
+- Additional security testing against the approved permission matrix.
 
-Reports and document/tuition workflows are not implemented yet. Instructor-specific access and reporting features can be considered if required by the final project scope.
+The gradebook and class timetable are supplementary academic-information features in the current prototype. They do not replace the remaining required year-level, section, visitor time-out, or reporting modules.
 
-## Portal URLs
+## Main portal URLs
 
 | Page | URL |
 |---|---|
@@ -57,20 +74,16 @@ Reports and document/tuition workflows are not implemented yet. Instructor-speci
 | Student login | `/student/login` |
 | Admin/Staff dashboard | `/admin/dashboard` |
 | Student dashboard | `/student/dashboard` |
-| Student profile | `/student/profile` |
+| Student profile and personal details | `/student/profile` |
+| Student password update | `/student/password` (PUT endpoint) |
 | Student records | `/admin/students` |
 | Academic programs | `/admin/programs` |
 | Subject catalog | `/admin/subjects` |
-| Admin enrollment management | `/admin/enrollments` |
-| Student enrollment history | `/student/enrollments` |
+| Enrollment management | `/admin/enrollments` |
 | Admin Gradebook | `/admin/grades` |
-| Student grades | `/student/grades` |
 | Admin class schedules | `/admin/schedules` |
-| Student timetable | `/student/schedules` |
 | Admin user management | `/admin/users` |
 | Admin audit logs | `/admin/audit-logs` |
-
-Both portals use the same `users` table and Laravel session guard. The login controller checks the account role, while route middleware enforces access on the server. Students have no routes for editing official academic records. The instructor role is reserved for a future instructor workspace and is not yet allowed to sign in.
 
 ## Local setup on Windows / Laragon
 
@@ -88,7 +101,7 @@ Both portals use the same `users` table and Laravel session guard. The login con
    copy .env.example .env
    ```
 
-5. Set your local MySQL values in `.env`. The default example is configured for Laragon's local MySQL and database `sims_db`.
+5. Set your local MySQL values in `.env`. The example file uses the local database name `sims_db`.
 6. Generate the application key:
 
    ```bash
@@ -101,31 +114,30 @@ Both portals use the same `users` table and Laravel session guard. The login con
    php artisan migrate
    ```
 
-8. Install frontend dependencies and build assets if needed:
+8. Install frontend dependencies and build assets:
 
    ```bash
    npm install
    npm run build
    ```
 
-9. Start Laravel:
+9. Create the initial local Administrator account by setting the values below in your untracked `.env` file, then run `php artisan db:seed`.
+10. Start Laravel:
 
-   ```bash
-   php artisan serve
-   ```
+    ```bash
+    php artisan serve
+    ```
 
-10. Open `http://127.0.0.1:8000/login` or use the Laragon virtual host if configured.
-11. Run the automated feature tests when validating changes:
+11. Open `http://127.0.0.1:8000/login`.
+12. Run automated tests before considering a change verified:
 
-   ```bash
-   php artisan test
-   ```
+    ```bash
+    php artisan test
+    ```
 
-## Create local demo accounts
+## Create the initial local Administrator account
 
-The seeder creates accounts only when the corresponding values are set in your **local, untracked** `.env` file.
-
-For an administrator:
+The seeder creates or updates the Administrator account only when both credentials are set in your **local, untracked** `.env` file:
 
 ```env
 SIMS_ADMIN_NAME="SIMS Administrator"
@@ -133,7 +145,14 @@ SIMS_ADMIN_EMAIL=admin@example.test
 SIMS_ADMIN_PASSWORD="replace-with-a-strong-local-password"
 ```
 
-Optional demo student:
+Then run:
+
+```bash
+php artisan config:clear
+php artisan db:seed
+```
+
+Optional demo Student account:
 
 ```env
 SIMS_STUDENT_NAME="Demo Student"
@@ -142,15 +161,7 @@ SIMS_STUDENT_PASSWORD="replace-with-a-different-strong-password"
 SIMS_STUDENT_NUMBER=DEMO-0001
 ```
 
-Then run:
-
-```bash
-php artisan db:seed
-```
-
-Use fictional records only. These demo values are local configuration examples, not pre-created GitHub credentials.
-
-The prototype grade scale defaults to 0–100. Configure `SIMS_GRADE_MIN` and `SIMS_GRADE_MAX` in your local `.env` to match the grading scale approved for the project.
+Use fictional records only. These are local configuration examples, not pre-created credentials.
 
 ## Security notes
 
@@ -159,8 +170,10 @@ The prototype grade scale defaults to 0–100. Configure `SIMS_GRADE_MIN` and `S
 - Login attempts are rate-limited.
 - Session IDs are regenerated after login and invalidated on logout.
 - CSRF protection is provided by Laravel's web middleware and Blade form tokens.
-- Student records are retrieved through the authenticated user's student relationship.
-- Backend authorization is required; hiding a UI control does not secure a route.
+- Student-owned records are queried through the authenticated user's student relationship.
+- Student self-service accepts only name and email. Academic identifiers and records remain staff-controlled.
+- Only Administrators can manage user roles, activate/deactivate student accounts, delete eligible student records, and view audit logs.
+- Permanent student deletion is blocked when enrollment history exists.
 
 ## Documentation
 
