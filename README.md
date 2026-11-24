@@ -59,6 +59,8 @@ Gradebook, class schedule management, audit log browsing, and user management ar
 | Subject catalog | `/admin/subjects` |
 | Admin enrollment management | `/admin/enrollments` |
 | Student enrollment history | `/student/enrollments` |
+| Admin enrollment management | `/admin/enrollments` |
+| Student enrollment history | `/student/enrollments` |
 
 Both portals use the same `users` table and Laravel session guard. The login controller checks the account role, while route middleware enforces access on the server. Students have no routes for editing official academic records. The instructor role is reserved for a future instructor workspace and is not yet allowed to sign in.
 
