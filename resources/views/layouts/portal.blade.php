@@ -61,7 +61,7 @@
                 <a class="nav-link {{ request()->routeIs('student.schedules.*') ? 'active' : '' }}" href="{{ route('student.schedules.index') }}"><i class="bi bi-calendar3"></i><span>My Class Schedule</span></a>
             </nav>
         @else
-            <div class="sidebar-label">{{ auth()->user()->role === 'instructor' ? 'Instructor Space' : 'Management' }}</div>
+            <div class="sidebar-label">Administration</div>
             <nav class="nav flex-column">
                 <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}"><i class="bi bi-grid"></i><span>Dashboard</span></a>
                 @if(in_array(auth()->user()->role, ['admin', 'staff'], true))
@@ -75,8 +75,6 @@
                         <a class="nav-link {{ request()->routeIs('admin.audit-logs.*') ? 'active' : '' }}" href="{{ route('admin.audit-logs.index') }}"><i class="bi bi-clock-history"></i><span>Audit Logs</span></a>
                         <a class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}"><i class="bi bi-shield-lock"></i><span>User Management</span></a>
                     @endif
-                @else
-                    <span class="nav-link disabled opacity-50"><i class="bi bi-easel"></i><span>My Classes · Soon</span></span>
                 @endif
             </nav>
         @endif
