@@ -186,7 +186,13 @@ class StudentController extends Controller
                 'nullable',
                 'integer',
                 Rule::exists('sections', 'id')->where(fn ($query) => $query
-                    ->where(fn ($active) => $active->where('is_active', true)->orWhere('id', $student->section_id))
+                    ->where(function ($availableQuery) use ($student) {
+                        $availableQuery->where(function ($activeQuery) {
+                            $activeQuery->where('is_active', true)
+                                ->whereIn('program_id', Program::query()->where('is_active', true)->select('id'))
+                                ->whereIn('year_level', YearLevel::query()->where('is_active', true)->select('level_number'));
+                        })->orWhere('id', $student->section_id);
+                    })
                     ->where('program_id', $request->input('program_id'))
                     ->where('year_level', $request->input('year_level'))),
             ],
