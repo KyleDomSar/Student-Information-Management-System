@@ -28,7 +28,7 @@ class GradeManagementTest extends TestCase
         ]);
     }
 
-    private function createEnrollmentSubject(Student $student, string $code, string $status = 'enrolled'): EnrollmentSubject
+    private function createEnrollmentSubject(Student $student, string $code, string $status = 'enrolled', string $semester = 'First'): EnrollmentSubject
     {
         $subject = Subject::create([
             'code' => $code,
@@ -40,7 +40,7 @@ class GradeManagementTest extends TestCase
         $enrollment = Enrollment::create([
             'student_id' => $student->id,
             'academic_year' => '2026-2027',
-            'semester' => 'First',
+            'semester' => $semester,
             'status' => $status,
         ]);
 
@@ -129,7 +129,7 @@ class GradeManagementTest extends TestCase
         $otherItem = $this->createEnrollmentSubject($secondStudent, 'ACCT999');
         $otherItem->update(['final_grade' => 88.00]);
 
-        $pendingItem = $this->createEnrollmentSubject($firstStudent, 'IT104', 'pending');
+        $pendingItem = $this->createEnrollmentSubject($firstStudent, 'IT104', 'pending', 'Second');
         $pendingItem->update(['final_grade' => 90.00]);
 
         $this->actingAs($firstStudent->user)
