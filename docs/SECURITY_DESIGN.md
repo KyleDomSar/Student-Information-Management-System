@@ -20,6 +20,7 @@ Use server-side middleware and Laravel Policies/Gates.
 Suggested route groups:
 
 - `/admin/*`: authenticated admin or staff, with per-action permission checks.
+- `/admin/users/*` and `/admin/audit-logs`: administrator only.
 - `/student/*`: authenticated student only.
 
 For student-owned data, scope queries to the authenticated student's profile. Never trust a student ID supplied by a URL, hidden input, or request body without checking ownership. Student enrollment details are fetched through the authenticated student's `enrollments()` relationship, so changing the enrollment ID cannot expose another student's record. Student grade and class schedule queries are similarly restricted to approved enrollments belonging to the authenticated student.
@@ -48,6 +49,7 @@ This is a conceptual example. The actual relationship names will follow the impl
 | Stored or reflected XSS | Escape untrusted output in Blade; avoid rendering untrusted HTML |
 | Sensitive data exposure | Validate and minimize collected data; never commit secrets or real student data |
 | Unauthorized record changes | Validate requests and record actor, action, and timestamp in audit logs |
+| Administrator lockout | Prevent an administrator from deactivating their own account or removing the last active administrator role |
 
 ## 4. Audit logging
 
@@ -66,7 +68,7 @@ Recommended fields:
 - A short, sanitized description.
 - Optional request metadata only when justified.
 
-Do not place passwords, session tokens, full payment data, or unnecessary personal information in logs.
+Do not place passwords, session tokens, full payment data, or unnecessary personal information in logs. The audit log viewer is restricted to administrators.
 
 ## 5. Data protection
 
@@ -82,7 +84,8 @@ Do not place passwords, session tokens, full payment data, or unnecessary person
 - [ ] A student cannot open an Admin/Staff route.
 - [ ] A student cannot access another student's profile, grades, enrollment, or schedule by changing an ID.
 - [ ] A student cannot modify official records through a crafted POST, PUT, PATCH, or DELETE request.
-- [ ] Staff cannot access administrator-only user and role management.
+- [ ] Staff cannot access administrator-only user and role management or the audit log viewer.
+- [ ] An administrator cannot deactivate their own account or remove the last active administrator.
 - [ ] Unauthenticated users are redirected to the correct login page.
 - [ ] Login attempts are rate limited.
 - [ ] Sessions are regenerated after login and invalidated on logout.
