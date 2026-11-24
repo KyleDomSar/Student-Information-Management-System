@@ -88,7 +88,7 @@ class UserController extends Controller
             'is_active' => ['required', 'boolean'],
         ]);
 
-        if ($user->is(auth()->user()) && (
+        if ($user->id === $request->user()->id && (
             $data['role'] !== $user->role || ! (bool) $data['is_active']
         )) {
             return back()
