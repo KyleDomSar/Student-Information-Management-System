@@ -58,10 +58,9 @@ All permissions are enforced on the server. Hiding a button in the interface is 
 ### Required work still in progress
 The following items are explicitly listed in the approved project brief and are not yet implemented:
 - Student visitor time-out recording. The exact data-entry workflow should be confirmed with the instructor before finalizing its fields.
-- Student visitor time-out recording. The exact data-entry workflow should be confirmed with the instructor before finalizing its fields.
 - Additional security testing against the approved permission matrix.
 
-The gradebook and class timetable are supplementary academic-information features in the current prototype. They do not replace the remaining required year-level, section, visitor time-out, or reporting modules.
+The gradebook and class timetable are supplementary academic-information features in the current prototype. The only required feature not yet implemented is visitor time-out recording, pending clarification of its exact workflow.
 
 ## Main portal URLs
 
@@ -77,6 +76,9 @@ The gradebook and class timetable are supplementary academic-information feature
 | Student records | `/admin/students` |
 | Academic programs | `/admin/programs` |
 | Subject catalog | `/admin/subjects` |
+| Year level management | `/admin/year-levels` |
+| Section management | `/admin/sections` |
+| Student information reports | `/admin/reports/students` |
 | Enrollment management | `/admin/enrollments` |
 | Admin Gradebook | `/admin/grades` |
 | Admin class schedules | `/admin/schedules` |
