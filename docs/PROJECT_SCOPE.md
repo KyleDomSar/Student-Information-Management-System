@@ -26,7 +26,7 @@ The system aims to improve record management, reduce manual paperwork, and prote
 Permission rules:
 - **Administrator:** full system administration, student account management, role management, deletion, reports, and activity-log access.
 - **Staff / Registrar:** register students, update authorized student information, manage enrollment information, assign students to courses and sections, search records, and generate student lists and reports.
-- **Student:** view personal and academic information, update only permitted personal information, change their own password, and record visitor time-out as defined by the approved workflow.
+- **Student:** view personal and academic information, update only permitted personal information, change their own password, and record visitor time-out. The exact actor and data-entry workflow are not defined in the PDF, so the current implementation is documented separately below.
 
 All restrictions must be enforced on the backend for every route and record operation.
 
@@ -92,26 +92,28 @@ The project must demonstrate:
 
 ## 6. Current implementation status
 
-Implemented:
-- Centralized Laravel authentication with separate Admin/Staff and Student login pages.
-- Server-side role middleware for the three supported roles: Administrator, Staff / Registrar, and Student.
-- Administrator-only user management and activity-log viewing.
-- Staff student registration and authorized student-record updates.
-- Administrator-only student account activation/deactivation.
-- Administrator-only deletion of student records when no enrollment history exists. Deletion is blocked when academic history exists to preserve data integrity.
-- Administrator-only program, subject, year-level, and section catalog maintenance; Staff can view catalogs and use existing entries in registrar workflows.
-- Students can be assigned to sections that match their program and year level.
-- Staff and Administrators can filter student lists and export student information reports as CSV.
-- Student self-service updates for name and email.
-- Student self-service password change with current-password verification.
-- Student-owned enrollment, grade, and class-schedule views.
-- Student visitor time-out recording with an automatically generated Asia/Manila timestamp, private history, and audit-log entry.
-- Audit events for authentication and implemented record changes.
+### 6.1 Core requirements from the approved PDF
+- Centralized authentication with separate Admin/Staff and Student portals, supporting the three approved roles.
+- Student registration and student-record management by authorized personnel.
+- Student profile and academic-information viewing, limited personal-information updates, and password change.
+- Administrator-only student account activation/deactivation, staff account and role management, permanent deletion where allowed, and activity-log access.
+- Staff/Registrar student search, authorized profile and enrollment updates, course/section assignment, and student information reports.
+- Program/course, subject, year-level, and section catalogs.
+- Student visitor time-out recording, with server-generated timestamps, private student history, and audit logging.
+- Security controls including password hashing, authentication, role checks, input validation, session management, and audit logging.
 
-Remaining work:
-- Complete security testing against every row of the approved role matrix.
+### 6.2 Supplementary features implemented beyond the explicit PDF list
+These features are present in the prototype but are not stated as mandatory modules or detailed workflows in the approved brief:
+- Gradebook for encoding final grades and the corresponding Student Portal grade view.
+- Class timetable creation and the corresponding Student Portal schedule view.
+- Expanded term enrollment workflow with subject-level entries and pending/enrolled/rejected statuses. The general requirement to manage enrollment information is in scope, but the exact approval lifecycle is an added workflow.
+- Expanded CvSU Main Campus academic hierarchy: colleges, departments, majors/specializations, program-specific year-level mappings, and the campus-wide reference catalog. The current seeder includes 11 colleges, 5 CEIT departments, 46 program entries, and 30 major/specialization entries. These details go beyond the minimum program/course, year-level, and section requirements.
 
-The visitor time-out implementation intentionally records only the authenticated student's timestamp and does not add visitor names, reasons, destination details, or an approval workflow because those details are not specified in the approved brief. The gradebook and timetable are supplementary academic-information features in the current prototype.
+These extensions are retained as optional academic enhancements. They must not be described in the project presentation as requirements explicitly stated in the PDF.
+
+### 6.3 Remaining verification and clarification
+- Complete route-by-route security testing against every row of the approved role-permission matrix.
+- Confirm the intended meaning of "Record visitor time-out" with the instructor. The PDF does not specify whether the record refers to the student, a visitor of the student, or another visitor log process. The current implementation records the authenticated student's own server-generated time-out timestamp and does not collect visitor names, reasons, or destination details.
 
 ## 7. Data integrity rules
 

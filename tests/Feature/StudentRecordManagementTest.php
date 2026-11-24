@@ -196,4 +196,87 @@ class StudentRecordManagementTest extends TestCase
         $this->assertDatabaseHas('students', ['id' => $student->id]);
         $this->assertDatabaseHas('users', ['id' => $studentUser->id]);
     }
+
+    public function test_staff_can_update_authorized_student_record_fields_but_cannot_manage_account_access_or_password(): void
+    {
+        $staff = User::factory()->create(['role' => User::ROLE_STAFF]);
+        $studentUser = User::factory()->create([
+            'role' => User::ROLE_STUDENT,
+            'password' => 'Original-Student-Password-2026',
+            'is_active' => true,
+        ]);
+        $student = Student::create([
+            'user_id' => $studentUser->id,
+            'student_number' => 'DEMO-2026-006',
+            'status' => 'active',
+        ]);
+
+        $this->actingAs($staff)
+            ->put(route('admin.students.update', $student), [
+                'name' => 'Updated by Registrar',
+                'email' => 'updated.by.registrar@example.test',
+                'student_number' => 'DEMO-2026-006-UPDATED',
+                'status' => 'graduated',
+                // These account-control values are deliberately not part of Staff's allowed fields.
+                'account_active' => '0',
+                'password' => 'Attempted-Unauthorized-Password-2026',
+                'password_confirmation' => 'Attempted-Unauthorized-Password-2026',
+            ])
+            ->assertRedirect(route('admin.students.show', $student));
+
+        $this->assertDatabaseHas('users', [
+            'id' => $studentUser->id,
+            'name' => 'Updated by Registrar',
+            'email' => 'updated.by.registrar@example.test',
+            'is_active' => true,
+        ]);
+
+        $this->assertTrue(password_verify(
+            'Original-Student-Password-2026',
+            $studentUser->fresh()->password,
+        ));
+
+        $this->assertDatabaseHas('students', [
+            'id' => $student->id,
+            'student_number' => 'DEMO-2026-006-UPDATED',
+            'status' => 'graduated',
+        ]);
+    }
+
+    public function test_student_cannot_open_or_update_another_student_record_through_admin_routes(): void
+    {
+        $studentUser = User::factory()->create(['role' => User::ROLE_STUDENT]);
+        $otherStudentUser = User::factory()->create(['role' => User::ROLE_STUDENT]);
+        $otherStudent = Student::create([
+            'user_id' => $otherStudentUser->id,
+            'student_number' => 'DEMO-2026-007',
+            'status' => 'active',
+        ]);
+
+        $this->actingAs($studentUser)
+            ->get(route('admin.students.show', $otherStudent))
+            ->assertForbidden();
+
+        $this->actingAs($studentUser)
+            ->put(route('admin.students.update', $otherStudent), [
+                'name' => 'Unauthorized Change',
+                'email' => 'unauthorized.change@example.test',
+                'student_number' => 'UNAUTHORIZED-001',
+                'status' => 'graduated',
+            ])
+            ->assertForbidden();
+
+        $this->assertDatabaseHas('users', [
+            'id' => $otherStudentUser->id,
+            'name' => $otherStudentUser->name,
+            'email' => $otherStudentUser->email,
+        ]);
+
+        $this->assertDatabaseHas('students', [
+            'id' => $otherStudent->id,
+            'student_number' => 'DEMO-2026-007',
+            'status' => 'active',
+        ]);
+    }
+
 }

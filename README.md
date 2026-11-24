@@ -33,35 +33,28 @@ All permissions are enforced on the server. Hiding a button in the interface is 
 
 ## Current implementation
 
-### Implemented foundation
-- Laravel 13 application structure and MySQL database configuration.
-- Centralized authentication using one `users` table and Laravel session guard.
-- Separate Admin/Staff and Student login pages.
-- Official app roles: `admin`, `staff`, and `student`. Unsupported legacy role values cannot access either portal.
-- Login throttling, session regeneration, secure logout, password hashing, and authentication audit events.
-- Admin-only user and role management.
-- Admin-only audit log viewer.
-- Admin/Staff dashboard and Student dashboard.
-- Student registration and record search, view, and update for authorized personnel.
-- Admin-only student account activation/deactivation.
-- Admin-only permanent deletion for student records without enrollment history. Deletion is blocked when academic history exists.
-- Admin-only program and subject catalog maintenance. Staff can view the catalogs and use existing entries in authorized registrar workflows.
-- CvSU Main Campus academic hierarchy: colleges, departments, programs, majors/specializations, and program-specific year levels. The seeder loads 11 Main Campus colleges, 5 CEIT departments, 46 program entries, and the listed majors/specializations. Program codes are local SIMS identifiers pending verification against registrar records; department and year-level assignments are left configurable.
-- Enrollment terms follow the CvSU calendar labels: First Semester, Second Semester, and Midyear.
-- Student self-service update of permitted personal details (name and email).
-- Student self-service password change requiring the current password.
-- Students cannot edit their student number, program, major, year level, student status, enrollment, grades, or schedules.
-- Enrollment workflow: authorized staff create term enrollments, attach active subjects, and approve or reject pending requests.
-- Gradebook for Admin/Staff to encode and update numeric final grades for approved enrollments. The prototype grade range is configurable in `.env`.
-- Read-only Student Portal enrollment, grade, and class schedule views scoped to the signed-in student's own records.
-- Student visitor time-out recording with server-generated Asia/Manila timestamps, private self-service history, and audit logging.
-- Duplicate student term prevention and subject-to-program validation.
-- Audit events for student record changes, account status changes, enrollment, grades, catalog changes, authentication, visitor time-out recording, and student self-service updates.
+### Core requirements from the approved PDF
+- Laravel authentication with separate Admin/Staff and Student login pages and the three approved roles: Administrator, Staff/Registrar, and Student.
+- Student registration and record management for authorized personnel, including student profiles, student numbers, programs, year levels, sections, and enrollment information.
+- Student self-service access to personal and academic information, permitted name/email updates, and password changes with current-password verification.
+- Administrator-only student-account activation/deactivation, user-role management, staff-account management, permanent student-record deletion, and activity-log viewing.
+- Staff/Registrar student search, authorized record updates, enrollment processing, and student information reports.
+- Program/course, subject, year-level, and section catalog functions.
+- Student visitor time-out recording, private student history, and audit logging. The current implementation records a server-generated timestamp for the authenticated student.
+- Server-side role checks, password hashing, login throttling, session security, validation, CSRF protection, database constraints, and activity logging.
 
-### Required work still in progress
-- Complete security testing against every row of the approved permission matrix.
+### Supplementary features beyond the explicit PDF requirements
+The following are implemented as optional academic extensions. The PDF does not explicitly require these specific workflows or data structures:
+- Gradebook entry and student grade views.
+- Class timetable creation and student schedule views.
+- Detailed term-based enrollment workflow with subject-level enrollment entries and pending/enrolled/rejected approval statuses. Enrollment information management itself is part of the required scope.
+- Expanded CvSU Main Campus academic hierarchy, including colleges, departments, majors/specializations, and program-specific year-level mappings. The reference seeder contains 11 Main Campus colleges, 5 CEIT departments, 46 program entries, and 30 major/specialization entries. These expanded reference structures go beyond the PDF's minimum program/course, year-level, and section requirements.
 
-The visitor time-out feature currently records the authenticated student's time-out timestamp and keeps a private history. The approved brief does not specify additional visitor details or an approval workflow, so those fields and processes have not been assumed. The gradebook and class timetable are supplementary academic-information features in the current prototype.
+These supplementary modules are retained in the prototype but should be presented as optional enhancements, not as mandatory requirements taken from the PDF.
+
+### Remaining verification and workflow confirmation
+- Complete the final route-by-route security review against every row of the approved role-permission matrix.
+- Confirm with the instructor what "Record visitor time-out" is intended to mean. The PDF does not define the exact actor or data-entry workflow. The current implementation lets a signed-in student record their own current timestamp and does not collect visitor names or other visitor details.
 
 ## Main portal URLs
 

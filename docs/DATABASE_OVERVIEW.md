@@ -242,11 +242,21 @@ class_schedules
 users ------ 1-to-many ------ audit_logs
 ```
 
-## 4. Remaining planned data requirement
+## 4. Scope classification and supplementary structures
 
-Student visitor time-out recording remains pending until the exact workflow and required data fields are confirmed. No visitor table has been added yet, to avoid assuming fields or processes that are not specified in the approved brief.
+The following tables directly support requirements named in the approved brief: `users`, `students`, `programs`, `subjects`, `year_levels`, `sections`, `enrollments`, and `student_visitor_timeouts`.
 
-## 4. Database integrity and privacy rules
+The `student_visitor_timeouts` table is implemented. It stores the current server-generated timestamp for the authenticated student's own record. The brief does not define the exact visitor time-out workflow, so no visitor name, reason, destination, or approval fields have been assumed. The intended meaning should be confirmed with the instructor.
+
+The following are supplementary academic extensions, not explicitly required as separate structures or detailed workflows by the PDF:
+- `colleges`, `departments`, and `program_majors` provide a more detailed academic hierarchy than the brief requires.
+- `program_year_levels` allows different year-level ranges per program.
+- The term-based enrollment status workflow (pending, enrolled, rejected) and subject-level enrollment links implement a more detailed approval process than the brief describes.
+- Final-grade fields in `enrollment_subjects` and the `class_schedules` table support the optional gradebook and timetable features.
+
+These tables are retained in the prototype, but should be presented as supplementary academic functionality rather than mandatory PDF requirements.
+
+## 5. Database integrity and privacy rules
 
 - Add unique constraints to user email, student number, program code, department code, and supported academic structure combinations.
 - Prevent duplicate enrollment terms for the same student using a unique constraint on student, academic year, and semester.
