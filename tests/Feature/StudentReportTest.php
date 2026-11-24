@@ -27,6 +27,7 @@ class StudentReportTest extends TestCase
             'name' => 'Bachelor of Science in Information Technology',
             'is_active' => true,
         ]);
+        $program->yearLevels()->attach($yearLevel->level_number);
 
         $section = Section::create([
             'program_id' => $program->id,

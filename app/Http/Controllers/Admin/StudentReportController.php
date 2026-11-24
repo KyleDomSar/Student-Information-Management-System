@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\College;
 use App\Models\Program;
 use App\Models\Section;
 use App\Models\Student;
@@ -23,7 +24,8 @@ class StudentReportController extends Controller
             ->paginate(20)
             ->withQueryString();
 
-        $programs = Program::orderBy('name')->get();
+        $colleges = College::orderBy('name')->get();
+        $programs = Program::with('college')->orderBy('name')->get();
         $yearLevels = YearLevel::orderBy('level_number')->get();
         $sections = Section::with('program', 'yearLevel')->orderBy('code')->get();
 
@@ -33,6 +35,7 @@ class StudentReportController extends Controller
             'programs',
             'yearLevels',
             'sections',
+            'colleges',
         ));
     }
 
@@ -63,7 +66,10 @@ class StudentReportController extends Controller
                 'Student Number',
                 'Full Name',
                 'Email',
+                'College',
+                'Department',
                 'Program',
+                'Major',
                 'Year Level',
                 'Section',
                 'Student Status',
@@ -75,7 +81,10 @@ class StudentReportController extends Controller
                     $student->student_number,
                     $student->user?->name ?? '',
                     $student->user?->email ?? '',
+                    $student->program?->college?->name ?? '',
+                    $student->program?->department?->name ?? '',
                     $student->program?->code ?? '',
+                    $student->major?->name ?? '',
                     $student->yearLevelRecord?->name ?? $student->year_level ?? '',
                     $student->section?->code ?? '',
                     $student->status,
@@ -101,6 +110,7 @@ class StudentReportController extends Controller
     {
         return $request->validate([
             'search' => ['nullable', 'string', 'max:100'],
+            'college_id' => ['nullable', 'integer', Rule::exists('colleges', 'id')],
             'program_id' => ['nullable', 'integer', Rule::exists('programs', 'id')],
             'year_level' => ['nullable', 'integer', Rule::exists('year_levels', 'level_number')],
             'section_id' => ['nullable', 'integer', Rule::exists('sections', 'id')],
@@ -114,7 +124,7 @@ class StudentReportController extends Controller
     private function studentQuery(array $filters): Builder
     {
         return Student::query()
-            ->with(['user', 'program', 'section', 'yearLevelRecord'])
+            ->with(['user', 'program.college', 'program.department', 'major', 'section', 'yearLevelRecord'])
             ->when($filters['search'] ?? null, function (Builder $query, string $search): void {
                 $query->where(function (Builder $studentQuery) use ($search): void {
                     $studentQuery
@@ -126,6 +136,7 @@ class StudentReportController extends Controller
                         });
                 });
             })
+            ->when($filters['college_id'] ?? null, fn (Builder $query, int $collegeId) => $query->whereHas('program', fn (Builder $programQuery) => $programQuery->where('college_id', $collegeId)))
             ->when($filters['program_id'] ?? null, fn (Builder $query, int $programId) => $query->where('program_id', $programId))
             ->when($filters['year_level'] ?? null, fn (Builder $query, int $yearLevel) => $query->where('year_level', $yearLevel))
             ->when($filters['section_id'] ?? null, fn (Builder $query, int $sectionId) => $query->where('section_id', $sectionId))

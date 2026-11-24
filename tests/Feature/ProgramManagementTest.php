@@ -2,7 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Models\College;
 use App\Models\Program;
+use App\Models\YearLevel;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -47,9 +49,13 @@ class ProgramManagementTest extends TestCase
     public function test_admin_can_create_and_deactivate_an_academic_program(): void
     {
         $admin = User::factory()->create(['role' => User::ROLE_ADMIN]);
+        $college = College::create(['name' => 'College of Engineering & Information Technology', 'campus' => 'Main Campus']);
+        YearLevel::create(['level_number' => 1, 'name' => 'First Year']);
 
         $this->actingAs($admin)
             ->post(route('admin.programs.store'), [
+                'college_id' => $college->id,
+                'year_levels' => [1],
                 'code' => 'BSIT',
                 'name' => 'Bachelor of Science in Information Technology',
                 'description' => 'Information technology academic program.',

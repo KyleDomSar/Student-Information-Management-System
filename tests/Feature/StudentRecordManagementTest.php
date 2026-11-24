@@ -61,6 +61,7 @@ class StudentRecordManagementTest extends TestCase
             'name' => 'Bachelor of Science in Information Technology',
             'is_active' => true,
         ]);
+        $program->yearLevels()->attach(3);
 
         $this->actingAs($staff)
             ->post(route('admin.students.store'), [
@@ -184,7 +185,7 @@ class StudentRecordManagementTest extends TestCase
         Enrollment::create([
             'student_id' => $student->id,
             'academic_year' => '2026-2027',
-            'semester' => 'First',
+            'semester' => 'First Semester',
             'status' => 'enrolled',
         ]);
 

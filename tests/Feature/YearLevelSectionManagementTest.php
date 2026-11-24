@@ -26,11 +26,15 @@ class YearLevelSectionManagementTest extends TestCase
 
     private function createProgram(): Program
     {
-        return Program::create([
+        $program = Program::create([
             'code' => 'BSIT',
             'name' => 'Bachelor of Science in Information Technology',
             'is_active' => true,
         ]);
+
+        $program->yearLevels()->sync(range(1, 6));
+
+        return $program;
     }
 
     public function test_staff_can_view_year_levels_and_sections(): void

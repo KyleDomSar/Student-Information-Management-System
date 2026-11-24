@@ -13,7 +13,7 @@
             <select id="program_id" name="program_id" class="form-select" required>
                 <option value="">Select program</option>
                 @foreach($programs as $program)
-                    <option value="{{ $program->id }}" @selected((string) old('program_id', $section?->program_id ?? '') === (string) $program->id)>{{ $program->code }} · {{ $program->name }}</option>
+                    <option value="{{ $program->id }}" data-year-levels="{{ $program->yearLevels->pluck('level_number')->implode(',') }}" @selected((string) old('program_id', $section?->program_id ?? '') === (string) $program->id)>{{ $program->code }} · {{ $program->name }}</option>
                 @endforeach
             </select>
             @error('program_id')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
@@ -49,3 +49,26 @@
     <button type="submit" class="btn btn-primary"><i class="bi bi-check2 me-1"></i>{{ $isEdit ? 'Save changes' : 'Create section' }}</button>
     <a href="{{ route('admin.sections.index') }}" class="btn btn-light">Cancel</a>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const program = document.getElementById('program_id');
+    const year = document.getElementById('year_level');
+    if (!program || !year) return;
+
+    const filterYearLevels = () => {
+        const selectedProgram = program.selectedOptions[0];
+        const allowed = (selectedProgram?.dataset.yearLevels || '').split(',');
+        Array.from(year.options).forEach((option) => {
+            if (!option.value) return;
+            option.hidden = !allowed.includes(option.value);
+            option.disabled = option.hidden;
+        });
+        const selectedYear = year.selectedOptions[0];
+        if (selectedYear && selectedYear.value && selectedYear.disabled) year.value = '';
+    };
+
+    program.addEventListener('change', filterYearLevels);
+    filterYearLevels();
+});
+</script>

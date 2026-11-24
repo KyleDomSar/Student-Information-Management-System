@@ -15,6 +15,7 @@ class Student extends Model
         'user_id',
         'student_number',
         'program_id',
+        'program_major_id',
         'section_id',
         'year_level',
         'status',
@@ -22,9 +23,7 @@ class Student extends Model
 
     protected function casts(): array
     {
-        return [
-            'year_level' => 'integer',
-        ];
+        return ['year_level' => 'integer'];
     }
 
     public function user(): BelongsTo
@@ -35,6 +34,11 @@ class Student extends Model
     public function program(): BelongsTo
     {
         return $this->belongsTo(Program::class);
+    }
+
+    public function major(): BelongsTo
+    {
+        return $this->belongsTo(ProgramMajor::class, 'program_major_id');
     }
 
     public function section(): BelongsTo

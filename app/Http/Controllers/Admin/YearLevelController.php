@@ -61,7 +61,7 @@ class YearLevelController extends Controller
             'level_number' => [
                 'required',
                 'integer',
-                'between:1,6',
+                'between:1,255',
                 Rule::unique('year_levels', 'level_number')->ignore($yearLevel->id),
             ],
             'name' => ['required', 'string', 'max:50'],

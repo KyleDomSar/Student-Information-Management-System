@@ -68,7 +68,7 @@ class EnrollmentManagementTest extends TestCase
             ->post(route('admin.enrollments.store'), [
                 'student_id' => $student->id,
                 'academic_year' => '2026-2027',
-                'semester' => 'First',
+                'semester' => 'First Semester',
                 'subjects' => [$subject->id],
             ])
             ->assertRedirect();
@@ -96,7 +96,7 @@ class EnrollmentManagementTest extends TestCase
         Enrollment::create([
             'student_id' => $student->id,
             'academic_year' => '2026-2027',
-            'semester' => 'First',
+            'semester' => 'First Semester',
             'status' => 'pending',
             'created_by' => $staff->id,
         ]);
@@ -106,7 +106,7 @@ class EnrollmentManagementTest extends TestCase
             ->post(route('admin.enrollments.store'), [
                 'student_id' => $student->id,
                 'academic_year' => '2026-2027',
-                'semester' => 'First',
+                'semester' => 'First Semester',
                 'subjects' => [$subject->id],
             ])
             ->assertSessionHasErrors('student_id');
@@ -141,7 +141,7 @@ class EnrollmentManagementTest extends TestCase
             ->post(route('admin.enrollments.store'), [
                 'student_id' => $student->id,
                 'academic_year' => '2026-2027',
-                'semester' => 'First',
+                'semester' => 'First Semester',
                 'subjects' => [$subject->id],
             ])
             ->assertSessionHasErrors('subjects');
@@ -156,7 +156,7 @@ class EnrollmentManagementTest extends TestCase
         $enrollment = Enrollment::create([
             'student_id' => $student->id,
             'academic_year' => '2026-2027',
-            'semester' => 'Second',
+            'semester' => 'Second Semester',
             'status' => 'pending',
             'created_by' => $staff->id,
         ]);
@@ -181,14 +181,14 @@ class EnrollmentManagementTest extends TestCase
         $ownEnrollment = Enrollment::create([
             'student_id' => $firstStudent->id,
             'academic_year' => '2026-2027',
-            'semester' => 'First',
+            'semester' => 'First Semester',
             'status' => 'enrolled',
         ]);
 
         $otherEnrollment = Enrollment::create([
             'student_id' => $secondStudent->id,
             'academic_year' => '2026-2027',
-            'semester' => 'First',
+            'semester' => 'First Semester',
             'status' => 'enrolled',
         ]);
 
@@ -207,7 +207,7 @@ class EnrollmentManagementTest extends TestCase
         $enrollment = Enrollment::create([
             'student_id' => $student->id,
             'academic_year' => '2026-2027',
-            'semester' => 'Summer',
+            'semester' => 'Midyear',
             'status' => 'pending',
         ]);
 

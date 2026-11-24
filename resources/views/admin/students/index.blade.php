@@ -44,7 +44,7 @@
     @else
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0">
-                <thead class="table-light"><tr><th>Student</th><th>Student number</th><th>Program</th><th>Year</th><th>Section</th><th>Status</th><th class="text-end">Action</th></tr></thead>
+                <thead class="table-light"><tr><th>Student</th><th>Student number</th><th>Program</th><th>Major</th><th>Year</th><th>Section</th><th>Status</th><th class="text-end">Action</th></tr></thead>
                 <tbody>
                 @foreach($students as $student)
                     <tr>
@@ -54,6 +54,7 @@
                         </td>
                         <td class="fw-semibold">{{ $student->student_number }}</td>
                         <td>{{ $student->program?->code ?? 'Not assigned' }}</td>
+                        <td>{{ $student->major?->name ?? '—' }}</td>
                         <td>{{ $student->year_level ?? '—' }}</td>
                         <td>{{ $student->section?->code ?? 'Not assigned' }}</td>
                         <td>

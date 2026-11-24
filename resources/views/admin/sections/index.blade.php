@@ -31,11 +31,12 @@
     @else
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0">
-                <thead class="table-light"><tr><th>Program</th><th>Year level</th><th>Section</th><th>Students assigned</th><th>Status</th><th class="text-end">Actions</th></tr></thead>
+                <thead class="table-light"><tr><th>Academic program</th><th>College / Department</th><th>Year level</th><th>Section</th><th>Students assigned</th><th>Status</th><th class="text-end">Actions</th></tr></thead>
                 <tbody>
                 @foreach($sections as $section)
                     <tr>
                         <td><div class="fw-semibold">{{ $section->program->code }}</div><div class="small muted">{{ $section->program->name }}</div></td>
+                        <td><div>{{ $section->program->college?->name ?? 'Not assigned' }}</div><div class="small muted">{{ $section->program->department?->code ?? 'No department' }}</div></td>
                         <td>{{ $section->yearLevel->name }}</td>
                         <td class="fw-semibold">{{ $section->code }}</td>
                         <td>{{ number_format($section->students_count) }}</td>

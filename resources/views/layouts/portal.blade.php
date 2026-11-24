@@ -66,6 +66,7 @@
                 <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}"><i class="bi bi-grid"></i><span>Dashboard</span></a>
                 @if(in_array(auth()->user()->role, ['admin', 'staff'], true))
                     <a class="nav-link {{ request()->routeIs('admin.students.*') ? 'active' : '' }}" href="{{ route('admin.students.index') }}"><i class="bi bi-people"></i><span>Students</span></a>
+                    <a class="nav-link {{ request()->routeIs('admin.academic-structure.*') ? 'active' : '' }}" href="{{ route('admin.academic-structure.index') }}"><i class="bi bi-building"></i><span>Academic Structure</span></a>
                     <a class="nav-link {{ request()->routeIs('admin.programs.*') ? 'active' : '' }}" href="{{ route('admin.programs.index') }}"><i class="bi bi-book"></i><span>Programs</span></a>
                     <a class="nav-link {{ request()->routeIs('admin.subjects.*') ? 'active' : '' }}" href="{{ route('admin.subjects.index') }}"><i class="bi bi-journal-bookmark"></i><span>Subjects</span></a>
                     <a class="nav-link {{ request()->routeIs('admin.year-levels.*') ? 'active' : '' }}" href="{{ route('admin.year-levels.index') }}"><i class="bi bi-layers"></i><span>Year Levels</span></a>

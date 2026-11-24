@@ -9,7 +9,7 @@
         <a href="{{ route('admin.enrollments.index') }}" class="small text-decoration-none"><i class="bi bi-arrow-left"></i> Back to enrollments</a>
         <div class="eyebrow mt-3 mb-1">ENROLLMENT #{{ $enrollment->id }}</div>
         <h1 class="page-title mb-1">{{ $enrollment->student->user->name }}</h1>
-        <p class="muted mb-0">{{ $enrollment->student->student_number }} · {{ $enrollment->academic_year }} · {{ $enrollment->semester }} Semester</p>
+        <p class="muted mb-0">{{ $enrollment->student->student_number }} · {{ $enrollment->academic_year }} · {{ $enrollment->semester }}</p>
     </div>
     <span class="badge rounded-pill text-bg-light border px-3 py-2 text-capitalize">{{ $enrollment->status }}</span>
 </div>

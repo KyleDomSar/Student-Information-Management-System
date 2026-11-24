@@ -22,6 +22,15 @@
             <input id="search" type="search" name="search" value="{{ $filters['search'] ?? '' }}" class="form-control" placeholder="Student number, name, or email">
         </div>
         <div class="col-lg-2 col-md-6">
+            <label for="college_id" class="form-label small fw-semibold">College</label>
+            <select id="college_id" name="college_id" class="form-select">
+                <option value="">All colleges</option>
+                @foreach($colleges as $college)
+                    <option value="{{ $college->id }}" @selected((string) ($filters['college_id'] ?? '') === (string) $college->id)>{{ $college->name }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="col-lg-2 col-md-6">
             <label for="program_id" class="form-label small fw-semibold">Program</label>
             <select id="program_id" name="program_id" class="form-select">
                 <option value="">All programs</option>
@@ -82,14 +91,17 @@
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0">
                 <thead class="table-light">
-                    <tr><th>Student</th><th>Student number</th><th>Program</th><th>Year</th><th>Section</th><th>Student status</th><th>Portal account</th></tr>
+                    <tr><th>Student</th><th>Student number</th><th>College</th><th>Department</th><th>Program</th><th>Major</th><th>Year</th><th>Section</th><th>Student status</th><th>Portal account</th></tr>
                 </thead>
                 <tbody>
                 @foreach($students as $student)
                     <tr>
                         <td><div class="fw-semibold">{{ $student->user?->name ?? 'Account unavailable' }}</div><div class="small muted">{{ $student->user?->email }}</div></td>
                         <td class="fw-semibold">{{ $student->student_number }}</td>
+                        <td>{{ $student->program?->college?->name ?? 'Not assigned' }}</td>
+                        <td>{{ $student->program?->department?->name ?? 'Not assigned' }}</td>
                         <td>{{ $student->program?->code ?? 'Not assigned' }}</td>
+                        <td>{{ $student->major?->name ?? '—' }}</td>
                         <td>{{ $student->yearLevelRecord?->name ?? 'Not assigned' }}</td>
                         <td>{{ $student->section?->code ?? 'Not assigned' }}</td>
                         <td><span class="badge text-bg-light text-capitalize">{{ $student->status }}</span></td>

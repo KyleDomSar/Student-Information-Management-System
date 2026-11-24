@@ -46,9 +46,11 @@ All permissions are enforced on the server. Hiding a button in the interface is 
 - Admin-only student account activation/deactivation.
 - Admin-only permanent deletion for student records without enrollment history. Deletion is blocked when academic history exists.
 - Admin-only program and subject catalog maintenance. Staff can view the catalogs and use existing entries in authorized registrar workflows.
+- CvSU Main Campus academic hierarchy: colleges, departments, programs, majors/specializations, and program-specific year levels. Main Campus college and CEIT department reference records are loaded by the database seeder.
+- Enrollment terms follow the CvSU calendar labels: First Semester, Second Semester, and Midyear.
 - Student self-service update of permitted personal details (name and email).
 - Student self-service password change requiring the current password.
-- Students cannot edit their student number, program, year level, student status, enrollment, grades, or schedules.
+- Students cannot edit their student number, program, major, year level, student status, enrollment, grades, or schedules.
 - Enrollment workflow: authorized staff create term enrollments, attach active subjects, and approve or reject pending requests.
 - Gradebook for Admin/Staff to encode and update numeric final grades for approved enrollments. The prototype grade range is configurable in `.env`.
 - Read-only Student Portal enrollment, grade, and class schedule views scoped to the signed-in student's own records.
@@ -74,6 +76,7 @@ The gradebook and class timetable are supplementary academic-information feature
 | Student profile and personal details | `/student/profile` |
 | Student password update | `/student/password` (PUT endpoint) |
 | Student records | `/admin/students` |
+| Academic structure | `/admin/academic-structure` |
 | Academic programs | `/admin/programs` |
 | Subject catalog | `/admin/subjects` |
 | Year level management | `/admin/year-levels` |
@@ -114,22 +117,28 @@ The gradebook and class timetable are supplementary academic-information feature
    php artisan migrate
    ```
 
-8. Install frontend dependencies and build assets:
+8. Seed the initial CvSU Main Campus college and CEIT department reference list, plus any configured local accounts:
+
+   ```bash
+   php artisan db:seed
+   ```
+
+9. Install frontend dependencies and build assets:
 
    ```bash
    npm install
    npm run build
    ```
 
-9. Create the initial local Administrator account by setting the values below in your untracked `.env` file, then run `php artisan db:seed`.
-10. Start Laravel:
+10. Create the initial local Administrator account by setting the values below in your untracked `.env` file, then run `php artisan db:seed` again if the credentials were added after the first seed.
+11. Start Laravel:
 
     ```bash
     php artisan serve
     ```
 
-11. Open `http://127.0.0.1:8000/login`.
-12. Run automated tests before considering a change verified:
+12. Open `http://127.0.0.1:8000/login`.
+13. Run automated tests before considering a change verified:
 
     ```bash
     php artisan test

@@ -76,7 +76,7 @@ class EnrollmentController extends Controller
                 ),
             ],
             'academic_year' => ['required', 'regex:/^\d{4}-\d{4}$/'],
-            'semester' => ['required', Rule::in(['First', 'Second', 'Summer'])],
+            'semester' => ['required', Rule::in(['First Semester', 'Second Semester', 'Midyear'])],
             'subjects' => ['required', 'array', 'min:1', 'max:20'],
             'subjects.*' => ['required', 'integer', 'distinct', Rule::exists('subjects', 'id')->where('is_active', true)],
         ], [

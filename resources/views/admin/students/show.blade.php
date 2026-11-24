@@ -47,7 +47,10 @@
     </div>
     <div class="row g-4 border-top pt-4">
         <div class="col-md-4"><div class="small muted">Student number</div><div class="fw-semibold">{{ $student->student_number }}</div></div>
+        <div class="col-md-4"><div class="small muted">College</div><div class="fw-semibold">{{ $student->program?->college?->name ?? 'Not assigned' }}</div></div>
+        <div class="col-md-4"><div class="small muted">Department</div><div class="fw-semibold">{{ $student->program?->department?->name ?? 'Not assigned' }}</div></div>
         <div class="col-md-4"><div class="small muted">Program</div><div class="fw-semibold">{{ $student->program?->name ?? 'Not assigned' }}</div></div>
+        <div class="col-md-4"><div class="small muted">Major / specialization</div><div class="fw-semibold">{{ $student->major?->name ?? 'Not applicable' }}</div></div>
         <div class="col-md-4"><div class="small muted">Year level</div><div class="fw-semibold">{{ $student->yearLevelRecord?->name ?? $student->year_level ?? 'Not assigned' }}</div></div>
         <div class="col-md-4"><div class="small muted">Assigned section</div><div class="fw-semibold">{{ $student->section?->code ?? 'Not assigned' }}</div></div>
         <div class="col-md-4"><div class="small muted">Email</div><div class="fw-semibold text-break">{{ $student->user->email }}</div></div>

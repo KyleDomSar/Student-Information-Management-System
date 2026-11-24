@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\GradeController as AdminGradeController;
 use App\Http\Controllers\Admin\ClassScheduleController as AdminClassScheduleController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\AuditLogController;
+use App\Http\Controllers\Admin\AcademicStructureController;
 use App\Http\Controllers\Admin\ProgramController;
 use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\Admin\StudentReportController;
@@ -54,6 +55,7 @@ Route::prefix('admin')
     ->middleware(['auth', 'role:admin,staff'])
     ->group(function () {
         Route::get('/dashboard', AdminDashboardController::class)->name('dashboard');
+        Route::get('/academic-structure', [AcademicStructureController::class, 'index'])->name('academic-structure.index');
 
         // Student and program records are restricted to Admin and Registrar/Staff.
         Route::middleware('role:admin,staff')->group(function () {
@@ -78,6 +80,11 @@ Route::prefix('admin')
 
         // Student account controls and destructive record deletion are Admin-only.
         Route::middleware('role:admin')->group(function () {
+            Route::post('/academic-structure/colleges', [AcademicStructureController::class, 'storeCollege'])->name('academic-structure.colleges.store');
+            Route::post('/academic-structure/departments', [AcademicStructureController::class, 'storeDepartment'])->name('academic-structure.departments.store');
+            Route::patch('/academic-structure/colleges/{college}/status', [AcademicStructureController::class, 'updateCollegeStatus'])->name('academic-structure.colleges.status');
+            Route::patch('/academic-structure/departments/{department}/status', [AcademicStructureController::class, 'updateDepartmentStatus'])->name('academic-structure.departments.status');
+            Route::patch('/academic-structure/majors/{major}/status', [AcademicStructureController::class, 'updateMajorStatus'])->name('academic-structure.majors.status');
             Route::patch('/students/{student}/account-status', [StudentController::class, 'updateAccountStatus'])->name('students.account-status');
             Route::delete('/students/{student}', [StudentController::class, 'destroy'])->name('students.destroy');
             Route::resource('programs', ProgramController::class)->only(['create', 'store', 'edit', 'update', 'destroy']);

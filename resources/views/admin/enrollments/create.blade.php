@@ -41,8 +41,8 @@
                 <label for="semester" class="form-label small fw-semibold">Semester *</label>
                 <select id="semester" name="semester" class="form-select" required>
                     <option value="">Choose a semester</option>
-                    @foreach(['First', 'Second', 'Summer'] as $term)
-                        <option value="{{ $term }}" @selected(old('semester') === $term)>{{ $term }} Semester</option>
+                    @foreach(['First Semester', 'Second Semester', 'Midyear'] as $term)
+                        <option value="{{ $term }}" @selected(old('semester') === $term)>{{ $term }}</option>
                     @endforeach
                 </select>
                 @error('semester')<div class="text-danger small mt-1">{{ $message }}</div>@enderror

@@ -15,6 +15,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call(CvsuMainCampusAcademicStructureSeeder::class);
+
         $admin = config('sims.seed_admin');
 
         if ($admin['email'] && $admin['password']) {
