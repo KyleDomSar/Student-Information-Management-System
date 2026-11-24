@@ -162,7 +162,7 @@ For a fresh presentation setup with exactly three login accounts, use a separate
    DB_PASSWORD=
    ```
 
-3. In Laragon Terminal, from `C:\\laragon\\www\\SIMS`, run:
+3. In Laragon Terminal, from `C:\laragon\www\SIMS`, run:
 
    ```bash
    php artisan config:clear
@@ -253,7 +253,7 @@ For normal offline use:
 
 4. Open `http://127.0.0.1:8000/login`.
 
-The application records are stored in the local MySQL database configured by `DB_DATABASE=sims_db`. Stopping `php artisan serve` does not delete database records. Starting the server again reconnects to the same database. Stopping Laragon/MySQL also does not normally delete the database; keep the Laragon data directory intact.
+The application records are stored in the local MySQL database configured by `DB_DATABASE` in `.env`, such as `sims_db` or `sims_presentation_db`. Stopping `php artisan serve` does not delete database records. Starting the server again reconnects to the same database. Stopping Laragon/MySQL also does not normally delete the database; keep the Laragon data directory intact.
 
 Do not use `php artisan migrate:fresh`, `php artisan db:wipe`, or delete the Laragon MySQL data directory on a database that contains records you need to keep. Back up `sims_db` regularly using phpMyAdmin Export or `mysqldump`.
 
