@@ -42,7 +42,8 @@ class PresentationDatabaseSeeder extends Seeder
             ]);
 
             $admin = $this->seedAdmin();
-            $staff = $this->seedStaff($admin);
+            $staffUsers = $this->seedStaff($admin);
+            $primaryStaff = $staffUsers[0] ?? throw new RuntimeException('The primary presentation Staff account was not created.');
 
             $programs = Program::query()->orderBy('code')->get()->keyBy('code');
             $yearLevels = YearLevel::query()->orderBy('level_number')->get()->keyBy('level_number');
@@ -80,9 +81,9 @@ class PresentationDatabaseSeeder extends Seeder
             }
 
             $sections = $this->seedSections($admin, $programs, $yearLevels);
-            $students = $this->seedStudents($staff, $programs, $yearLevels, $sections);
+            $students = $this->seedStudents($primaryStaff, $programs, $yearLevels, $sections);
 
-            $this->seedEnrollments($staff, $students);
+            $this->seedEnrollments($primaryStaff, $students);
             $this->seedVisitorTimeouts($students);
 
             $this->command?->info('Full SIMS presentation dataset is ready.');
