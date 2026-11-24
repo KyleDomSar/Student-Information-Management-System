@@ -1,15 +1,15 @@
 <?php
 
-namespace Tests\\Feature;
+namespace Tests\Feature;
 
-use App\\Models\\Enrollment;
-use App\\Models\\Student;
-use App\\Models\\StudentVisitorTimeout;
-use App\\Models\\User;
-use Database\\Seeders\\PresentationDatabaseSeeder;
-use Illuminate\\Foundation\\Testing\\RefreshDatabase;
-use Illuminate\\Support\\Facades\\Hash;
-use Tests\\TestCase;
+use App\Models\Enrollment;
+use App\Models\Student;
+use App\Models\StudentVisitorTimeout;
+use App\Models\User;
+use Database\Seeders\PresentationDatabaseSeeder;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
+use Tests\TestCase;
 
 class PresentationDatabaseSeederTest extends TestCase
 {
@@ -78,10 +78,10 @@ class PresentationDatabaseSeederTest extends TestCase
         return [
             'users' => User::count(),
             'students' => Student::count(),
-            'sections' => \\App\\Models\\Section::count(),
+            'sections' => \App\Models\Section::count(),
             'enrollments' => Enrollment::count(),
             'visitor_timeouts' => StudentVisitorTimeout::count(),
-            'audit_logs' => \\App\\Models\\AuditLog::count(),
+            'audit_logs' => \App\Models\AuditLog::count(),
         ];
     }
 }
