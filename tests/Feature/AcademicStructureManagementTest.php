@@ -22,11 +22,24 @@ class AcademicStructureManagementTest extends TestCase
 
         $this->assertDatabaseCount('colleges', 11);
         $this->assertDatabaseCount('departments', 5);
+        $this->assertDatabaseCount('programs', 46);
+        $this->assertDatabaseCount('program_majors', 30);
+        $this->assertDatabaseHas('programs', [
+            'code' => 'BSIT',
+            'name' => 'Bachelor of Science in Information Technology',
+        ]);
+        $this->assertDatabaseHas('programs', [
+            'code' => 'DVM',
+            'name' => 'Doctor of Veterinary Medicine',
+        ]);
         $this->assertDatabaseHas('departments', ['code' => 'DIT']);
         $this->assertDatabaseHas('colleges', [
             'campus' => 'Main Campus',
             'name' => 'College of Engineering & Information Technology',
         ]);
+
+        $this->seed(CvsuMainCampusAcademicStructureSeeder::class);
+        $this->assertDatabaseCount('programs', 46);
     }
 
     public function test_staff_can_view_academic_structure_but_cannot_create_colleges(): void

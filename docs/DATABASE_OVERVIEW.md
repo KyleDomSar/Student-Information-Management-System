@@ -55,7 +55,7 @@ Stores degree programs or courses.
 A program belongs to a college and may optionally be assigned to a department. Department assignments remain configurable because the public program directory does not establish every program's department mapping.
 
 ### program_majors
-Stores optional majors or specializations under an academic program.
+Stores optional majors or specializations under an academic program. The seeder includes the majors and specializations listed in the public Main Campus program directory.
 
 | Field | Purpose |
 |---|---|

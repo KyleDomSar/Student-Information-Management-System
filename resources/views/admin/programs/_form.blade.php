@@ -12,8 +12,9 @@
     <h2 class="h6 fw-bold mb-3">Program details</h2>
     <div class="row g-3">
         <div class="col-md-4">
-            <label for="code" class="form-label small fw-semibold">Program code *</label>
+            <label for="code" class="form-label small fw-semibold">Program code / local identifier *</label>
             <input id="code" name="code" value="{{ old('code', $program?->code ?? '') }}" class="form-control" maxlength="30" required>
+            <div class="form-text">Use the registrar-issued code when available. Initial seed codes are local SIMS identifiers.</div>
             @error('code')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
         </div>
         <div class="col-md-8">

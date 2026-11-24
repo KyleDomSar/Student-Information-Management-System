@@ -46,7 +46,7 @@ All permissions are enforced on the server. Hiding a button in the interface is 
 - Admin-only student account activation/deactivation.
 - Admin-only permanent deletion for student records without enrollment history. Deletion is blocked when academic history exists.
 - Admin-only program and subject catalog maintenance. Staff can view the catalogs and use existing entries in authorized registrar workflows.
-- CvSU Main Campus academic hierarchy: colleges, departments, programs, majors/specializations, and program-specific year levels. Main Campus college and CEIT department reference records are loaded by the database seeder.
+- CvSU Main Campus academic hierarchy: colleges, departments, programs, majors/specializations, and program-specific year levels. The seeder loads 11 Main Campus colleges, 5 CEIT departments, 46 program entries, and the listed majors/specializations. Program codes are local SIMS identifiers pending verification against registrar records; department and year-level assignments are left configurable.
 - Enrollment terms follow the CvSU calendar labels: First Semester, Second Semester, and Midyear.
 - Student self-service update of permitted personal details (name and email).
 - Student self-service password change requiring the current password.
