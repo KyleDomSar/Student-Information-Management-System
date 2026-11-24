@@ -30,34 +30,7 @@ class SubjectManagementTest extends TestCase
             ->assertForbidden();
     }
 
-    public function test_staff_can_create_a_subject(): void
-    {
-        $staff = User::factory()->create(['role' => User::ROLE_STAFF]);
-        $program = Program::create([
-            'code' => 'BSIT',
-            'name' => 'Bachelor of Science in Information Technology',
-            'is_active' => true,
-        ]);
-
-        $this->actingAs($staff)
-            ->post(route('admin.subjects.store'), [
-                'program_id' => $program->id,
-                'code' => 'IT101',
-                'title' => 'Introduction to Computing',
-                'units' => 3,
-            ])
-            ->assertRedirect(route('admin.subjects.index'));
-
-        $this->assertDatabaseHas('subjects', [
-            'program_id' => $program->id,
-            'code' => 'IT101',
-            'title' => 'Introduction to Computing',
-            'units' => 3,
-            'is_active' => true,
-        ]);
-    }
-
-    public function test_deactivating_subject_preserves_existing_catalog_record(): void
+    public function test_staff_cannot_create_or_deactivate_subjects(): void
     {
         $staff = User::factory()->create(['role' => User::ROLE_STAFF]);
         $subject = Subject::create([
@@ -68,12 +41,47 @@ class SubjectManagementTest extends TestCase
         ]);
 
         $this->actingAs($staff)
+            ->post(route('admin.subjects.store'), [
+                'code' => 'IT101',
+                'title' => 'Introduction to Computing',
+                'units' => 3,
+            ])
+            ->assertForbidden();
+
+        $this->actingAs($staff)
+            ->delete(route('admin.subjects.destroy', $subject))
+            ->assertForbidden();
+
+        $this->assertDatabaseMissing('subjects', ['code' => 'IT101']);
+        $this->assertDatabaseHas('subjects', ['id' => $subject->id, 'is_active' => true]);
+    }
+
+    public function test_admin_can_create_and_deactivate_a_subject(): void
+    {
+        $admin = User::factory()->create(['role' => User::ROLE_ADMIN]);
+        $program = Program::create([
+            'code' => 'BSIT',
+            'name' => 'Bachelor of Science in Information Technology',
+            'is_active' => true,
+        ]);
+
+        $this->actingAs($admin)
+            ->post(route('admin.subjects.store'), [
+                'program_id' => $program->id,
+                'code' => 'IT101',
+                'title' => 'Introduction to Computing',
+                'units' => 3,
+            ])
+            ->assertRedirect(route('admin.subjects.index'));
+
+        $subject = Subject::where('code', 'IT101')->firstOrFail();
+
+        $this->actingAs($admin)
             ->delete(route('admin.subjects.destroy', $subject))
             ->assertRedirect(route('admin.subjects.index'));
 
         $this->assertDatabaseHas('subjects', [
             'id' => $subject->id,
-            'code' => 'IT102',
             'is_active' => false,
         ]);
     }
