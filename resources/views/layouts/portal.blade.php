@@ -57,7 +57,7 @@
                 <a class="nav-link {{ request()->routeIs('student.dashboard') ? 'active' : '' }}" href="{{ route('student.dashboard') }}"><i class="bi bi-grid"></i><span>Overview</span></a>
                 <a class="nav-link {{ request()->routeIs('student.profile') ? 'active' : '' }}" href="{{ route('student.profile') }}"><i class="bi bi-person"></i><span>My Profile</span></a>
                 <a class="nav-link {{ request()->routeIs('student.enrollments.*') ? 'active' : '' }}" href="{{ route('student.enrollments.index') }}"><i class="bi bi-journal-check"></i><span>My Enrollments</span></a>
-                <span class="nav-link disabled opacity-50"><i class="bi bi-card-list"></i><span>Grades · Soon</span></span>
+                <a class="nav-link {{ request()->routeIs('student.grades.*') ? 'active' : '' }}" href="{{ route('student.grades.index') }}"><i class="bi bi-card-list"></i><span>My Grades</span></a>
                 <span class="nav-link disabled opacity-50"><i class="bi bi-calendar3"></i><span>Class Schedule · Soon</span></span>
             </nav>
         @else
@@ -69,7 +69,7 @@
                     <a class="nav-link {{ request()->routeIs('admin.programs.*') ? 'active' : '' }}" href="{{ route('admin.programs.index') }}"><i class="bi bi-book"></i><span>Programs</span></a>
                     <a class="nav-link {{ request()->routeIs('admin.subjects.*') ? 'active' : '' }}" href="{{ route('admin.subjects.index') }}"><i class="bi bi-journal-bookmark"></i><span>Subjects</span></a>
                     <a class="nav-link {{ request()->routeIs('admin.enrollments.*') ? 'active' : '' }}" href="{{ route('admin.enrollments.index') }}"><i class="bi bi-journal-check"></i><span>Enrollments</span></a>
-                    <span class="nav-link disabled opacity-50"><i class="bi bi-card-checklist"></i><span>Gradebook · Soon</span></span>
+                    <a class="nav-link {{ request()->routeIs('admin.grades.*') ? 'active' : '' }}" href="{{ route('admin.grades.index') }}"><i class="bi bi-card-checklist"></i><span>Gradebook</span></a>
                     <span class="nav-link disabled opacity-50"><i class="bi bi-clock-history"></i><span>Audit Logs · Soon</span></span>
                     @if(auth()->user()->isAdministrator())
                         <span class="nav-link disabled opacity-50"><i class="bi bi-shield-lock"></i><span>User Management · Soon</span></span>
