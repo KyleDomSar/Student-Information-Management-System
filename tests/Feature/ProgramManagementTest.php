@@ -257,4 +257,49 @@ class ProgramManagementTest extends TestCase
             'section_id' => $currentSection->id,
         ]);
     }
+
+    public function test_reactivating_a_program_restores_active_status_for_its_active_sections(): void
+    {
+        $admin = User::factory()->create(['role' => User::ROLE_ADMIN]);
+        $program = Program::create([
+            'code' => 'BSRESTORE',
+            'name' => 'Restorable Program',
+            'is_active' => true,
+        ]);
+        YearLevel::create([
+            'level_number' => 1,
+            'name' => 'First Year',
+            'is_active' => true,
+        ]);
+        $section = Section::create([
+            'program_id' => $program->id,
+            'year_level' => 1,
+            'code' => 'RESTORE-1A',
+            'is_active' => true,
+        ]);
+
+        $this->actingAs($admin)
+            ->delete(route('admin.programs.destroy', $program))
+            ->assertRedirect(route('admin.programs.index'));
+
+        $this->actingAs($admin)
+            ->put(route('admin.programs.update', $program), [
+                'code' => 'BSRESTORE',
+                'name' => 'Restorable Program',
+                'description' => null,
+                'is_active' => '1',
+            ])
+            ->assertRedirect(route('admin.programs.index'));
+
+        $this->assertDatabaseHas('sections', [
+            'id' => $section->id,
+            'is_active' => true,
+        ]);
+
+        $this->actingAs($admin)
+            ->get(route('admin.sections.index', ['status' => 'active']))
+            ->assertOk()
+            ->assertSee('RESTORE-1A')
+            ->assertSee('Active');
+    }
 }
